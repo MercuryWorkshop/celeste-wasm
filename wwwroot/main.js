@@ -46,6 +46,7 @@ function App() {
     this.started = false;
 
 
+    this.debug = false;
 
 
 
@@ -120,6 +121,17 @@ function App() {
 
 
         await dotnet.run();
+
+
+        let Exports = await getAssemblyExports("fna-wasm");
+
+
+
+
+        Exports.Program.SetConfig(this.debug);
+
+        Exports.Program.StartGame();
+
     }
 
     return html`
@@ -132,13 +144,19 @@ function App() {
                 <p>Version: ${version}</p>
                 <p>FPS: ${use(this.fps, Math.floor)}</p>
 
+
+                <div>
+                    <label for="debug">Debug: </label>
+                    <input type="checkbox" bind:checked=${use(this.debug)} />
+                </div>
+
                 <div>
                     <button on:click=${start}>Start Game</button>
                 </div>
             </div>
 
 
-            ${navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />`}
+            ${navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />` || ""}
 
 
             <canvas id="canvas" bind:this=${use(this.canvas)}></canvas>
