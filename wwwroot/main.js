@@ -29,22 +29,28 @@ function App() {
 
 
     canvascontainer {
-        display: block;
+        display: grid;
         width: 100%;
         border: 0.7px solid var(--surface5);
         border-radius: 0.5em;
         overflow: hidden;
 
-        div {
+        & > * {
+            grid-area: 1 / 1;
+        }
+
+        & > div {
             text-align: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5em;
-            margin: 0;
             color: var(--fg6);
+            font-size: 1.5em;
             font-weight: 550;
+
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
             .material-symbols-rounded {
                 font-size: 3em;
@@ -62,6 +68,10 @@ function App() {
         left: 0;
         width: 100vw;
         height: auto;
+    }
+
+    .hidden {
+        display: none;
     }
 
     button,
@@ -290,16 +300,13 @@ function App() {
         ""}
 
       <canvascontainer>
-        ${use(this.started, (started) =>
-          started
-            ? html`<p style="display: none;"></p>` // oh god why did i do this
-            : html`
+        <div class=${[use(this.started, (f) => f && "hidden")]}>
           <div>
-          <span class="material-symbols-rounded">videogame_asset_off</span>
-          <br>
-          <span>Game not running.</span>
-          </div> `,
-        )}
+            <span class="material-symbols-rounded">videogame_asset_off</span>
+            <br>
+            <span>Game not running.</span>
+          </div>
+        </div>
         <canvas
           id="canvas"
           class=${[use(this.fullscreen, (f) => f && "pinned")]}
