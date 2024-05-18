@@ -40,6 +40,7 @@ function App() {
         }
 
         & > div {
+            user-select: none;
             text-align: center;
             color: var(--fg6);
             font-size: 1.5em;
@@ -76,6 +77,7 @@ function App() {
 
     button,
     input::-webkit-file-upload-button {
+        user-select: none;
         background-color: var(--surface1);
         padding: 0.5em 1em;
         color: var(--fg);
@@ -324,11 +326,12 @@ function FuckMozilla() {
     this.css = `
         width: 100%;
 
-        background-color: red;
-        color: yellow;
+        background-color: var(--accent);
+        color: var(--fg);
         padding: 1em;
         padding-top: 0.5em;
         margin-bottom: 1em;
+        border-radius: 0.5em;
 
     `;
 
