@@ -150,10 +150,10 @@ namespace Celeste
 			WindowScale = Calc.Clamp(WindowScale, 3, 10);
 			SetDefaultKeyboardControls(reset: false);
 			SetDefaultButtonControls(reset: false);
-			if (LaunchInDebugMode)
-			{
+			// if (LaunchInDebugMode)
+			// {
 				Celeste.PlayMode = Celeste.PlayModes.Debug;
-			}
+			// }
 			LastVersion = (Existed ? Instance.Version : Celeste.Instance.Version.ToString());
 			Instance.Version = Celeste.Instance.Version.ToString();
 		}
