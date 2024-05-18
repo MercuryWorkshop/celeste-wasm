@@ -42,6 +42,10 @@ function App() {
             overflow: hidden;
             background-color: var(--surface0);
 
+            &:has(.hidden) {
+              background-color: black;
+            }
+
             & > * {
                 grid-area: 1 / 1;
             }
