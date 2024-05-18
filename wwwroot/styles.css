@@ -5,7 +5,13 @@ body {
     width: 100vw;
     height: 100vh;
     font-size: 100%;
-    font-family: "Roboto", sans-serif;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+input, button {
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+            Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 * {
@@ -27,6 +33,10 @@ body {
 }
 .gap {
     gap: 1.5em;
+}
+
+.space-between {
+    justify-content: space-between;
 }
 
 *::-webkit-scrollbar {
