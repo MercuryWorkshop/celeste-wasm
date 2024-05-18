@@ -189,6 +189,8 @@ function App() {
                 <button class="important" on:click=${start}>Start Game</button>
             </div>
 
+            <input type="file">
+
 
             ${navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />` || ""}
 
@@ -251,6 +253,6 @@ setInterval(() => {
     app.log.scrollTop = app.log.scrollHeight;
 }, 5000);
 
-console.log = log
+// console.log = log
 
 document.body.appendChild(app.root);
