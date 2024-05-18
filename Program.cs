@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
-using System.IO;
 using Celeste;
 
 public static partial class Program
@@ -18,10 +17,9 @@ public static partial class Program
         SetMainLoop(MainLoop);
     }
 
-    private static bool _firstRun = true;
-    private static DateTime _lastLog = DateTime.UnixEpoch;
     private static Celeste.Celeste game;
     public static bool exitGame = false;
+    public static bool exited = false;
 
     public static void SyncFS() {
         Sync(SyncCallback);
@@ -31,42 +29,20 @@ public static partial class Program
         Console.WriteLine("Synced!");
     }
 
-    private static void DoNothing() {
-
-    }
-
     private static void MainLoop()
     {
+        if (exited) return;
         if (exitGame) {
             // RunThread.WaitAll();
             SyncFS();
-            game.Dispose();
             Audio.Unload();
-            SetMainLoop(DoNothing);
+            exitGame = false;
+            exited = true;
+            SetMainLoop(null);
         }
         try
         {
-            if (_firstRun)
-            {
-                Console.WriteLine("First run of the main loop");
-                _firstRun = false;
-                Console.WriteLine($"Assets Test: {File.ReadAllText("/test")}");
-
-                // In original Main() but no longer used
-                // game.RunWithLogging();
-            }
-
-            var now = DateTime.UtcNow;
-            if ((now - _lastLog).TotalSeconds > 1.0)
-            {
-                _lastLog = now;
-                Console.WriteLine($"Main loop still running at: {now}");
-            }
-
-            if (game != null)
-            {
-                game.RunOneFrame();
-            }
+            game.RunOneFrame();
         }
         catch (Exception e)
         {
