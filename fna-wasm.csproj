@@ -1,0 +1,137 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+        <WasmNativeStrip>false</WasmNativeStrip>
+        <RunAOTCompilation>true</RunAOTCompilation>
+        <PublishRelease>false</PublishRelease>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Nullable>disable</Nullable>
+        <EmccLinkOptimizationFlag>-O1</EmccLinkOptimizationFlag>
+        <EmccExtraLDFlags>--js-library $(MSBuildProjectDirectory.Replace('\', '/'))/js/library-fixemscripten.js -sFULL_ES3</EmccExtraLDFlags>
+        <WasmEmitSymbolMap>true</WasmEmitSymbolMap>
+        <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <NativeFileReference Include="SDL2.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <NativeFileReference Include="FNA3D.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <NativeFileReference Include="libmojoshader.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <NativeFileReference Include="FAudio.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <NativeFileReference Include="fmodstudio.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <EmccExportedRuntimeMethod Include="SDL">
+            <Visible>false</Visible>
+        </EmccExportedRuntimeMethod>
+        <EmccExportedRuntimeMethod Include="GL">
+            <Visible>false</Visible>
+        </EmccExportedRuntimeMethod>
+        <EmccExportedRuntimeMethod Include="setMainLoop">
+            <Visible>false</Visible>
+        </EmccExportedRuntimeMethod>
+        <WasmShellAdditionalPInvokeLibrary Include="__Native" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\FNA\FNA.Core.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <CustomAssetManifestRoot>wwwroot</CustomAssetManifestRoot>
+        <CustomAssetManifestFile>asset_manifest.csv</CustomAssetManifestFile>
+        <CustomAssetManifestVerbose>false</CustomAssetManifestVerbose>
+        <CustomAssetManifestVerbose Condition="$(Configuration) == 'Debug'">true</CustomAssetManifestVerbose>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Remove="$(CustomAssetManifestRoot)\$(CustomAssetManifestFile)" />
+        <CustomAssets Include="wwwroot\assets\**\*"/>
+    </ItemGroup>
+    <Target Name="CustomAssetManifest_PackageAssets" BeforeTargets="AssignTargetPaths">
+        <PropertyGroup>
+            <IntermediateCustomAssetManifestRootPath>$(IntermediateOutputPath)</IntermediateCustomAssetManifestRootPath>
+            <IntermediateCustomAssetManifestPath>$(IntermediateCustomAssetManifestRootPath)$(CustomAssetManifestFile)</IntermediateCustomAssetManifestPath>
+        </PropertyGroup>
+        <ItemGroup>
+            <CustomAssetsNoRoot Include="@(CustomAssets -> '/assets/%(RecursiveDir)%(Filename)%(Extension)')" />
+        </ItemGroup>
+
+        <Message Text="No custom assets to bundle" Condition="@(CustomAssetsNoRoot->Count()) == 0 and $(CustomAssetManifestVerbose) == 'true'" />
+        <Message Text="Found @(CustomAssetsNoRoot->Count()) custom assets: @(CustomAssetsNoRoot)" Condition="@(CustomAssetsNoRoot->Count()) > 0 and $(CustomAssetManifestVerbose) == 'true'" />
+        <Message Text="Outputting custom asset manifest to: $(IntermediateCustomAssetManifestPath)" />
+        <WriteLinesToFile
+                File="$(IntermediateCustomAssetManifestPath)"
+                Lines="@(CustomAssetsNoRoot)"
+                Overwrite="true"
+        />
+
+        <ItemGroup>
+            <FileWrites Include="$(IntermediateCustomAssetManifestPath)" />
+        </ItemGroup>
+
+        <ItemGroup>
+            <IntermediateCustomAssetManifestItem
+                    Include="$(IntermediateCustomAssetManifestPath)"
+                    RelativePath="$(CustomAssetManifestFile)"
+            />
+        </ItemGroup>
+    </Target>
+
+    <Target Name="CustomAssetManifest_Build" DependsOnTargets="CustomAssetManifest_PackageAssets" BeforeTargets="GenerateStaticWebAssetsManifest">
+        <DefineStaticWebAssets
+                CandidateAssets="@(IntermediateCustomAssetManifestItem)"
+                SourceId="$(PackageId)"
+                SourceType="Computed"
+                AssetKind="Build"
+                AssetRole="Primary"
+                CopyToOutputDirectory="PreserveNewest"
+                CopyToPublishDirectory="Never"
+                ContentRoot="$(OutDir)/wwwroot"
+                BasePath="/"
+                RelativePathPattern="$(IntermediateCustomAssetManifestRootPath)"
+                RelativePathFilter=""
+                Condition=""
+        >
+            <Output TaskParameter="Assets" ItemName="CustomAssetManifestAsset" />
+        </DefineStaticWebAssets>
+
+        <ItemGroup>
+            <StaticWebAsset Include="@(CustomAssetManifestAsset)" />
+        </ItemGroup>
+    </Target>
+
+    <Target Name="CustomAssetManifest_Publish" DependsOnTargets="CustomAssetManifest_PackageAssets" BeforeTargets="ComputeFilesToPublish">
+        <DefineStaticWebAssets
+                CandidateAssets="@(IntermediateCustomAssetManifestItem)"
+                SourceId="$(PackageId)"
+                SourceType="Computed"
+                AssetKind="Publish"
+                AssetRole="Primary"
+                CopyToOutputDirectory="Never"
+                CopyToPublishDirectory="PreserveNewest"
+                ContentRoot="$(PublishDir)/wwwroot"
+                BasePath="/"
+                RelativePathPattern="$(IntermediateCustomAssetManifestRootPath)"
+                RelativePathFilter=""
+                Condition=""
+        >
+            <Output TaskParameter="Assets" ItemName="CustomAssetManifestAsset" />
+        </DefineStaticWebAssets>
+
+        <ItemGroup>
+            <StaticWebAsset Include="@(CustomAssetManifestAsset)" />
+        </ItemGroup>
+    </Target>
+</Project>
