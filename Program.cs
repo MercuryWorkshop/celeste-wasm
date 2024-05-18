@@ -5,12 +5,28 @@ using Celeste;
 
 public static partial class Program
 {
+
+
     internal static void Main()
     {
-        Console.WriteLine("Setting up main loop");
+        Console.WriteLine("Main()");
+
         Celeste.Celeste._mainThreadId = Thread.CurrentThread.ManagedThreadId;
         Settings.Initialize();
         _ = Settings.Existed;
+    }
+
+
+    [System.Runtime.InteropServices.JavaScript.JSExport()]
+    public static void SetConfig(bool debug)
+    {
+        Console.WriteLine("SetConfig: debug:" + debug);
+        Settings.Instance.LaunchInDebugMode = debug;
+    }
+
+    [System.Runtime.InteropServices.JavaScript.JSExport()]
+    public static void StartGame()
+    {
 
         game = new Celeste.Celeste();
 
@@ -21,18 +37,21 @@ public static partial class Program
     public static bool exitGame = false;
     public static bool exited = false;
 
-    public static void SyncFS() {
+    public static void SyncFS()
+    {
         Sync(SyncCallback);
     }
 
-    private static void SyncCallback() {
+    private static void SyncCallback()
+    {
         Console.WriteLine("Synced!");
     }
 
     private static void MainLoop()
     {
         if (exited) return;
-        if (exitGame) {
+        if (exitGame)
+        {
             // RunThread.WaitAll();
             SyncFS();
             Audio.Unload();
@@ -56,4 +75,5 @@ public static partial class Program
 
     [JSImport("syncFs", "main.js")]
     internal static partial void Sync([JSMarshalAs<JSType.Function>] Action cb);
+
 }
