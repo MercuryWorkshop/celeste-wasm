@@ -15,9 +15,9 @@ namespace Celeste
 
 		private Coroutine grannyWalk;
 
-		private EventInstance snapshot;
+		private EventInstance? snapshot;
 
-		private EventInstance dissipate;
+		private EventInstance? dissipate;
 
 		public CS10_Farewell(Player player)
 			: base(fadeInOnSkip: false)
@@ -92,7 +92,7 @@ namespace Celeste
 				if (anim == "walk" && currentAnimationFrame == 2)
 				{
 					float volume = Calc.ClampedMap((player.Position - granny.Position).Length(), 64f, 128f, 1f, 0f);
-					Audio.Play("event:/new_content/char/granny/cane_tap_ending", granny.Position).setVolume(volume);
+					Audio.Play("event:/new_content/char/granny/cane_tap_ending", granny.Position).Value.setVolume(volume);
 				}
 			};
 			base.Scene.Add(granny);

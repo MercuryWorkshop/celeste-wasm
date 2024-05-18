@@ -531,10 +531,10 @@ namespace Celeste
 					yield return null;
 				}
 				Collidable = true;
-				EventInstance sound = Audio.Play("event:/game/04_cliffside/arrowblock_reform_begin", debris[0].Position);
+				EventInstance? sound = Audio.Play("event:/game/04_cliffside/arrowblock_reform_begin", debris[0].Position);
 				MoveBlock moveBlock = this;
 				Coroutine component;
-				Coroutine routine = (component = new Coroutine(SoundFollowsDebrisCenter(sound, debris)));
+				Coroutine routine = (component = new Coroutine(SoundFollowsDebrisCenter(sound.Value, debris)));
 				moveBlock.Add(component);
 				foreach (Debris item2 in debris)
 				{

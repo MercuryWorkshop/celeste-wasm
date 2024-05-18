@@ -17,7 +17,7 @@ namespace Celeste
 
 		private List<MTexture> images;
 
-		private EventInstance snapshot;
+		private EventInstance? snapshot;
 
 		private float timer;
 

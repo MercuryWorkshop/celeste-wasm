@@ -12,7 +12,7 @@ namespace Celeste
 		{
 			private Sprite sprite;
 
-			public EventInstance sfx;
+			public EventInstance? sfx;
 
 			public Bird(Vector2 position)
 			{
@@ -60,7 +60,7 @@ namespace Celeste
 
 		private Vector2 spawn;
 
-		private List<EventInstance> sfxs = new List<EventInstance>();
+		private List<EventInstance?> sfxs = new List<EventInstance?>();
 
 		public CS10_HubIntro(Scene scene, Player player)
 		{

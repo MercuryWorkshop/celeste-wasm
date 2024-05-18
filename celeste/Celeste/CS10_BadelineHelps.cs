@@ -13,7 +13,7 @@ namespace Celeste
 
 		private BadelineDummy badeline;
 
-		private EventInstance entrySfx;
+		private EventInstance? entrySfx;
 
 		public CS10_BadelineHelps(Player player)
 		{

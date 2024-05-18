@@ -21,7 +21,7 @@ namespace Celeste
 
 		private float fade;
 
-		private EventInstance sfx;
+		private EventInstance? sfx;
 
 		private TextMenu menu;
 

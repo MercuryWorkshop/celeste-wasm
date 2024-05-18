@@ -42,7 +42,7 @@ namespace Celeste
 
 		private float rightArrowEase;
 
-		private EventInstance mainSfx;
+		private EventInstance? mainSfx;
 
 		private const float textScale = 0.8f;
 
@@ -96,7 +96,7 @@ namespace Celeste
 			}
 			if (mainSfx != null)
 			{
-				mainSfx.release();
+				mainSfx.Value.release();
 			}
 			pages.Clear();
 			Visible = false;

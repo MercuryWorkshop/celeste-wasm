@@ -24,7 +24,7 @@ namespace Celeste
 
 		private static VertexPositionColor[] vertexBuffer = new VertexPositionColor[768];
 
-		private EventInstance sfx;
+		private EventInstance? sfx;
 
 		public SpotlightWipe(Scene scene, bool wipeIn, Action onComplete = null)
 			: base(scene, wipeIn, onComplete)
@@ -45,8 +45,8 @@ namespace Celeste
 		{
 			if (sfx != null)
 			{
-				sfx.stop(STOP_MODE.IMMEDIATE);
-				sfx.release();
+				sfx.Value.stop(STOP_MODE.IMMEDIATE);
+				sfx.Value.release();
 				sfx = null;
 			}
 			base.Cancel();

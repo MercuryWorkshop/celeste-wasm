@@ -123,8 +123,8 @@ namespace Celeste
 		{
 			if (WasSkipped && boost != null && boost.Ch9FinalBoostSfx != null)
 			{
-				boost.Ch9FinalBoostSfx.stop(STOP_MODE.ALLOWFADEOUT);
-				boost.Ch9FinalBoostSfx.release();
+				boost.Ch9FinalBoostSfx.Value.stop(STOP_MODE.ALLOWFADEOUT);
+				boost.Ch9FinalBoostSfx.Value.release();
 			}
 			string nextLevelName = "end-granny";
 			Player.IntroTypes nextLevelIntro = Player.IntroTypes.Transition;

@@ -44,7 +44,7 @@ namespace Celeste
 
 		private VertexPositionColorTexture[] verts = new VertexPositionColorTexture[6];
 
-		private EventInstance usingSfx;
+		private EventInstance? usingSfx;
 
 		public bool Viewing { get; private set; }
 
@@ -90,7 +90,7 @@ namespace Celeste
 			}
 		}
 
-		public WaveDashPresentation(EventInstance usingSfx = null)
+		public WaveDashPresentation(EventInstance? usingSfx = null)
 		{
 			base.Tag = Tags.HUD;
 			Viewing = true;
@@ -166,7 +166,7 @@ namespace Celeste
 			if (usingSfx != null)
 			{
 				Audio.SetParameter(usingSfx, "end", 1f);
-				usingSfx.release();
+				usingSfx.Value.release();
 			}
 			Audio.Play("event:/new_content/game/10_farewell/cafe_computer_off");
 			while (ease > 0f)

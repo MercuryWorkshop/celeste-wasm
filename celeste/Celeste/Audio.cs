@@ -49,23 +49,23 @@ namespace Celeste
 
 		private static bool ready;
 
-		private static EventInstance currentMusicEvent = null;
+		private static EventInstance? currentMusicEvent = null;
 
-		private static EventInstance currentAltMusicEvent = null;
+		private static EventInstance? currentAltMusicEvent = null;
 
-		private static EventInstance currentAmbientEvent = null;
+		private static EventInstance? currentAmbientEvent = null;
 
-		private static EventInstance mainDownSnapshot = null;
+		private static EventInstance? mainDownSnapshot = null;
 
 		public static string CurrentMusic = "";
 
 		private static bool musicUnderwater;
 
-		private static EventInstance musicUnderwaterSnapshot;
+		private static EventInstance? musicUnderwaterSnapshot;
 
-		public static EventInstance CurrentMusicEventInstance => currentMusicEvent;
+		public static EventInstance? CurrentMusicEventInstance => currentMusicEvent;
 
-		public static EventInstance CurrentAmbienceEventInstance => currentAmbientEvent;
+		public static EventInstance? CurrentAmbienceEventInstance => currentAmbientEvent;
 
 		public static float MusicVolume
 		{
@@ -245,133 +245,133 @@ namespace Celeste
 			}
 		}
 
-		public static EventInstance Play(string path)
+		public static EventInstance? Play(string path)
 		{
-			EventInstance instance = CreateInstance(path);
+			EventInstance? instance = CreateInstance(path);
 			if (instance != null)
 			{
-				instance.start();
-				instance.release();
+				instance.Value.start();
+				instance.Value.release();
 			}
 			return instance;
 		}
 
-		public static EventInstance Play(string path, string param, float value)
+		public static EventInstance? Play(string path, string param, float value)
 		{
-			EventInstance instance = CreateInstance(path);
+			EventInstance? instance = CreateInstance(path);
 			if (instance != null)
 			{
 				SetParameter(instance, param, value);
-				instance.start();
-				instance.release();
+				instance.Value.start();
+				instance.Value.release();
 			}
 			return instance;
 		}
 
-		public static EventInstance Play(string path, Vector2 position)
+		public static EventInstance? Play(string path, Vector2 position)
 		{
-			EventInstance instance = CreateInstance(path, position);
+			EventInstance? instance = CreateInstance(path, position);
 			if (instance != null)
 			{
-				instance.start();
-				instance.release();
+				instance.Value.start();
+				instance.Value.release();
 			}
 			return instance;
 		}
 
-		public static EventInstance Play(string path, Vector2 position, string param, float value)
+		public static EventInstance? Play(string path, Vector2 position, string param, float value)
 		{
-			EventInstance instance = CreateInstance(path, position);
+			EventInstance? instance = CreateInstance(path, position);
 			if (instance != null)
 			{
 				if (param != null)
 				{
-					instance.setParameterByName(param, value);
+					instance.Value.setParameterByName(param, value);
 				}
-				instance.start();
-				instance.release();
+				instance.Value.start();
+				instance.Value.release();
 			}
 			return instance;
 		}
 
-		public static EventInstance Play(string path, Vector2 position, string param, float value, string param2, float value2)
+		public static EventInstance? Play(string path, Vector2 position, string param, float value, string param2, float value2)
 		{
-			EventInstance instance = CreateInstance(path, position);
+			EventInstance? instance = CreateInstance(path, position);
 			if (instance != null)
 			{
 				if (param != null)
 				{
-					instance.setParameterByName(param, value);
+					instance.Value.setParameterByName(param, value);
 				}
 				if (param2 != null)
 				{
-					instance.setParameterByName(param2, value2);
+					instance.Value.setParameterByName(param2, value2);
 				}
-				instance.start();
-				instance.release();
+				instance.Value.start();
+			    instance.Value.release();
 			}
 			return instance;
 		}
 
-		public static EventInstance Loop(string path)
+		public static EventInstance? Loop(string path)
 		{
-			EventInstance instance = CreateInstance(path);
+			EventInstance? instance = CreateInstance(path);
 			if (instance != null)
 			{
-				instance.start();
+				instance.Value.start();
 			}
 			return instance;
 		}
 
-		public static EventInstance Loop(string path, string param, float value)
+		public static EventInstance? Loop(string path, string param, float value)
 		{
-			EventInstance instance = CreateInstance(path);
+			EventInstance? instance = CreateInstance(path);
 			if (instance != null)
 			{
-				instance.setParameterByName(param, value);
-				instance.start();
+				instance.Value.setParameterByName(param, value);
+				instance.Value.start();
 			}
 			return instance;
 		}
 
-		public static EventInstance Loop(string path, Vector2 position)
+		public static EventInstance? Loop(string path, Vector2 position)
 		{
-			EventInstance instance = CreateInstance(path, position);
+			EventInstance? instance = CreateInstance(path, position);
 			if (instance != null)
 			{
-				instance.start();
+				instance.Value.start();
 			}
 			return instance;
 		}
 
-		public static EventInstance Loop(string path, Vector2 position, string param, float value)
+		public static EventInstance? Loop(string path, Vector2 position, string param, float value)
 		{
-			EventInstance instance = CreateInstance(path, position);
+			EventInstance? instance = CreateInstance(path, position);
 			if (instance != null)
 			{
-				instance.setParameterByName(param, value);
-				instance.start();
+				instance.Value.setParameterByName(param, value);
+				instance.Value.start();
 			}
 			return instance;
 		}
 
-		public static void Pause(EventInstance instance)
+		public static void Pause(EventInstance? instance)
 		{
 			if (instance != null)
 			{
-				instance.setPaused(paused: true);
+				instance.Value.setPaused(paused: true);
 			}
 		}
 
-		public static void Resume(EventInstance instance)
+		public static void Resume(EventInstance? instance)
 		{
 			if (instance != null)
 			{
-				instance.setPaused(paused: false);
+				instance.Value.setPaused(paused: false);
 			}
 		}
 
-		public static void Position(EventInstance instance, Vector2 position)
+		public static void Position(EventInstance? instance, Vector2 position)
 		{
 			if (instance != null)
 			{
@@ -388,28 +388,28 @@ namespace Celeste
 				attributes3d.position.x = px;
 				attributes3d.position.y = position.Y - cam.Y;
 				attributes3d.position.z = 0f;
-				instance.set3DAttributes(attributes3d);
+				instance.Value.set3DAttributes(attributes3d);
 			}
 		}
 
-		public static void SetParameter(EventInstance instance, string param, float value)
+		public static void SetParameter(EventInstance? instance, string param, float value)
 		{
 			if (instance != null)
 			{
-				instance.setParameterByName(param, value);
+				instance.Value.setParameterByName(param, value);
 			}
 		}
 
-		public static void Stop(EventInstance instance, bool allowFadeOut = true)
+		public static void Stop(EventInstance? instance, bool allowFadeOut = true)
 		{
 			if (instance != null)
 			{
-				instance.stop((!allowFadeOut) ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
-				instance.release();
+				instance.Value.stop((!allowFadeOut) ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
+				instance.Value.release();
 			}
 		}
 
-		public static EventInstance CreateInstance(string path, Vector2? position = null)
+		public static EventInstance? CreateInstance(string path, Vector2? position = null)
 		{
 			EventDescription? desc = GetEventDescription(path);
 			if (desc != null)
@@ -465,11 +465,11 @@ namespace Celeste
 			}
 		}
 
-		public static string GetEventName(EventInstance instance)
+		public static string GetEventName(EventInstance? instance)
 		{
 			if (instance != null)
 			{
-				instance.getDescription(out var desc);
+				instance.Value.getDescription(out var desc);
                 string path = "";
                 desc.getPath(out path);
                 return path;
@@ -477,11 +477,11 @@ namespace Celeste
 			return "";
 		}
 
-		public static bool IsPlaying(EventInstance instance)
+		public static bool IsPlaying(EventInstance? instance)
 		{
 			if (instance != null)
 			{
-				instance.getPlaybackState(out var state);
+				instance.Value.getPlaybackState(out var state);
 				if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING)
 				{
 					return true;
@@ -560,19 +560,19 @@ namespace Celeste
 			return snapshot;
 		}
 
-		public static void ResumeSnapshot(EventInstance snapshot)
+		public static void ResumeSnapshot(EventInstance? snapshot)
 		{
 			if (snapshot != null)
 			{
-				snapshot.start();
+				snapshot.Value.start();
 			}
 		}
 
-		public static bool IsSnapshotRunning(EventInstance snapshot)
+		public static bool IsSnapshotRunning(EventInstance? snapshot)
 		{
 			if (snapshot != null)
 			{
-				snapshot.getPlaybackState(out var state);
+				snapshot.Value.getPlaybackState(out var state);
 				if (state != 0 && state != PLAYBACK_STATE.STARTING)
 				{
 					return state == PLAYBACK_STATE.SUSTAINING;
@@ -582,20 +582,20 @@ namespace Celeste
 			return false;
 		}
 
-		public static void EndSnapshot(EventInstance snapshot)
+		public static void EndSnapshot(EventInstance? snapshot)
 		{
 			if (snapshot != null)
 			{
-				snapshot.stop(STOP_MODE.ALLOWFADEOUT);
+				snapshot.Value.stop(STOP_MODE.ALLOWFADEOUT);
 			}
 		}
 
-		public static void ReleaseSnapshot(EventInstance snapshot)
+		public static void ReleaseSnapshot(EventInstance? snapshot)
 		{
 			if (snapshot != null)
 			{
-				snapshot.stop(STOP_MODE.ALLOWFADEOUT);
-				snapshot.release();
+				snapshot.Value.stop(STOP_MODE.ALLOWFADEOUT);
+				snapshot.Value.release();
 			}
 		}
 
@@ -610,10 +610,10 @@ namespace Celeste
 			else if (!CurrentMusic.Equals(path, StringComparison.OrdinalIgnoreCase))
 			{
 				Stop(currentMusicEvent, allowFadeOut);
-				EventInstance instance = CreateInstance(path);
+				EventInstance? instance = CreateInstance(path);
 				if (instance != null && startPlaying)
 				{
-					instance.start();
+					instance.Value.start();
 				}
 				currentMusicEvent = instance;
 				CurrentMusic = GetEventName(instance);
@@ -632,10 +632,10 @@ namespace Celeste
 			else if (!GetEventName(currentAmbientEvent).Equals(path, StringComparison.OrdinalIgnoreCase))
 			{
 				Stop(currentAmbientEvent);
-				EventInstance instance = CreateInstance(path);
+				EventInstance? instance = CreateInstance(path);
 				if (instance != null && startPlaying)
 				{
-					instance.start();
+					instance.Value.start();
 				}
 				currentAmbientEvent = instance;
 				return true;
@@ -647,7 +647,7 @@ namespace Celeste
 		{
 			if (currentMusicEvent != null)
 			{
-				currentMusicEvent.setParameterByName(path, value);
+				currentMusicEvent.Value.setParameterByName(path, value);
 			}
 		}
 

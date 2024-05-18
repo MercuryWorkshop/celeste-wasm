@@ -18,7 +18,7 @@ namespace Celeste
 
 		private Vector2 birdWaitPosition;
 
-		private EventInstance snapshot;
+		private EventInstance? snapshot;
 
 		public CS10_CatchTheBird(Player player, FlingBirdIntro flingBird)
 		{

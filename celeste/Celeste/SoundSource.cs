@@ -15,7 +15,7 @@ namespace Celeste
 
 		public bool RemoveOnOneshotEnd;
 
-		private EventInstance instance;
+		private EventInstance? instance;
 
 		private bool is3D;
 
@@ -33,7 +33,7 @@ namespace Celeste
 			{
 				if (instance != null)
 				{
-					instance.getPlaybackState(out var state);
+					instance.Value.getPlaybackState(out var state);
 					if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING || state == PLAYBACK_STATE.SUSTAINING)
 					{
 						return true;
@@ -74,7 +74,9 @@ namespace Celeste
 			EventDescription? desc = Audio.GetEventDescription(path);
 			if (desc.HasValue)
 			{
-				desc.Value.createInstance(out instance);
+                EventInstance instanceNonNull;
+				Audio.CheckFmod(desc.Value.createInstance(out instanceNonNull));
+                instance = instanceNonNull;
 				desc.Value.is3D(out is3D);
 				desc.Value.isOneshot(out isOneshot);
 			}
@@ -91,9 +93,9 @@ namespace Celeste
 				}
 				if (param != null)
 				{
-					instance.setParameterByName(param, value);
+					instance.Value.setParameterByName(param, value);
 				}
-				instance.start();
+				instance.Value.start();
 				Playing = true;
 			}
 			return this;
@@ -103,7 +105,7 @@ namespace Celeste
 		{
 			if (instance != null)
 			{
-				instance.setParameterByName(param, value);
+				instance.Value.setParameterByName(param, value);
 			}
 			return this;
 		}
@@ -112,7 +114,7 @@ namespace Celeste
 		{
 			if (instance != null)
 			{
-				instance.setPaused(paused: true);
+				instance.Value.setPaused(paused: true);
 			}
 			Playing = false;
 			return this;
@@ -122,10 +124,10 @@ namespace Celeste
 		{
 			if (instance != null)
 			{
-				instance.getPaused(out var paused);
+				instance.Value.getPaused(out var paused);
 				if (paused)
 				{
-					instance.setPaused(paused: false);
+					instance.Value.setPaused(paused: false);
 					Playing = true;
 				}
 			}
@@ -160,10 +162,10 @@ namespace Celeste
 			{
 				return;
 			}
-			instance.getPlaybackState(out var state);
+			instance.Value.getPlaybackState(out var state);
 			if (state == PLAYBACK_STATE.STOPPED)
 			{
-				instance.release();
+				instance.Value.release();
 				instance = null;
 				Playing = false;
 				if (RemoveOnOneshotEnd)

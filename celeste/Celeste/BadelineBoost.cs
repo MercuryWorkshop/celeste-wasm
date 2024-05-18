@@ -43,7 +43,7 @@ namespace Celeste
 
 		private SoundSource relocateSfx;
 
-		public FMOD.Studio.EventInstance Ch9FinalBoostSfx;
+		public EventInstance? Ch9FinalBoostSfx;
 
 		public BadelineBoost(Vector2[] nodes, bool lockCamera, bool canSkip = false, bool finalCh9Boost = false, bool finalCh9GoldenBoost = false, bool finalCh9Dialog = false)
 			: base(nodes[0])

@@ -35,9 +35,9 @@ namespace Celeste
 
 		private float interactStartZoom;
 
-		private EventInstance snapshot;
+		private EventInstance? snapshot;
 
-		private EventInstance usingSfx;
+		private EventInstance? usingSfx;
 
 		private SoundSource signSfx;
 
@@ -184,7 +184,7 @@ namespace Celeste
 			if (usingSfx != null)
 			{
 				Audio.SetParameter(usingSfx, "end", 1f);
-				usingSfx.release();
+				usingSfx.Value.release();
 			}
 			if (presentation != null)
 			{
@@ -221,7 +221,7 @@ namespace Celeste
 			if (usingSfx != null)
 			{
 				Audio.SetParameter(usingSfx, "quit", 1f);
-				usingSfx.release();
+				usingSfx.Value.release();
 				usingSfx = null;
 			}
 			Audio.ReleaseSnapshot(snapshot);

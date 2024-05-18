@@ -99,9 +99,9 @@ namespace Celeste
 
 		private PathRenderer path;
 
-		private EventInstance moveSfx;
+		private EventInstance? moveSfx;
 
-		private EventInstance returnSfx;
+		private EventInstance? returnSfx;
 
 		private DisplacementRenderer.Burst burst;
 

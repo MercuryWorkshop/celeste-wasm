@@ -1139,15 +1139,7 @@ namespace FMOD.Studio
 
         public RESULT createInstance(out EventInstance instance)
         {
-			instance = null;
-			IntPtr newPtr = default(IntPtr);
-            RESULT result = FMOD_Studio_EventDescription_CreateInstance(this.handle, out newPtr);
-			if (result != 0)
-			{
-				return result;
-			}
-			instance = new EventInstance(newPtr);
-			return result;
+            return FMOD_Studio_EventDescription_CreateInstance(this.handle, out instance.handle);
         }
 
         public RESULT getInstanceCount(out int count)
@@ -1306,7 +1298,7 @@ namespace FMOD.Studio
         #endregion
     }
 
-    public class EventInstance
+    public struct EventInstance
     {
         public RESULT getDescription(out EventDescription description)
         {

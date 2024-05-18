@@ -62,7 +62,7 @@ namespace Celeste
 			player.StateMachine.State = 11;
 			player.Facing = Facings.Right;
 			yield return WaitFor(1f);
-			EventInstance instance = Audio.Play("event:/game/general/bird_in", bird.Position);
+			EventInstance? instance = Audio.Play("event:/game/general/bird_in", bird.Position);
 			bird.Facing = Facings.Left;
 			bird.Sprite.Play("fall");
 			float percent = 0f;
@@ -101,7 +101,7 @@ namespace Celeste
 			level.Session.Inventory.Dashes = 1;
 			Engine.TimeRate = 1f;
 			keyOffed = true;
-			Audio.CurrentMusicEventInstance.keyOff();
+			Audio.CurrentMusicEventInstance.Value.keyOff();
 			bird.Add(new Coroutine(bird.HideTutorial()));
 			yield return 0.25f;
 			bird.Add(new Coroutine(bird.StartleAndFlyAway()));
@@ -165,7 +165,7 @@ namespace Celeste
 				}
 				if (!keyOffed)
 				{
-					Audio.CurrentMusicEventInstance.keyOff();
+					Audio.CurrentMusicEventInstance.Value.keyOff();
 				}
 				if (level.HiresSnow == null)
 				{

@@ -29,7 +29,7 @@ namespace Celeste.Pico8
 
 		private bool skipFrame = true;
 
-		private EventInstance bgSfx;
+		private EventInstance? bgSfx;
 
 		private VirtualRenderTarget buffer;
 
@@ -41,7 +41,7 @@ namespace Celeste.Pico8
 
 		private float pauseFade;
 
-		private EventInstance snapshot;
+		private EventInstance? snapshot;
 
 		private MTexture picoBootLogo;
 

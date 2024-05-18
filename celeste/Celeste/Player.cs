@@ -590,7 +590,7 @@ namespace Celeste
 
 		private List<ChaserStateSound> activeSounds = new List<ChaserStateSound>();
 
-		private EventInstance idleSfx;
+		private EventInstance? idleSfx;
 
 		public bool MuffleLanding;
 
@@ -672,7 +672,7 @@ namespace Celeste
 
 		private const float SpacePhysicsMult = 0.6f;
 
-		private EventInstance conveyorLoopSfx;
+		private EventInstance? conveyorLoopSfx;
 
 		private const float WallBoosterSpeed = -160f;
 
@@ -3912,8 +3912,8 @@ namespace Celeste
 		{
 			if (conveyorLoopSfx != null)
 			{
-				conveyorLoopSfx.setParameterByName("end", 1f);
-				conveyorLoopSfx.release();
+				conveyorLoopSfx.Value.setParameterByName("end", 1f);
+				conveyorLoopSfx.Value.release();
 				conveyorLoopSfx = null;
 			}
 			wallSpeedRetentionTimer = 0f;
@@ -3987,8 +3987,8 @@ namespace Celeste
 				wallBoosting = false;
 				if (conveyorLoopSfx != null)
 				{
-					conveyorLoopSfx.setParameterByName("end", 1f);
-					conveyorLoopSfx.release();
+					conveyorLoopSfx.Value.setParameterByName("end", 1f);
+					conveyorLoopSfx.Value.release();
 					conveyorLoopSfx = null;
 				}
 				float target = 0f;
@@ -6277,7 +6277,7 @@ namespace Celeste
 			}
 		}
 
-		public EventInstance Play(string sound, string param = null, float value = 0f)
+		public EventInstance? Play(string sound, string param = null, float value = 0f)
 		{
 			float raining = 0f;
 			if (base.Scene is Level level && level.Raining)

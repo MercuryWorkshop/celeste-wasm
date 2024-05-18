@@ -26,7 +26,7 @@ namespace Celeste
 
 		private float timer;
 
-		private EventInstance sfx;
+		private EventInstance? sfx;
 
 		public CS06_BossEnd(Player player, NPC06_Badeline_Crying badeline)
 		{

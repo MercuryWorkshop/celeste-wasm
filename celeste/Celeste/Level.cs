@@ -182,11 +182,11 @@ namespace Celeste
 
 		private bool endingChapterAfterCutscene;
 
-		public static EventInstance DialogSnapshot;
+		public static EventInstance? DialogSnapshot;
 
-		private static EventInstance PauseSnapshot;
+		private static EventInstance? PauseSnapshot;
 
-		private static EventInstance AssistSpeedSnapshot;
+		private static EventInstance? AssistSpeedSnapshot;
 
 		private static int AssistSpeedSnapshotValue = -1;
 

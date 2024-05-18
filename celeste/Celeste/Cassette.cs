@@ -89,7 +89,7 @@ namespace Celeste
 
 		private Vector2[] nodes;
 
-		private EventInstance remixSfx;
+		private EventInstance? remixSfx;
 
 		private bool collecting;
 

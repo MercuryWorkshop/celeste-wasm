@@ -36,7 +36,7 @@ namespace Celeste
 
 		private Sprite oshiroSprite;
 
-		private EventInstance smashSfx;
+		private EventInstance? smashSfx;
 
 		private bool smashRumble;
 

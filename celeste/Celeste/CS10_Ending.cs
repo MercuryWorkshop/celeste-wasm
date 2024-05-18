@@ -57,9 +57,9 @@ namespace Celeste
 
 		private bool showTimer;
 
-		private EventInstance endAmbience;
+		private EventInstance? endAmbience;
 
-		private EventInstance cinIntro;
+		private EventInstance? cinIntro;
 
 		private bool counting;
 

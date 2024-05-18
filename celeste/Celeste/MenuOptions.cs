@@ -15,9 +15,9 @@ namespace Celeste
 
 		private static TextMenu.Item viewport;
 
-		private static EventInstance snapshot;
+		private static EventInstance? snapshot;
 
-		public static TextMenu Create(bool inGame = false, EventInstance snapshot = null)
+		public static TextMenu Create(bool inGame = false, EventInstance? snapshot = null)
 		{
 			MenuOptions.inGame = inGame;
 			MenuOptions.snapshot = snapshot;

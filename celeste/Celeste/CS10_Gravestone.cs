@@ -90,7 +90,7 @@ namespace Celeste
 			bird = new BirdNPC(player.Position + new Vector2(88f, -200f), BirdNPC.Modes.None);
 			bird.DisableFlapSfx = true;
 			base.Scene.Add(bird);
-			EventInstance instance = Audio.Play("event:/game/general/bird_in", bird.Position);
+			EventInstance? instance = Audio.Play("event:/game/general/bird_in", bird.Position);
 			bird.Facing = Facings.Left;
 			bird.Sprite.Play("fall");
 			Vector2 from = bird.Position;

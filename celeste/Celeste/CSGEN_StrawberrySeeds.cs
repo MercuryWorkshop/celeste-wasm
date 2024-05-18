@@ -14,9 +14,9 @@ namespace Celeste
 
 		private ParticleSystem system;
 
-		private EventInstance snapshot;
+		private EventInstance? snapshot;
 
-		private EventInstance sfx;
+		private EventInstance? sfx;
 
 		public CSGEN_StrawberrySeeds(Strawberry strawberry)
 		{

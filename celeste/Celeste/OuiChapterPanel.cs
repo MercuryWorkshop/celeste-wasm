@@ -167,7 +167,7 @@ namespace Celeste
 
 		private List<Option> checkpoints = new List<Option>();
 
-		private EventInstance bSideUnlockSfx;
+		private EventInstance? bSideUnlockSfx;
 
 		public Vector2 OpenPosition => new Vector2(1070f, 100f);
 

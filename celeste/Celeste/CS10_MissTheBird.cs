@@ -18,7 +18,7 @@ namespace Celeste
 
 		private Coroutine zoomRoutine;
 
-		private EventInstance crashMusicSfx;
+		private EventInstance? crashMusicSfx;
 
 		public CS10_MissTheBird(Player player, FlingBirdIntro flingBird)
 		{

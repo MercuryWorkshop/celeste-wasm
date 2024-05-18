@@ -47,7 +47,7 @@ namespace Celeste
 				}
 				if (changed)
 				{
-					Audio.CurrentMusicEventInstance.start();
+					Audio.CurrentMusicEventInstance.Value.start();
 				}
 			}
 			changed = Audio.SetAmbience(Ambience.Event, startPlaying: false);
@@ -61,7 +61,7 @@ namespace Celeste
 			}
 			if (changed)
 			{
-				Audio.CurrentAmbienceEventInstance.start();
+				Audio.CurrentAmbienceEventInstance.Value.start();
 			}
 		}
 

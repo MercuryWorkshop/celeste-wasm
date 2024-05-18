@@ -291,7 +291,7 @@ namespace Celeste
 				}
 				if (!string.IsNullOrEmpty(music) && Audio.CurrentMusicEventInstance != null)
 				{
-					Audio.CurrentMusicEventInstance.start();
+					Audio.CurrentMusicEventInstance.Value.start();
 				}
 			}
 			if (pulseRoutine != null)

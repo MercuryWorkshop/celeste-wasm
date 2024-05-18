@@ -22,9 +22,9 @@ namespace Celeste
 
 		private int beatIndexOffset;
 
-		private EventInstance sfx;
+		private EventInstance? sfx;
 
-		private EventInstance snapshot;
+		private EventInstance? snapshot;
 
 		public CassetteBlockManager()
 		{
@@ -142,13 +142,13 @@ namespace Celeste
 					beatIndex = 0;
 					if (!isLevelMusic)
 					{
-						sfx.start();
+						sfx.Value.start();
 					}
 				}
 			}
 			if (leadBeats <= 0)
 			{
-				sfx.setParameterByName("sixteenth_note", GetSixteenthNote());
+				sfx.Value.setParameterByName("sixteenth_note", GetSixteenthNote());
 			}
 		}
 
