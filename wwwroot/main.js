@@ -138,6 +138,9 @@ function App() {
             </div>
 
 
+            ${navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />`}
+
+
             <canvas id="canvas" bind:this=${use(this.canvas)}></canvas>
 
 
@@ -146,6 +149,27 @@ function App() {
             <pre bind:this=${use(this.log)}>
 
             </pre>
+        </div>
+    `
+}
+
+function FuckMozilla() {
+    this.css = `
+        width: 100%;
+        
+        background-color: red;
+        color: yellow;
+        padding: 1em;
+        padding-top: 0.5em;
+        margin-bottom: 1em;
+
+    `;
+
+
+    return html`
+        <div>
+            <h1>THIS DOESN'T WORK ON FIREFOX!!!</h1>
+            <p>i don't know why and i don't feel like fixing it. use chromium please </p>
         </div>
     `
 }
