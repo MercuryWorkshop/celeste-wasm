@@ -5,6 +5,15 @@ import { dotnet } from "./_framework/dotnet.js";
 
 const version = "4.0.0.0";
 
+let store = $store(
+	{
+		theme: "dark",
+		debug: false,
+	},
+	{ ident: "user-options", backing: "localstorage", autosave: "auto" }
+);
+
+
 function App() {
     this.css = `
     width: 100vw;
@@ -12,8 +21,8 @@ function App() {
     padding: 1em;
     margin: 0;
     position: relative;
-    background-color: #171717;
-    color: white;
+    background-color: var(--bg);
+    color: var(--fg);
 
     overflow-x: hidden;
 
@@ -22,14 +31,30 @@ function App() {
     canvascontainer {
         display: block;
         width: 100%;
-        border: 2px solid white;
+        border: 0.7px solid var(--surface5);
         border-radius: 0.5em;
         overflow: hidden;
+
+        div {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            margin: 0;
+            color: var(--fg6);
+            font-weight: 550;
+
+            .material-symbols-rounded {
+                font-size: 3em;
+            }
+        }
     }
     canvas {
         width: 100%;
         display: block;
-        background-color: #222;
+        background-color: var(--surface0);
     }
     .pinned {
         position: fixed;
@@ -39,32 +64,83 @@ function App() {
         height: auto;
     }
 
-    button {
-        background-color: #1c1c1c;
+    button,
+    input::-webkit-file-upload-button {
+        background-color: var(--surface1);
         padding: 0.5em 1em;
-        color: white;
+        color: var(--fg);
         border: none;
         border-radius: 0.5em;
-    }
-    button.important {
-        background-color: #f02424;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        &:hover {
+            background-color: var(--surface3);
+        }
+        &:active {
+            background-color: var(--surface5);
+        }
+
+        &:has(.material-symbols-rounded) {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          width: 2rem;
+          height: 2rem;
+          border-radius: 50%;
+        }
+
+        .material-symbols-rounded {
+            font-size: 1.3rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        &.important {
+            background-color: var(--accent);
+
+            &:hover {
+                background-color: color-mix(in srgb, var(--accent) 80%, white);
+            }
+
+            &:active {
+                background-color: color-mix(in srgb, var(--accent) 70%, white);
+            }
+        }
     }
 
     pre {
         overflow-y: scroll;
         font-size: 0.8em;
         max-height: 20em;
-        border: 0.7px solid #666;
+        border: 0.7px solid var(--surface5);
         border-radius: 0.7em;
         padding: 1em;
-        background-color: #1c1c1c;
+        background-color: var(--surface0);
+        font-family: monospace;
+    }
+
+    #logo {
+      image-rendering: pixelated;
+      -ms-interpolation-mode: nearest-neighbor;
+    }
+
+    h1 {
+      font-size: 2rem;
+      display: flex;
+    }
+
+    h1 subt {
+      font-size: 0.5em;
+      margin-left: 0.25em;
+      color: var(--fg6);
     }
 `;
 
     this.started = false;
 
-    this.debug = false;
-    this.fullscreen = false;
+  this.fullscreen = false;
+
 
     document.addEventListener("fullscreenchange", () => {
         this.fullscreen = document.fullscreen;
@@ -150,38 +226,63 @@ function App() {
 
         let Exports = await getAssemblyExports("fna-wasm");
 
-        Exports.Program.SetConfig(this.debug);
+    Exports.Program.SetConfig(store.debug);
 
         Exports.Program.StartGame();
     };
 
-    return html`
-    <div>
-      <div class="flex vcenter gap space-between">
+  return html`
+    <main class=${[
+      use(store.theme)
+    ]}>
+      <div class="flex vcenter gap space-between" style="padding-bottom: 1em;">
         <span class="flex vcenter gap left">
-          <h1>celeste-wasm</h1>
-
-          <p>Version: ${version}</p>
-          <p>FPS: ${use(this.fps, Math.floor)}</p>
+          <span class="flex vcenter">
+            <img id="logo" src="/assets/app.ico" width="64" height="64" />
+            <h1>celeste-wasm<subt>v${version}</subt></h1>
+          </span>
+          ${$if(
+            use(this.started),
+            html` <p>FPS: ${use(this.fps, Math.floor)}</p> `,
+          )}
 
           <div>
             <label for="debug">Debug: </label>
-            <input type="checkbox" bind:checked=${use(this.debug)} />
+            <input type="checkbox" bind:checked=${use(store.debug)} />
           </div>
-
-          <button
-            on:click=${() => {
-            if (this.canvas.requestFullscreen()) {
-                this.fullscreen = true;
-            }
-        }}
-          >
-            Fullscreen
-          </button>
-          <button class="important" on:click=${start}>Start Game</button>
         </span>
-        <span class="right">
-          <input type="file" />
+        <span class="flex gap right vcenter">
+          <div class="flex gap-sm vcenter ">
+          <button on:click=${() => {
+            if (store.theme === "light") {
+              store.theme = "dark";
+            } else {
+              store.theme = "light";
+            }
+          }}>
+            <span class="material-symbols-rounded">${
+            use(store.theme, (theme) => (theme === "light" ? "dark_mode" : "light_mode"))
+            }</span>
+          </button>
+            <button
+              on:click=${() => {
+                if (this.canvas.requestFullscreen()) {
+                  this.fullscreen = true;
+                }
+              }}
+            >
+              <span class="material-symbols-rounded">fullscreen</span>
+            </button>
+            <button
+              class=${[
+                use(this.started, (started) => (started ? "s" : "important")),
+              ]}
+              on:click=${start}
+            >
+              <span class="material-symbols-rounded">play_arrow</span>
+            </button>
+          </div>
+          <input type="file" id="upload" />
         </span>
       </div>
 
@@ -189,6 +290,16 @@ function App() {
         ""}
 
       <canvascontainer>
+        ${use(this.started, (started) =>
+          started
+            ? html`<p></p>` // oh god why did i do this
+            : html`
+          <div>
+          <span class="material-symbols-rounded">videogame_asset_off</span>
+          <br>
+          <span>Game not running.</span>
+          </div> `,
+        )}
         <canvas
           id="canvas"
           class=${[use(this.fullscreen, (f) => f && "pinned")]}
@@ -198,7 +309,7 @@ function App() {
 
       <h2>Log</h2>
       <pre bind:this=${use(this.log)}></pre>
-    </div>
+    </main>
   `;
 }
 

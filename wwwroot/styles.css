@@ -1,3 +1,46 @@
+main,
+main.dark {
+    --bg: #171717;
+    --surface0: #1e1e1e;
+    --surface1: #2b2b2b;
+    --surface2: #333333;
+    --surface3: #3b3b3b;
+    --surface4: #444444;
+    --surface5: #4c4c4c;
+    --surface6: #555555;
+    --accent: #f02424;
+    --fg: #f0f0f0;
+    --fg2: #e0e0e0;
+    --fg3: #d0d0d0;
+    --fg4: #c0c0c0;
+    --fg5: #b0b0b0;
+    --fg6: #a0a0a0;
+}
+
+main.light {
+    --bg: #f0f0f0;
+    --surface0: #e0e0e0;
+    --surface1: #d0d0d0;
+    --surface2: #c0c0c0;
+    --surface3: #b0b0b0;
+    --surface4: #a0a0a0;
+    --surface5: #909090;
+    --surface6: #808080;
+    --accent: #f06060;
+    --fg: #171717;
+    --fg2: #2b2b2b;
+    --fg3: #3b3b3b;
+    --fg4: #4c4c4c;
+    --fg5: #555555;
+    --fg6: #5f5f5f;
+}
+
+main,
+canvas,
+pre {
+    transition: background-color 0.3s, color 0.3s;
+}
+
 html,
 body {
     margin: 0;
@@ -17,6 +60,8 @@ button {
 
 * {
     box-sizing: border-box;
+    accent-color: var(--accent) !important;
+    outline-color: var(--accent) !important;
 }
 
 .flex {
@@ -34,6 +79,9 @@ button {
 }
 .gap {
     gap: 1.5em;
+}
+.gap-sm {
+    gap: 1em;
 }
 
 .space-between {
