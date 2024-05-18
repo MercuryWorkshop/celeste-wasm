@@ -64,6 +64,12 @@ button {
     outline-color: var(--accent) !important;
 }
 
+::selection,
+::-moz-selection {
+    background-color: var(--accent)!important;
+    color: var(--fg)!important;
+}
+
 .flex {
     display: flex;
 }
