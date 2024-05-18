@@ -6,11 +6,11 @@ import { dotnet } from "./_framework/dotnet.js";
 const version = "4.0.0.0";
 
 let store = $store(
-	{
-		theme: (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark",
-		debug: false,
-	},
-	{ ident: "user-options", backing: "localstorage", autosave: "auto" }
+    {
+        theme: (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark",
+        debug: false,
+    },
+    { ident: "user-options", backing: "localstorage", autosave: "auto" }
 );
 
 
@@ -20,48 +20,60 @@ function App() {
     height: 100vh;
     padding: 1em;
     margin: 0;
-    position: relative;
     background-color: var(--bg);
     color: var(--fg);
 
     overflow-x: hidden;
 
+    .game {
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
+        canvascontainer {
+            display: grid;
+            min-width: 960px;
+            min-height: 540px;
+            max-height: 85vh;
+            max-width: 100%;
+            aspect-ratio: 16 / 9;
+            border: 0.7px solid var(--surface5);
+            border-radius: 0.5em;
+            overflow: hidden;
+            background-color: var(--surface0);
 
-    canvascontainer {
-        display: grid;
-        width: 100%;
-        border: 0.7px solid var(--surface5);
-        border-radius: 0.5em;
-        overflow: hidden;
+            & > * {
+                grid-area: 1 / 1;
+            }
 
-        & > * {
-            grid-area: 1 / 1;
-        }
+            & > div {
+                &.hidden {
+                    display: none;
+                }
 
-        & > div {
-            user-select: none;
-            text-align: center;
-            color: var(--fg6);
-            font-size: 1.5em;
-            font-weight: 550;
+                .material-symbols-rounded {
+                    font-size: 3em;
+                }
 
-            z-index: 5;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+                user-select: none;
+                text-align: center;
+                color: var(--fg6);
+                font-size: 1.5em;
+                font-weight: 550;
 
-            .material-symbols-rounded {
-                font-size: 3em;
+                z-index: 5;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
             }
         }
-    }
-    canvas {
-        width: 100%;
-        display: block;
-        background-color: var(--surface0);
+        canvas {
+            width: 100%;
+            display: block;
+        }
     }
     .pinned {
         position: fixed;
@@ -69,10 +81,6 @@ function App() {
         left: 0;
         width: 100vw;
         height: auto;
-    }
-
-    .hidden {
-        display: none;
     }
 
     button,
@@ -151,7 +159,7 @@ function App() {
 
     this.started = false;
 
-  this.fullscreen = false;
+    this.fullscreen = false;
 
 
     document.addEventListener("fullscreenchange", () => {
@@ -238,15 +246,15 @@ function App() {
 
         let Exports = await getAssemblyExports("fna-wasm");
 
-    Exports.Program.SetConfig(store.debug);
+        Exports.Program.SetConfig(store.debug);
 
         Exports.Program.StartGame();
     };
 
-  return html`
+    return html`
     <main class=${[
-      use(store.theme)
-    ]}>
+            use(store.theme)
+        ]}>
       <div class="flex vcenter gap space-between" style="padding-bottom: 1em;">
         <span class="flex vcenter gap left">
           <span class="flex vcenter">
@@ -256,7 +264,7 @@ function App() {
           ${$if(
             use(this.started),
             html` <p>FPS: ${use(this.fps, Math.floor)}</p> `,
-          )}
+        )}
 
           <div>
             <label for="debug">Debug: </label>
@@ -267,28 +275,27 @@ function App() {
           <div class="flex gap-sm vcenter ">
           <button on:click=${() => {
             if (store.theme === "light") {
-              store.theme = "dark";
+                store.theme = "dark";
             } else {
-              store.theme = "light";
+                store.theme = "light";
             }
-          }}>
-            <span class="material-symbols-rounded">${
-            use(store.theme, (theme) => (theme === "light" ? "dark_mode" : "light_mode"))
-            }</span>
+        }}>
+            <span class="material-symbols-rounded">${use(store.theme, (theme) => (theme === "light" ? "dark_mode" : "light_mode"))
+        }</span>
           </button>
             <button
               on:click=${() => {
-                if (this.canvas.requestFullscreen()) {
-                  this.fullscreen = true;
-                }
-              }}
+            if (this.canvas.requestFullscreen()) {
+                this.fullscreen = true;
+            }
+        }}
             >
               <span class="material-symbols-rounded">fullscreen</span>
             </button>
             <button
               class=${[
-                use(this.started, (started) => (started ? "s" : "important")),
-              ]}
+            use(this.started, (started) => (started ? "s" : "important")),
+        ]}
               on:click=${start}
             >
               <span class="material-symbols-rounded">play_arrow</span>
@@ -301,20 +308,22 @@ function App() {
       ${(navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />`) ||
         ""}
 
-      <canvascontainer>
-        <div class=${[use(this.started, (f) => f && "hidden")]}>
-          <div>
-            <span class="material-symbols-rounded">videogame_asset_off</span>
-            <br>
-            <span>Game not running.</span>
+      <div class="game">
+        <canvascontainer>
+          <div class=${[use(this.started, (f) => f && "hidden")]}>
+            <div>
+              <span class="material-symbols-rounded">videogame_asset_off</span>
+              <br>
+              <span>Game not running.</span>
+            </div>
           </div>
-        </div>
-        <canvas
-          id="canvas"
-          class=${[use(this.fullscreen, (f) => f && "pinned")]}
-          bind:this=${use(this.canvas)}
-        ></canvas>
-      </canvascontainer>
+          <canvas
+            id="canvas"
+            class=${[use(this.fullscreen, (f) => f && "pinned")]}
+            bind:this=${use(this.canvas)}
+          ></canvas>
+        </canvascontainer>
+      </div>
 
       <h2>Log</h2>
       <pre bind:this=${use(this.log)}></pre>
