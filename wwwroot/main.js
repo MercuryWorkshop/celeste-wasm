@@ -223,8 +223,10 @@ function FuckMozilla() {
 
     return html`
         <div>
-            <h1>THIS DOESN'T WORK ON FIREFOX!!!</h1>
-            <p>i don't know why and i don't feel like fixing it. use chromium please </p>
+            <h1>THIS DOESN'T WORK WELL ON FIREFOX!!!</h1>
+            <p>it might still work. but you should really just use chromium</p>
+
+            <button on:click=${() => this.root.remove()}>fuck you i love my shitty browser</button>
         </div>
     `
 }
@@ -236,7 +238,7 @@ const app = h(App).$;
 let olog = console.log;
 
 let logs = [];
-let ringsize = 2000;
+let ringsize = 200;
 export function log(...args) {
     olog(...args);
     logs.push(args.join(" ") + "\n");
@@ -246,8 +248,9 @@ export function log(...args) {
 }
 setInterval(() => {
     app.log.innerText = logs.join("\n");
-}, 1000);
+    app.log.scrollTop = app.log.scrollHeight;
+}, 5000);
 
-// console.log = log
+console.log = log
 
 document.body.appendChild(app.root);
