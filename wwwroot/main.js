@@ -38,8 +38,15 @@ const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
     .withApplicationArgumentsFromQuery()
     .create();
 
+dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
+dotnet.instance.Module.FS.mount(dotnet.instance.Module.FS.filesystems.IDBFS, {}, "/libsdl");
+await new Promise((r)=>dotnet.instance.Module.FS.syncfs(true, r));
+console.log("synced; exposing dotnet FS");
+window.FS = dotnet.instance.Module.FS;
+
 setModuleImports('main.js', {
-    setMainLoop: (cb) => dotnet.instance.Module.setMainLoop(cb)
+    setMainLoop: (cb) => dotnet.instance.Module.setMainLoop(cb),
+    syncFs: (cb) => dotnet.instance.Module.FS.syncfs(false, cb)
 });
 
 // set canvas

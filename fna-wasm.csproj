@@ -12,7 +12,7 @@
     <PropertyGroup>
         <Nullable>disable</Nullable>
         <EmccLinkOptimizationFlag>-O3</EmccLinkOptimizationFlag>
-        <EmccExtraLDFlags>--js-library $(MSBuildProjectDirectory.Replace('\', '/'))/js/library-fixemscripten.js -sFULL_ES3</EmccExtraLDFlags>
+        <EmccExtraLDFlags>--js-library $(MSBuildProjectDirectory.Replace('\', '/'))/js/library-fixemscripten.js -sFULL_ES3 -lidbfs.js</EmccExtraLDFlags>
         <WasmEmitSymbolMap>true</WasmEmitSymbolMap>
         <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
     </PropertyGroup>
