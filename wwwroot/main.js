@@ -345,12 +345,20 @@ function FuckMozilla() {
         margin-bottom: 1em;
         border-radius: 0.5em;
 
+        button {
+            background-color: var(--surface1);
+            border: 0;
+            border-radius: 0.25em;
+        }
+
     `;
 
     return html`
         <div>
-            <h1>THIS DOESN'T (MIGHT NOT) WORK ON FIREFOX!!!</h1>
-            <p>i don't know why and i don't feel like fixing it. use chromium please </p>
+            <h1>THIS MIGHT NOT WORK WELL ON FIREFOX!!!</h1>
+            <p>We tested primarily on chromium and it has a significantly better implementation of webassembly. You should probably use chromium for this</p>
+
+            <button on:click=${() => this.root.remove()}>no thanks! i love my money laundering browser</button>
         </div>
     `
 }
