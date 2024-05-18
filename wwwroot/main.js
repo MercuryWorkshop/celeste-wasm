@@ -32,8 +32,8 @@ function App() {
 
         canvascontainer {
             display: grid;
-            min-width: 960px;
-            min-height: 540px;
+            min-width: min(960px, 100%);
+            min-height: min(540px, 100%);
             max-height: 85vh;
             max-width: 100%;
             aspect-ratio: 16 / 9;
@@ -67,7 +67,6 @@ function App() {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-
             }
         }
         canvas {

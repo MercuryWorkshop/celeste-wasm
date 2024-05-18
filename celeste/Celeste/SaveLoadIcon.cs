@@ -73,6 +73,7 @@ namespace Celeste
 			yield return null;
 			Instance = null;
 			RemoveSelf();
+            Program.SyncFS();
 		}
 
 		public override void Render()
