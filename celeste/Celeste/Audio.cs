@@ -174,9 +174,10 @@ namespace Celeste
             FMOD.Studio.System systemNotNull;
 			CheckFmod(FMOD.Studio.System.create(out systemNotNull));
             system = systemNotNull;
+			system.Value.getCoreSystem(out var lowLevelSystem);
+            lowLevelSystem.setDSPBufferSize(2048, 4);
             // Not needed on WASM, doesn't work anyway
             /*
-			system.getLowLevelSystem(out var lowLevelSystem);
 			if (SDL.SDL_GetPlatform().Equals("Linux"))
 			{
 				FMOD_SDL_Register(lowLevelSystem.getRaw());

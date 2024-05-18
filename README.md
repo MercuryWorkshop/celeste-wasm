@@ -2,16 +2,18 @@
 
 1. install arch packages `dotnet-host dotnet-runtime dotnet-sdk dotnet-targeting-pack aspnet-runtime fmodstudio`
 2. clone FNA latest in the parent dir
-3. run `sudo dotnet workload restore` in this dir
-4. download the celeste fmod project (with dlc) from fmod download page
-5. open in fmodstudio, migrate project, export banks
-6. place your celeste Content dir in `wwwroot/assets/`
-7. copy in the exported fmod v2 banks to `wwwroot/assets/Content/FMOD/Desktop/`
-8. run `dotnet run -v d`
+3. apply `FNA.patch` to FNA
+4. run `sudo dotnet workload restore` in this dir
+5. download the celeste fmod project (with dlc) from fmod download page
+6. open in fmodstudio, migrate project, export banks
+7. place your celeste Content dir in `wwwroot/assets/`
+8. copy in the exported fmod v2 banks to `wwwroot/assets/Content/FMOD/Desktop/`
+9. run `dotnet publish` (or `dotnet run -v d` if you hate fast loading times)
+10. run a http server in `bin/Release/net8.0/publish/wwwroot` if you ran `dotnet publish`
 
 **main improvements that need to be done:**
 1. ~~persistent fs~~
-2. fix release build, currently crashes at [generic contentreader type limitation](<https://gist.github.com/TheSpydog/e94c8c23c01615a5a3b2cc1a0857415c#qa>)
+2. ~~fix release build, currently crashes at [generic contentreader type limitation](<https://gist.github.com/TheSpydog/e94c8c23c01615a5a3b2cc1a0857415c#qa>)~~
 3. ~~enable optimizations~~
 4. threading so it no longer freezes
 5. don't load all assets into memory, fetch on demand
