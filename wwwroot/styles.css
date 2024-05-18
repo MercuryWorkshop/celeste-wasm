@@ -1,29 +1,50 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  font-size: 100%;
-  font-family: 'Roboto', sans-serif;
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    font-size: 100%;
+    font-family: "Roboto", sans-serif;
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .flex {
-  display: flex;
+    display: flex;
 }
 
 .col {
-  flex-direction: column;
+    flex-direction: column;
 }
 .hcenter {
-  justify-content: center;
+    justify-content: center;
 }
 .vcenter {
-  align-items: center;
+    align-items: center;
 }
 .gap {
-  gap: 1.5em;
+    gap: 1.5em;
+}
+
+*::-webkit-scrollbar {
+    width: 0.7em;
+    height: 0.7em;
+    background-color: transparent;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 0.7em;
+}
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #888;
+}
+*::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+*::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-button {
+    display: none;
 }
