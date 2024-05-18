@@ -435,7 +435,6 @@ const DLFEATURES = ['css', 'jsxLiterals', 'usestring', 'stores']; const DLVERSIO
     // returns a function that sets a reference
     // the currying is a small optimization
     let curryset = (ptr) => (val) => {
-        console.log(ptr);
         let next = ptr[PROXY];
         let steps = ptr[STEPS];
         let i = 0;
