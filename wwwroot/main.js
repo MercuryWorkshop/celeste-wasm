@@ -1,12 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-import { dotnet } from './_framework/dotnet.js'
+import { dotnet } from "./_framework/dotnet.js";
 
 const version = "4.0.0.0";
 
 function App() {
-    this.css = `
+  this.css = `
     width: 100vw;
     height: 100vh;
     padding: 1em;
@@ -61,160 +61,149 @@ function App() {
     }
 `;
 
-    this.started = false;
+  this.started = false;
 
+  this.debug = false;
+  this.fullscreen = false;
 
-    this.debug = false;
-    this.fullscreen = false;
+  document.addEventListener("fullscreenchange", () => {
+    this.fullscreen = document.fullscreen;
+  });
 
+  let ts = performance.now();
+  let fps;
+  const MainLoop = (cb) => {
+    dotnet.instance.Module.setMainLoop(() => {
+      let now = performance.now();
+      let dt = now - ts;
+      ts = now;
+      fps = 1000 / dt;
 
-    document.addEventListener('fullscreenchange', () => {
-        this.fullscreen = document.fullscreen;
+      cb();
+    });
+  };
+
+  setInterval(() => {
+    this.fps = fps;
+
+    // todo: get a proper hook for initialization
+    //this.canvas.removeAttribute("width");
+    //this.canvas.removeAttribute("height");
+  }, 5000);
+
+  const start = async () => {
+    this.started = true;
+
+    // we load the asset manifest early so that we can use it to set the dotnet config
+    let assetManifest = await globalThis.fetch("asset_manifest.csv");
+    let assetManifestText = "";
+    if (!assetManifest.ok) {
+      log("Unable to load asset manifest");
+      log(assetManifest);
+    } else {
+      assetManifestText = await assetManifest.text();
+    }
+    let assetList = assetManifestText
+      .split("\n")
+      .filter((i) => i)
+      .map((i) => i.trim().replace("\\", "/"));
+    log(`Found ${assetList.length} assets in manifest`);
+
+    const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
+      .withModuleConfig({
+        onConfigLoaded: (config) => {
+          if (!config.resources.vfs) {
+            config.resources.vfs = {};
+          }
+
+          for (let asset of assetList) {
+            asset = asset.trim().replace(/^\/assets\//, "");
+            log(`Found ${asset}, adding to VFS`);
+            config.resources.vfs[asset] = {};
+            const assetPath = `../assets/${asset}`;
+            config.resources.vfs[asset][assetPath] = null;
+          }
+        },
+      })
+      .withDiagnosticTracing(false)
+      .withApplicationArgumentsFromQuery()
+      .create();
+
+    dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
+    dotnet.instance.Module.FS.mount(
+      dotnet.instance.Module.FS.filesystems.IDBFS,
+      {},
+      "/libsdl",
+    );
+    await new Promise((r) => dotnet.instance.Module.FS.syncfs(true, r));
+    log("synced; exposing dotnet FS");
+    window.FS = dotnet.instance.Module.FS;
+
+    setModuleImports("main.js", {
+      setMainLoop: MainLoop,
+      syncFs: (cb) => dotnet.instance.Module.FS.syncfs(false, cb),
     });
 
+    dotnet.instance.Module.canvas = this.canvas;
 
+    await dotnet.run();
 
-    let ts = performance.now();
-    let fps;
-    const MainLoop = (cb) => {
-        dotnet.instance.Module.setMainLoop(() => {
-            let now = performance.now();
-            let dt = now - ts;
-            ts = now;
-            fps = 1000 / dt;
+    let Exports = await getAssemblyExports("fna-wasm");
 
-            cb();
-        })
-    }
+    Exports.Program.SetConfig(this.debug);
 
-    setInterval(() => {
-        this.fps = fps;
+    Exports.Program.StartGame();
+  };
 
-        // todo: get a proper hook for initialization
-        //this.canvas.removeAttribute("width");
-        //this.canvas.removeAttribute("height");
-    }, 5000);
+  return html`
+    <div>
+      <div class="flex vcenter gap space-between">
+        <span class="flex vcenter gap left">
+          <h1>celeste-wasm</h1>
 
-    const start = async () => {
-        this.started = true;
+          <p>Version: ${version}</p>
+          <p>FPS: ${use(this.fps, Math.floor)}</p>
 
-        // we load the asset manifest early so that we can use it to set the dotnet config
-        let assetManifest = await globalThis.fetch("asset_manifest.csv");
-        let assetManifestText = "";
-        if (!assetManifest.ok) {
-            log("Unable to load asset manifest");
-            log(assetManifest);
-        }
-        else {
-            assetManifestText = await assetManifest.text();
-        }
-        let assetList = assetManifestText.split('\n')
-            .filter(i => i)
-            .map(i => i.trim().replace('\\', '/'));
-        log(`Found ${assetList.length} assets in manifest`);
+          <div>
+            <label for="debug">Debug: </label>
+            <input type="checkbox" bind:checked=${use(this.debug)} />
+          </div>
 
-        const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
-            .withModuleConfig({
-                onConfigLoaded: (config) => {
-                    if (!config.resources.vfs) {
-                        config.resources.vfs = {}
-                    }
+          <button
+            on:click=${() => {
+              if (this.canvas.requestFullscreen()) {
+                this.fullscreen = true;
+              }
+            }}
+          >
+            Fullscreen
+          </button>
+          <button class="important" on:click=${start}>Start Game</button>
+        </span>
+        <span class="right">
+          <input type="file" />
+        </span>
+      </div>
 
-                    for (let asset of assetList) {
-                        asset = asset.trim().replace(/^\/assets\//, '');;
-                        log(`Found ${asset}, adding to VFS`);
-                        config.resources.vfs[asset] = {};
-                        const assetPath = `../assets/${asset}`;
-                        config.resources.vfs[asset][assetPath] = null;
-                    }
-                },
-            })
-            .withDiagnosticTracing(false)
-            .withApplicationArgumentsFromQuery()
-            .create();
+      ${(navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />`) ||
+      ""}
 
-        dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
-        dotnet.instance.Module.FS.mount(dotnet.instance.Module.FS.filesystems.IDBFS, {}, "/libsdl");
-        await new Promise((r) => dotnet.instance.Module.FS.syncfs(true, r));
-        log("synced; exposing dotnet FS");
-        window.FS = dotnet.instance.Module.FS;
+      <canvascontainer>
+        <canvas
+          id="canvas"
+          class=${[use(this.fullscreen, (f) => f && "pinned")]}
+          bind:this=${use(this.canvas)}
+        ></canvas>
+      </canvascontainer>
 
-        setModuleImports('main.js', {
-            setMainLoop: MainLoop,
-            syncFs: (cb) => dotnet.instance.Module.FS.syncfs(false, cb)
-        });
-
-
-        dotnet.instance.Module.canvas = this.canvas;
-
-
-        await dotnet.run();
-
-
-        let Exports = await getAssemblyExports("fna-wasm");
-
-
-
-
-        Exports.Program.SetConfig(this.debug);
-
-        Exports.Program.StartGame();
-
-    }
-
-    return html`
-        <div>
-
-
-            <div class="flex vcenter gap space-between">
-            <span class="flex vcenter gap left">
-                <h1>celeste-wasm</h1>
-
-                <p>Version: ${version}</p>
-                <p>FPS: ${use(this.fps, Math.floor)}</p>
-
-
-                <div>
-                    <label for="debug">Debug: </label>
-                    <input type="checkbox" bind:checked=${use(this.debug)} />
-                </div>
-
-
-
-                <button on:click=${() => {
-            if (this.canvas.requestFullscreen()) {
-                this.fullscreen = true
-            }
-
-        }}>Fullscreen</button>
-                <button class="important" on:click=${start}>Start Game</button>
-              </span>
-                <span class="right">
-                <input type="file">
-                </span>
-            </div>
-
-
-            ${navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />` || ""}
-
-
-
-            <canvascontainer>
-                <canvas id="canvas" class=${[use(this.fullscreen, f => f && "pinned")]} bind:this=${use(this.canvas)}></canvas>
-            </canvascontainer>
-
-
-
-            <h2>Log</h2>
-            <pre bind:this=${use(this.log)}>
-
-            </pre>
-        </div>
-    `
+      <h2>Log</h2>
+      <pre bind:this=${use(this.log)}></pre>
+    </div>
+  `;
 }
 
 function FuckMozilla() {
-    this.css = `
+  this.css = `
         width: 100%;
 
         background-color: red;
@@ -225,35 +214,34 @@ function FuckMozilla() {
 
     `;
 
+  return html`
+    <div>
+      <h1>THIS DOESN'T WORK WELL ON FIREFOX!!!</h1>
+      <p>it might still work. but you should really just use chromium</p>
 
-    return html`
-        <div>
-            <h1>THIS DOESN'T WORK WELL ON FIREFOX!!!</h1>
-            <p>it might still work. but you should really just use chromium</p>
-
-            <button on:click=${() => this.root.remove()}>fuck you i love my shitty browser</button>
-        </div>
-    `
+      <button on:click=${() => this.root.remove()}>
+        fuck you i love my shitty browser
+      </button>
+    </div>
+  `;
 }
 
-
 const app = h(App).$;
-
 
 let olog = console.log;
 
 let logs = [];
 let ringsize = 200;
 export function log(...args) {
-    olog(...args);
-    logs.push(args.join(" ") + "\n");
-    if (logs.length > ringsize) {
-        logs.shift();
-    }
+  olog(...args);
+  logs.push(args.join(" ") + "\n");
+  if (logs.length > ringsize) {
+    logs.shift();
+  }
 }
 setInterval(() => {
-    app.log.innerText = logs.join("\n");
-    app.log.scrollTop = app.log.scrollHeight;
+  app.log.innerText = logs.join("\n");
+  app.log.scrollTop = app.log.scrollHeight;
 }, 5000);
 
 // console.log = log

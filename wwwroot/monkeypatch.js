@@ -1,6 +1,5 @@
 let ofetch = fetch;
 
-
 console.log("???");
 async function concatenate(uint8arrays) {
   // Put the inputs into a Blob.
@@ -16,7 +15,6 @@ async function concatenate(uint8arrays) {
 const importmap = {};
 
 window.aload = () => {
-
   let maxassets = 1591;
   let count = 0;
   // ofetch("./assets.json").then((res) => {
@@ -24,18 +22,20 @@ window.aload = () => {
 
   // const reader = res.body.getReader();
 
-  const reader = document.body.querySelector("input[type=file]").files[0].stream().getReader();
-  const queueingStrategy = new ByteLengthQueuingStrategy({ highWaterMark: 1024 * 1024 * 1000 });
+  const reader = document.body
+    .querySelector("input[type=file]")
+    .files[0].stream()
+    .getReader();
+  const queueingStrategy = new ByteLengthQueuingStrategy({
+    highWaterMark: 1024 * 1024 * 1000,
+  });
   return new ReadableStream({
     start(controller) {
-
       let decoder = new TextDecoder();
-
 
       let buf = new Uint8Array();
 
       let bufs = [];
-
 
       let wants = 0;
 
@@ -49,7 +49,6 @@ window.aload = () => {
           }
 
           try {
-
             let wait = false;
 
             if (wants > 0) {
@@ -63,10 +62,7 @@ window.aload = () => {
                 bufs = [];
                 wants = 0;
               }
-            }
-            else
-              buf = value;
-
+            } else buf = value;
 
             if (!wait) {
               // console.log("got data..", buf.length);
@@ -101,7 +97,9 @@ window.aload = () => {
                   break;
                 }
 
-                let blob = new Blob([buf.subarray(i, i + len)], { type: "text/javascript" });
+                let blob = new Blob([buf.subarray(i, i + len)], {
+                  type: "text/javascript",
+                });
 
                 importmap[filename] = blob;
                 console.log(filename, len);
@@ -109,41 +107,33 @@ window.aload = () => {
                 i += len;
               }
             }
-
           } catch (e) {
             console.error(e);
           }
-
 
           controller.enqueue(value);
           return pump();
         });
       }
     },
-    queueingStrategy
+    queueingStrategy,
   });
 
-
   // });
-}
-
+};
 
 function getblob(url) {
-
   url = decodeURI(url);
   url = url.replaceAll("./", "");
-
 
   let folder = location.href.split("/").slice(0, -1).join("/") + "/";
   let folder2 = location.href.split("/").slice(0, -2).join("/") + "/";
   url = url.replaceAll(folder, "");
   url = url.replaceAll(folder2, "");
 
-
   let blob = importmap[url];
 
   if (!blob) throw new Error("Asset not found: " + url);
-
 
   return URL.createObjectURL(blob);
 }
@@ -153,11 +143,11 @@ globalThis.fetch = async (url) => {
 
   let blob = getblob(url);
   return await ofetch(blob);
-}
+};
 
 window.importfill = (url) => {
   console.log(url);
 
   let blob = getblob(url);
   return import(blob);
-}
+};
