@@ -5,11 +5,13 @@
 3. apply `FNA.patch` to FNA
 4. run `sudo dotnet workload restore` in this dir
 5. download the celeste fmod project (with dlc) from fmod download page
-6. open in fmodstudio, migrate project, export banks
-7. place your celeste Content dir in `wwwroot/assets/`
-8. copy in the exported fmod v2 banks to `wwwroot/assets/Content/FMOD/Desktop/`
-9. run `dotnet publish` (or `dotnet run -v d` if you hate fast loading times)
-10. run a http server in `bin/Release/net8.0/publish/wwwroot` if you ran `dotnet publish`
+6. open in fmodstudio and migrate the project
+7. [optional] click the Assets tab and select every folder, click "add a custom platform encoding setting" and set the compression quality to your taste
+8. press f7 in fmod studio to export the banks
+8. place your celeste Content dir in `wwwroot/assets/`
+9. copy in the exported fmod v2 banks to `wwwroot/assets/Content/FMOD/Desktop/`
+10. run `dotnet publish` (or `dotnet run -v d` if you hate fast loading times)
+11. run a http server in `bin/Release/net8.0/publish/wwwroot` if you ran `dotnet publish`
 
 **main improvements that need to be done:**
 1. ~~persistent fs~~
