@@ -112,10 +112,10 @@ namespace Celeste
 			}
 			Strawberries = new List<EntityData>();
 			BinaryPacker.Element element = BinaryPacker.FromBinary(Filepath);
-			if (!element.Package.Equals(ModeData.Path))
-			{
-				throw new Exception("Corrupted Level Data");
-			}
+			// if (!element.Package.Equals(ModeData.Path))
+			// {
+			// 	throw new Exception("Corrupted Level Data");
+			// }
 			foreach (BinaryPacker.Element child in element.Children)
 			{
 				if (child.Name == "levels")
