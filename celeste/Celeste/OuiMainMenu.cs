@@ -301,6 +301,7 @@ namespace Celeste
 			{
 				Engine.Scene = new Scene();
 				Engine.Instance.Exit();
+                Program.exitGame = true;
 			});
 		}
 	}
