@@ -21,9 +21,20 @@ public static partial class Program
     private static bool _firstRun = true;
     private static DateTime _lastLog = DateTime.UnixEpoch;
     private static Celeste.Celeste game;
+    public static bool exitGame = false;
+
+    private static void DoNothing() {
+
+    }
 
     private static void MainLoop()
     {
+        if (exitGame) {
+            // RunThread.WaitAll();
+            game.Dispose();
+            Audio.Unload();
+            SetMainLoop(DoNothing);
+        }
         try
         {
             if (_firstRun)
@@ -34,9 +45,6 @@ public static partial class Program
 
                 // In original Main() but no longer used
                 // game.RunWithLogging();
-                // RunThread.WaitAll();
-                // game.Dispose();
-                // Audio.Unload();
             }
 
             var now = DateTime.UtcNow;
