@@ -7,7 +7,7 @@ const version = "4.0.0.0";
 
 let store = $store(
 	{
-		theme: "dark",
+		theme: (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark",
 		debug: false,
 	},
 	{ ident: "user-options", backing: "localstorage", autosave: "auto" }
@@ -292,7 +292,7 @@ function App() {
       <canvascontainer>
         ${use(this.started, (started) =>
           started
-            ? html`<p></p>` // oh god why did i do this
+            ? html`<p style="display: none;"></p>` // oh god why did i do this
             : html`
           <div>
           <span class="material-symbols-rounded">videogame_asset_off</span>
