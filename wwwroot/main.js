@@ -29,7 +29,7 @@ function App() {
     canvas {
         width: 100%;
         display: block;
-        background-color: grey;
+        background-color: #222;
     }
     .pinned {
         position: fixed;
@@ -166,7 +166,8 @@ function App() {
         <div>
 
 
-            <div class="flex vcenter gap">
+            <div class="flex vcenter gap space-between">
+            <span class="flex vcenter gap left">
                 <h1>celeste-wasm</h1>
 
                 <p>Version: ${version}</p>
@@ -187,9 +188,11 @@ function App() {
 
         }}>Fullscreen</button>
                 <button class="important" on:click=${start}>Start Game</button>
+              </span>
+                <span class="right">
+                <input type="file">
+                </span>
             </div>
-
-            <input type="file">
 
 
             ${navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />` || ""}
