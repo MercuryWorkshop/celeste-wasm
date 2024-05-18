@@ -1,0 +1,18 @@
+diff --git a/src/Content/ContentTypeReaderManager.cs b/src/Content/ContentTypeReaderManager.cs
+index 5fcf9e1..a7c2338 100644
+--- a/src/Content/ContentTypeReaderManager.cs
++++ b/src/Content/ContentTypeReaderManager.cs
+@@ -196,6 +196,13 @@ namespace Microsoft.Xna.Framework.Content
+ 						readerTypeString = PrepareType(readerTypeString);
+ 
+ 						Type l_readerType = Type.GetType(readerTypeString);
++						if (l_readerType == null)
++						{
++							if (readerTypeString == "Microsoft.Xna.Framework.Content.ListReader`1[[System.Char, mscorlib]]")
++							{
++								l_readerType = typeof(Microsoft.Xna.Framework.Content.ListReader<System.Char>);
++							}
++						}
+ 						if (l_readerType != null)
+ 						{
+ 							ContentTypeReader typeReader;

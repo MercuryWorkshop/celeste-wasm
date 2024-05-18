@@ -6,7 +6,6 @@
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         <WasmNativeStrip>false</WasmNativeStrip>
         <RunAOTCompilation>true</RunAOTCompilation>
-        <PublishRelease>false</PublishRelease>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -31,6 +30,9 @@
             <Visible>false</Visible>
         </NativeFileReference>
         <NativeFileReference Include="fmodstudio.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <NativeFileReference Include="fmod.a">
             <Visible>false</Visible>
         </NativeFileReference>
         <EmccExportedRuntimeMethod Include="SDL">
