@@ -56,6 +56,7 @@ restore() {
 WWWROOT=bin/Debug/net8.0/wwwroot
 pack_html() {
   cp -r wwwroot/main.js "$WWWROOT"
+  cp -r wwwroot/monkeypatch.js "$WWWROOT"
   # cp -r wwwroot/* "$WWWROOT"
 
   parsed=""
@@ -84,6 +85,7 @@ pack_html() {
 
 
       dotnet=${dotnet//o=import\(e.resolvedUrl\)/o=window.importfill\(e.resolvedUrl\)}
+      dotnet=${dotnet//n=import\(t.resolvedUrl\)/n=window.importfill\(t.resolvedUrl\)}
       dotnet=${dotnet//import.meta.url/window.location.href}
 
       dotnet64=$(echo -n "$dotnet" | base64 -w 0)
@@ -118,29 +120,56 @@ pack_html() {
   echo "$beforemap" > "$file"
 
 
+  echo "$aftermap" >> "$file"
 
+}
+pack_assets() {
   file=assets.json
-  echo > "$file"
+  echo -n > "$file"
 
   while read bfile; do
     echo "Baking $bfile"
-    # if [[ $bfile == *csv* ]] || [[ $bfile == *json* ]]; then
-      bfile=${bfile#$WWWROOT/}
+    if [[ $bfile == *.bank* ]]; then
+      :
+      # continue
+    fi
+    bfile=${bfile#$WWWROOT/}
 
-      bfilename=${bfile}
+    bfilename=${bfile}
 
-      if [[ $bfile == *_framework* ]]; then
-        bfilename=${bfile#_framework/}
-      fi
+    if [[ $bfile == *_framework* ]]; then
+      bfilename=${bfile#_framework/}
+    fi
 
-      echo -n "$bfilename " >> "$file"
-      base64 -w 0 "$WWWROOT/$bfile" >> "$file"
-      echo >> "$file"
-    # fi
+    if [[ $bfile =~ dotnet\.native.*\.js$  ]]; then
+      contents=$(<"$WWWROOT/$bfile")
+      bfile=../../../../../../../../../../../../../../../../../../$(mktemp)
+
+      contents=${contents//new URL\(\'dotnet.native.wasm\'\, import.meta.url\).href/\'dotnet.native.wasm\'}
+
+      echo -n "$contents" > "$bfile"
+    fi
+
+    {
+      toint "$(echo -n "$bfilename" | wc -c)" | fromhex
+      echo -n "$bfilename"
+      toint "$(stat -c %s "$WWWROOT/$bfile")" | fromhex
+      cat "$WWWROOT/$bfile"
+    }  >> "$file"
   done <<< "$(find "$WWWROOT" -type f)"
+}
 
-  file=compiled.html
+# hex | -> binary
+fromhex() {
+	xxd -p -r -c999999
+}
 
-  echo "$aftermap" >> "$file"
+# binary | -> hex
+tohex() {
+	xxd -p
+}
 
+# (number) -> hex
+toint() {
+	printf "%08x" "$1"
 }
