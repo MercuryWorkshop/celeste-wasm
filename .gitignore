@@ -1,5 +1,7 @@
 wwwroot/assets/Content
 Patches/Restore
+compiled.html
+assets.json
 
 *.swp
 *.*~
