@@ -23,6 +23,14 @@ public static partial class Program
     private static Celeste.Celeste game;
     public static bool exitGame = false;
 
+    public static void SyncFS() {
+        Sync(SyncCallback);
+    }
+
+    private static void SyncCallback() {
+        Console.WriteLine("Synced!");
+    }
+
     private static void DoNothing() {
 
     }
@@ -31,6 +39,7 @@ public static partial class Program
     {
         if (exitGame) {
             // RunThread.WaitAll();
+            SyncFS();
             game.Dispose();
             Audio.Unload();
             SetMainLoop(DoNothing);
@@ -68,4 +77,7 @@ public static partial class Program
 
     [JSImport("setMainLoop", "main.js")]
     internal static partial void SetMainLoop([JSMarshalAs<JSType.Function>] Action cb);
+
+    [JSImport("syncFs", "main.js")]
+    internal static partial void Sync([JSMarshalAs<JSType.Function>] Action cb);
 }
