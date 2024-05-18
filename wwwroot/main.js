@@ -44,6 +44,7 @@ function App() {
         padding: 0.5em 1em;
         color: white;
         border: none;
+        border-radius: 0.5em;
     }
     button.important {
         background-color: #f02424;
@@ -53,7 +54,8 @@ function App() {
         overflow-y: scroll;
         font-size: 0.8em;
         max-height: 20em;
-        border: 2px solid white;
+        border: 0.7px solid #666;
+        border-radius: 0.7em;
         padding: 1em;
         background-color: #1c1c1c;
     }
@@ -209,7 +211,7 @@ function App() {
 function FuckMozilla() {
     this.css = `
         width: 100%;
-        
+
         background-color: red;
         color: yellow;
         padding: 1em;
@@ -249,5 +251,3 @@ setInterval(() => {
 // console.log = log
 
 document.body.appendChild(app.root);
-
-
