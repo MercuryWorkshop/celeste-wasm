@@ -18,19 +18,35 @@ function App() {
     overflow-x: hidden;
 
 
+
+    canvascontainer {
+        display: block;
+        width: 100%;
+        border: 2px solid white;
+        border-radius: 0.5em;
+        overflow: hidden;
+    }
     canvas {
         width: 100%;
         display: block;
-        border: 2px solid white;
-        border-radius: 1em;
         background-color: grey;
+    }
+    .pinned {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: auto;
     }
 
     button {
-        background-color: #f02424;
+        background-color: #1c1c1c;
         padding: 0.5em 1em;
         color: white;
         border: none;
+    }
+    button.important {
+        background-color: #f02424;
     }
 
     pre {
@@ -47,6 +63,12 @@ function App() {
 
 
     this.debug = false;
+    this.fullscreen = false;
+
+
+    document.addEventListener('fullscreenchange', () => {
+        this.fullscreen = document.fullscreen;
+    });
 
 
 
@@ -150,16 +172,25 @@ function App() {
                     <input type="checkbox" bind:checked=${use(this.debug)} />
                 </div>
 
-                <div>
-                    <button on:click=${start}>Start Game</button>
-                </div>
+
+
+                <button on:click=${() => {
+            if (this.canvas.requestFullscreen()) {
+                this.fullscreen = true
+            }
+
+        }}>Fullscreen</button>
+                <button class="important" on:click=${start}>Start Game</button>
             </div>
 
 
             ${navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />` || ""}
 
 
-            <canvas id="canvas" bind:this=${use(this.canvas)}></canvas>
+
+            <canvascontainer>
+                <canvas id="canvas" class=${[use(this.fullscreen, f => f && "pinned")]} bind:this=${use(this.canvas)}></canvas>
+            </canvascontainer>
 
 
 
