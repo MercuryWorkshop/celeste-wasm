@@ -545,7 +545,7 @@ namespace Celeste
 
 		public static EventInstance CreateSnapshot(string name, bool start = true)
 		{
-			system.Value.getEvent(name, out var ev);
+			CheckFmod(system.Value.getEvent(name, out var ev));
             /*
 			if (ev == null)
 			{
