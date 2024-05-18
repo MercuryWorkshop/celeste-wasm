@@ -1,4 +1,4 @@
 60c60
 < 	MENU_CREDITS=	Credits
 ---
-> 	MENU_CREDITS=	Credits (+ WASM credits)
+> 	MENU_CREDITS=	Credits (+ WASM)
