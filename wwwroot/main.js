@@ -89,8 +89,8 @@ function App() {
         this.fps = fps;
 
         // todo: get a proper hook for initialization
-        this.canvas.removeAttribute("width");
-        this.canvas.removeAttribute("height");
+        //this.canvas.removeAttribute("width");
+        //this.canvas.removeAttribute("height");
     }, 5000);
 
     const start = async () => {
