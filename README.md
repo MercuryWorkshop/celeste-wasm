@@ -10,12 +10,12 @@
 8. run `dotnet run -v d`
 
 **main improvements that need to be done:**
-1. persistent fs
+1. ~~persistent fs~~
 2. fix release build, currently crashes at [generic contentreader type limitation](<https://gist.github.com/TheSpydog/e94c8c23c01615a5a3b2cc1a0857415c#qa>)
-3. enable optimizations
+3. ~~enable optimizations~~
 4. threading so it no longer freezes
 5. don't load all assets into memory, fetch on demand
-6. fix b-side cassete blocks
+6. ~~fix b-side cassete blocks~~
 
 ## fna game porting guide
 1. decompile it

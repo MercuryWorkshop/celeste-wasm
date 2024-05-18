@@ -428,7 +428,8 @@ namespace Celeste
 		public static EventDescription? GetEventDescription(string path)
 		{
 			EventDescription desc;
-			if (path != null && !cachedEventDescriptions.TryGetValue(path, out desc))
+            bool ret = cachedEventDescriptions.TryGetValue(path, out desc);
+			if (path != null && !ret)
 			{
 				RESULT result = system.Value.getEvent(path, out desc);
 				switch (result)
@@ -444,7 +445,7 @@ namespace Celeste
 				}
                 return desc;
 			}
-            return null;
+            return desc;
 		}
 
 		public static void ReleaseUnusedDescriptions()

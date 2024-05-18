@@ -132,7 +132,7 @@ namespace Celeste
 		{
 			if (Celeste.PlayMode != Celeste.PlayModes.Debug)
 			{
-				Fullscreen = true;
+				//Fullscreen = true;
 			}
 			if (Celeste.IsGGP)
 			{
