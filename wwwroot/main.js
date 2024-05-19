@@ -18,14 +18,21 @@ function App() {
     this.css = `
     width: 100vw;
     height: 100vh;
-    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin: 0;
     background-color: var(--bg);
     color: var(--fg);
 
     overflow-x: hidden;
 
+    & > * {
+      width: 100%;
+    }
+
     .game {
+        margin-inline: 2em;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -40,7 +47,7 @@ function App() {
             border: 0.7px solid var(--surface5);
             border-radius: 0.5em;
             overflow: hidden;
-            background-color: var(--surface0);
+            background-color: var(--surface1);
 
             &:has(.hidden) {
               background-color: black;
@@ -137,31 +144,45 @@ function App() {
         display: none; /* this SUCKS for accessibility but since when did we care about that again */
     }
 
-    pre {
-        overflow-y: scroll;
-        font-size: 0.8em;
-        max-height: 20em;
-        border: 0.7px solid var(--surface5);
-        border-radius: 0.7em;
-        padding: 1em;
-        background-color: var(--surface0);
-        font-family: monospace;
+    .logs {
+      width: min(960px, 100%);
+      pre {
+          overflow-y: scroll;
+          font-size: 0.8em;
+          max-height: 32em;
+          border: 0.7px solid var(--surface5);
+          border-radius: 0.7em;
+          padding: 1em;
+          background-color: var(--surface0);
+          font-family: monospace;
+          min-height: 16em;
+      }
     }
 
     #logo {
       image-rendering: pixelated;
       -ms-interpolation-mode: nearest-neighbor;
+      width: 3.75rem;
+      height: 3.75rem;
+      margin: 0;
+      padding: 0;
     }
 
-    h1 {
-      font-size: 2rem;
-      display: flex;
-    }
+    .top-bar {
+      margin-bottom: 1.5em;
+      padding-inline: 1.7em;
+      background-color: var(--surface0);
 
-    h1 subt {
-      font-size: 0.5em;
-      margin-left: 0.25em;
-      color: var(--fg6);
+      h1 {
+        font-size: 2rem;
+        display: flex;
+      }
+
+      h1 subt {
+        font-size: 0.5em;
+        margin-left: 0.25em;
+        color: var(--fg6);
+      }
     }
 `;
 
@@ -263,10 +284,10 @@ function App() {
     <main class=${[
             use(store.theme)
         ]}>
-      <div class="flex vcenter gap space-between" style="padding-bottom: 1em; padding-inline: 1em;">
+      <div class="flex vcenter gap space-between top-bar">
         <span class="flex vcenter gap left">
           <span class="flex vcenter">
-            <img id="logo" src="/assets/app.ico" width="64" height="64" />
+            <img id="logo" src="/assets/app.ico" />
             <h1>celeste-wasm<subt>v${version}</subt></h1>
           </span>
           ${$if(
@@ -332,8 +353,10 @@ function App() {
         </canvascontainer>
       </div>
 
+      <div class="logs">
       <h2>Log</h2>
       <pre bind:this=${use(this.log)}></pre>
+      </div>
     </main>
   `;
 }
@@ -375,14 +398,15 @@ let logs = [];
 let ringsize = 200;
 export function log(...args) {
     olog(...args);
-    logs.push(args.join(" ") + "\n");
+    logs.push(/*`[${new Date().toISOString()}] ` +*/ args.join(" ") + "\n"); // feel free to uncomment the date stuff i guess
     if (logs.length > ringsize) {
         logs.shift();
     }
 }
 setInterval(() => {
+    let logs_reversed = logs
+    logs_reversed.reverse()
     app.log.innerText = logs.join("\n");
-    app.log.scrollTop = app.log.scrollHeight;
 }, 5000);
 
 // console.log = log
