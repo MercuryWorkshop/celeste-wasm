@@ -34,6 +34,7 @@ window.importfill = (url) => {
 async function load() {
   let f = await ofetch("data:application/octet-stream;base64," + wasm_pak.innerText);
   let buf = new Uint8Array(await f.arrayBuffer());
+  wasm_pak.remove();
   let decoder = new TextDecoder();
 
   console.log("loaded wasm.pak: ", buf.length);
@@ -64,6 +65,12 @@ async function load() {
 
     i += len;
   }
+}
+
+function loadfrompacked() {
+  window.assetblob = "data:application/octet-stream;base64," + game_data.innerText;
+
+  game_data.remove();
 }
 
 function loadfromfile() {
