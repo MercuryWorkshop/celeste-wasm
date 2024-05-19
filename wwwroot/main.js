@@ -13,6 +13,10 @@ let store = $store(
     { ident: "user-options", backing: "localstorage", autosave: "auto" }
 );
 
+if (SINGLEFILE) {
+    document.body.querySelector("#interstitial").remove();
+}
+
 
 function App() {
     this.css = `
@@ -275,7 +279,10 @@ function App() {
       <div class="flex vcenter gap space-between top-bar">
         <span class="flex vcenter gap left">
           <span class="flex vcenter">
-            <img id="logo" src="/assets/app.ico" />
+            <img id="logo" src=${SINGLEFILE &&
+        $("link[rel=icon").href
+        || "/assets/app.ico"
+        } />
             <h1>celeste-wasm<subt>v${version}</subt></h1>
           </span>
           ${$if(
