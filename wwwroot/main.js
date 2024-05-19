@@ -87,7 +87,8 @@ function App() {
     }
 
     button,
-    input::-webkit-file-upload-button {
+    input::-webkit-file-upload-button,
+    .fakebutton {
         user-select: none;
         background-color: var(--surface1);
         padding: 0.5em 1em;
@@ -103,7 +104,7 @@ function App() {
             background-color: var(--surface5);
         }
 
-        &:has(.material-symbols-rounded) {
+        &:has(.material-symbols-rounded):not(:has(.label)) {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -130,6 +131,10 @@ function App() {
                 background-color: color-mix(in srgb, var(--accent) 70%, white);
             }
         }
+    }
+
+    input[type="file"] {
+        display: none; /* this SUCKS for accessibility but since when did we care about that again */
     }
 
     pre {
@@ -258,7 +263,7 @@ function App() {
     <main class=${[
             use(store.theme)
         ]}>
-      <div class="flex vcenter gap space-between" style="padding-bottom: 1em;">
+      <div class="flex vcenter gap space-between" style="padding-bottom: 1em; padding-inline: 1em;">
         <span class="flex vcenter gap left">
           <span class="flex vcenter">
             <img id="logo" src="/assets/app.ico" width="64" height="64" />
@@ -274,8 +279,7 @@ function App() {
             <input type="checkbox" bind:checked=${use(store.debug)} />
           </div>
         </span>
-        <span class="flex gap right vcenter">
-          <div class="flex gap-sm vcenter ">
+        <span class="flex gap-md right vcenter">
           <button on:click=${() => {
             if (store.theme === "light") {
                 store.theme = "dark";
@@ -303,7 +307,7 @@ function App() {
             >
               <span class="material-symbols-rounded">play_arrow</span>
             </button>
-          </div>
+          <label for="upload" class="flex vcenter gap-sm fakebutton"><span class="material-symbols-rounded">upload</span><span class="label">Upload Data</span></label>
           <input type="file" id="upload" />
         </span>
       </div>
