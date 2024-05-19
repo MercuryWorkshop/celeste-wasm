@@ -64,13 +64,12 @@ body {
     width: 100vw;
     height: 100vh;
     font-size: 100%;
-    font-family:
+    font-family: var(--font-body);
 }
 
 input,
 button {
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-        Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-body);
 }
 
 * {
@@ -92,18 +91,23 @@ button {
 .col {
     flex-direction: column;
 }
+
 .hcenter {
     justify-content: center;
 }
+
 .vcenter {
     align-items: center;
 }
+
 .gap {
     gap: 1.5em;
 }
+
 .gap-md {
     gap: 1em;
 }
+
 .gap-sm {
     gap: 0.5em;
 }
@@ -130,4 +134,8 @@ button {
 *::-webkit-scrollbar-corner,
 *::-webkit-scrollbar-button {
     display: none;
+}
+
+main > * {
+    width: 100%;
 }

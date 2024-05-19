@@ -27,10 +27,6 @@ function App() {
 
     overflow-x: hidden;
 
-    & > * {
-      width: 100%;
-    }
-
     .game {
         margin-inline: 2em;
         display: flex;
@@ -378,7 +374,7 @@ function App() {
 
 function FuckMozilla() {
     this.css = `
-        width: 100%;
+        width: min(960px, 100%);
 
         background-color: var(--accent);
         color: var(--fg);
@@ -393,14 +389,25 @@ function FuckMozilla() {
             border-radius: 0.25em;
         }
 
+        h1 {
+          display: flex;
+          align-items: center;
+          gap: 0.25em;
+          span {
+            font-size: 2.25rem;
+          }
+        }
     `;
 
     return html`
         <div>
-            <h1>THIS MIGHT NOT WORK WELL ON FIREFOX!!!</h1>
-            <p>We tested primarily on chromium and it has a significantly better implementation of webassembly. You should probably use chromium for this</p>
+            <h1>
+            <span class="material-symbols-rounded">warning</span>
+            Incompatible browser
+            </h1>
+            <p>Due to incompetence on Mozilla's part, Firefox's WebAssembly implementation sucks. To get actually decent performance, use a Chromium-based browser like a normal person.</p>
 
-            <button on:click=${() => this.root.remove()}>no thanks! i love my money laundering browser</button>
+            <button on:click=${() => this.root.remove()}>Dismiss</button>
         </div>
     `
 }
