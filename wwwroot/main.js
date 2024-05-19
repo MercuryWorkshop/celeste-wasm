@@ -41,7 +41,7 @@ function App() {
             max-width: 100%;
             aspect-ratio: 16 / 9;
             border: 0.7px solid var(--surface5);
-            border-radius: 0.5em;
+            border-radius: 0.6rem;
             overflow: hidden;
             background-color: var(--surface1);
 
@@ -102,9 +102,12 @@ function App() {
         padding: 0.5em 1em;
         color: var(--fg);
         border: none;
-        border-radius: 0.5em;
+        border-radius: 0.6rem;
         cursor: pointer;
         transition: background-color 0.2s;
+        font-size: 0.95rem;
+        font-family: var(--font-body);
+        font-weight: 500;
         &:hover {
             background-color: var(--surface3);
         }
@@ -381,13 +384,8 @@ function FuckMozilla() {
         padding: 1em;
         padding-top: 0.5em;
         margin-bottom: 1em;
-        border-radius: 0.5em;
+        border-radius: 0.6rem;
 
-        button {
-            background-color: var(--surface1);
-            border: 0;
-            border-radius: 0.25em;
-        }
 
         h1 {
           display: flex;
