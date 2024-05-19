@@ -193,13 +193,18 @@ toint() {
 build() {
   mode=${1:-Debug}
 
-  dotnet build -c "$mode"
+  if [ -z $2 ]; then
+    dotnet build -c "$mode"
+    return
+  fi
+  dotnet publish -c "$mode"
 }
 
 
 publish() {
   mode=${1:-Debug}
-  build "$mode"
+  build "$mode" "$2"
+  
 
   emsdk=$(dirname "$(which emcc)")
   file_packager="$emsdk/tools/file_packager"
