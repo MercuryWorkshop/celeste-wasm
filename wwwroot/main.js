@@ -66,6 +66,11 @@ function App() {
                     font-size: 3em;
                 }
 
+                h3 {
+                    margin: 0.2rem;
+                    font-weight: 570;
+                }
+
                 user-select: none;
                 text-align: center;
                 color: var(--fg6);
@@ -148,13 +153,13 @@ function App() {
       width: min(960px, 100%);
       pre {
           overflow-y: scroll;
-          font-size: 0.8em;
+          font-size: 0.9em;
           max-height: 32em;
           border: 0.7px solid var(--surface5);
           border-radius: 0.7em;
           padding: 1em;
           background-color: var(--surface0);
-          font-family: monospace;
+          font-family: var(--font-mono);
           min-height: 16em;
       }
     }
@@ -183,6 +188,15 @@ function App() {
         margin-left: 0.25em;
         color: var(--fg6);
       }
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: var(--font-display);
     }
 `;
 
@@ -342,7 +356,7 @@ function App() {
             <div>
               <span class="material-symbols-rounded">videogame_asset_off</span>
               <br>
-              <span>Game not running.</span>
+              <h3>Game not running.</h3>
             </div>
           </div>
           <canvas
@@ -400,6 +414,27 @@ export function ilog(color, ...args) {
     olog(...args);
     logs.push([color, `[${new Date().toISOString()}] ` + args.join(" ") + "\n"]);
 }
+
+console.log = (...args) => {
+    ilog("var(--fg)", ...args)
+}
+console.warn = (...args) => {
+    ilog("var(--warning)", "WARN: ", ...args)
+}
+console.error = (...args) => {
+    ilog("var(--error)", "ERROR: ", ...args)
+}
+console.info = (...args) => {
+    ilog("var(--info)", "INFO: ", ...args)
+}
+console.debug = (...args) => {
+    ilog("var(--fg4)", "DEBUG: ", ...args)
+}
+
+document.body.appendChild(app.root);
+
+ilog("var(--success)", "Loaded frontend!");
+
 setInterval(() => {
     for (let log of logs) {
         app.log.append(h("span", { style: { color: log[0] } }, log[1]));
@@ -411,18 +446,4 @@ setInterval(() => {
     logs = []
 
     app.log.scrollTop = app.log.scrollHeight
-}, 3000);
-
-console.log = (...args) => {
-    ilog("white", ...args)
-}
-console.warn = (...args) => {
-    ilog("yellow", "WARN: ", ...args)
-}
-console.error = (...args) => {
-    ilog("red", "ERROR: ", ...args)
-}
-ilog("green", "loaded frontend....")
-
-document.body.appendChild(app.root);
-
+}, 1500);

@@ -1,3 +1,11 @@
+:root {
+    --font-body: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+            Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-display: 'Inter Tight', 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+            Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
 main,
 main.dark {
     --bg: #171717;
@@ -9,6 +17,10 @@ main.dark {
     --surface5: #4c4c4c;
     --surface6: #555555;
     --accent: #f02424;
+    --error: #f02424;
+    --success: #84f084;
+    --warning: #f0f084;
+    --info: #7c98f6;
     --fg: #f0f0f0;
     --fg2: #e0e0e0;
     --fg3: #d0d0d0;
@@ -27,6 +39,10 @@ main.light {
     --surface5: #909090;
     --surface6: #808080;
     --accent: #f06060;
+    --error: #e43e3e;
+    --success: #14b614;
+    --warning: #e0e060;
+    --info: #6097f0;
     --fg: #171717;
     --fg2: #2b2b2b;
     --fg3: #3b3b3b;
@@ -48,8 +64,7 @@ body {
     width: 100vw;
     height: 100vh;
     font-size: 100%;
-    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-        Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family:
 }
 
 input,
@@ -103,11 +118,11 @@ button {
     background-color: transparent;
 }
 *::-webkit-scrollbar-thumb {
-    background-color: #444;
+    background-color: var(--surface4);
     border-radius: 0.7em;
 }
 *::-webkit-scrollbar-thumb:hover {
-    background-color: #888;
+    background-color: var(--accent)
 }
 *::-webkit-scrollbar-track {
     background-color: transparent;
