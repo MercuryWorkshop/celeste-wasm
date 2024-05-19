@@ -70,7 +70,9 @@ pack_html() {
 
 
   while [[ "$rest" == *BASE64LOAD* ]]; do
-    parsed=${parsed}${rest%%$searchstring*}
+    parsed=${rest%%$searchstring*}
+
+    echo 
     rest=${rest#*$searchstring}
 
     # cut off leading :
@@ -128,7 +130,7 @@ pack_html() {
 
   echo "$beforeassets" >> "$file"
 
-  base64 -w0 bin/Release/net8.0/wwwroot/data.data >> "$file"
+  base64 -w0 bin/Release/net8.0/wwwroot/_framework/data.data >> "$file"
 
   echo "$afterassets" >> "$file"
 
@@ -204,7 +206,7 @@ publish() {
   if [ -z $2 ]; then
     "$file_packager" data.data --preload Content/@/Content --js-output="data.js.tmp" --lz4 --no-node --use-preload-cache
     echo packed
-    mv data.data "$wwwroot/data.data"
+    mv data.data "$wwwroot/_framework/data.data"
     sed -i "2d" data.js.tmp
     content=$(<data.js.tmp)
     content=${content/\.data\'\);/.data\'); doneCallback();}
