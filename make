@@ -178,18 +178,52 @@ toint() {
 }
 
 
-serve() {
-  mode=${1:-Debug}
-
-	dotnet run -v d -c $mode
-}
+# serve() {
+#   mode=${1:-Debug}
+#
+# 	dotnet run -v d -c $mode
+# }
 
 build() {
   mode=${1:-Debug}
 
+  dotnet build -c "$mode"
+}
 
-  dotnet build -c $mode
-  cp -r wwwroot/* "bin/$mode/net8.0/wwwroot/"
+
+publish() {
+  mode=${1:-Debug}
+  build "$mode"
+
+  emsdk=$(dirname "$(which emcc)")
+  file_packager="$emsdk/tools/file_packager"
+  wwwroot=bin/$mode/net8.0/wwwroot/
+
+
+  if [ -z $2 ]; then
+    "$file_packager" data.data --preload Content/@/Content --js-output="data.js.tmp" --lz4 --no-node --use-preload-cache
+    echo packed
+    mv data.data "$wwwroot/_framework/data.data"
+    sed -i "2d" data.js.tmp
+    content=$(<data.js.tmp)
+    content=${content/\.data\'\);/.data\'); doneCallback();}
+
+    echo "function loadData(Module, doneCallback) {" > "$wwwroot/data.js"
+    echo "$content" >> "$wwwroot/data.js"
+    echo "}" >> "$wwwroot/data.js"
+    cp "$wwwroot/data.js" data.js
+    rm data.js.tmp
+  fi
+
+  cp -r wwwroot/* "$wwwroot"
+
+  cd "bin/$mode/net8.0/wwwroot" || return
+
+  if which http-server > /dev/null; then
+    http-server -c1
+  else
+    python3 -m http.server
+  fi
 }
 
 extract() {
