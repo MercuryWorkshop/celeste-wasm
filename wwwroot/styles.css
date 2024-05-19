@@ -86,8 +86,11 @@ button {
 .gap {
     gap: 1.5em;
 }
-.gap-sm {
+.gap-md {
     gap: 1em;
+}
+.gap-sm {
+    gap: 0.5em;
 }
 
 .space-between {
