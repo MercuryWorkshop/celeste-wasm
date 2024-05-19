@@ -1,5 +1,5 @@
 let ofetch = fetch;
-
+window.SINGLEFILE = 1;
 const importmap = {};
 
 function getblob(url) {
@@ -91,3 +91,4 @@ function loadfromfile() {
 }
 
 load();
+loadfrompacked();
