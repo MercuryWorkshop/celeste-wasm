@@ -1,7 +1,9 @@
 wwwroot/assets/Content
+wwwroot/data.js
 Patches/Restore
 compiled.html
 assets.json
+data.data
 
 *.swp
 *.*~
