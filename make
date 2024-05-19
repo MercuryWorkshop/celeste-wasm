@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-CONTENTROOT=wwwroot/assets/Content
+CONTENTROOT=Content
 RESTORE=Patches/Restore/Content
 
 apply() {
@@ -56,7 +56,7 @@ restore() {
 
 
 
-WWWROOT=bin/Debug/net8.0/wwwroot
+WWWROOT=bin/Release/net8.0/wwwroot
 pack_html() {
   cp -r wwwroot/main.js "$WWWROOT"
   cp -r wwwroot/monkeypatch.js "$WWWROOT"
@@ -119,33 +119,34 @@ pack_html() {
   beforemap=${parsed%%SEDHERE_IMPORTS*}
   aftermap=${parsed#*SEDHERE_IMPORTS}
 
-
   echo "$beforemap" > "$file"
 
+  base64 -w0 wasm.pak >> "$file"
 
-  echo "$aftermap" >> "$file"
+  beforeassets=${aftermap%%SEDHERE_GAME_DATA*}
+  afterassets=${aftermap#*SEDHERE_GAME_DATA}
+
+  echo "$beforeassets" >> "$file"
+
+  base64 -w0 bin/Release/net8.0/wwwroot/data.data >> "$file"
+
+  echo "$afterassets" >> "$file"
 
 }
-pack_assets() {
-  file=assets.json
+pack_wasm() {
+  file=wasm.pak
   echo -n > "$file"
 
   while read bfile; do
     echo "Baking $bfile"
-    if [[ $bfile == *.bank* ]]; then
-      :
-      # continue
-    fi
-    bfile=${bfile#$WWWROOT/}
+
+    bfile=${bfile#$WWWROOT/_framework/}
 
     bfilename=${bfile}
 
-    if [[ $bfile == *_framework* ]]; then
-      bfilename=${bfile#_framework/}
-    fi
 
     if [[ $bfile =~ dotnet\.native.*\.js$  ]]; then
-      contents=$(<"$WWWROOT/$bfile")
+      contents=$(<"$WWWROOT/_framework/$bfile")
       bfile=../../../../../../../../../../../../../../../../../../$(mktemp)
 
       contents=${contents//new URL\(\'dotnet.native.wasm\'\, import.meta.url\).href/\'dotnet.native.wasm\'}
@@ -156,10 +157,10 @@ pack_assets() {
     {
       toint "$(echo -n "$bfilename" | wc -c)" | fromhex
       echo -n "$bfilename"
-      toint "$(stat -c %s "$WWWROOT/$bfile")" | fromhex
-      cat "$WWWROOT/$bfile"
+      toint "$(stat -c %s "$WWWROOT/_framework/$bfile")" | fromhex
+      cat "$WWWROOT/_framework/$bfile"
     }  >> "$file"
-  done <<< "$(find "$WWWROOT" -type f)"
+  done <<< "$(find "$WWWROOT/_framework" -type f)"
 }
 
 # hex | -> binary
@@ -203,7 +204,7 @@ publish() {
   if [ -z $2 ]; then
     "$file_packager" data.data --preload Content/@/Content --js-output="data.js.tmp" --lz4 --no-node --use-preload-cache
     echo packed
-    mv data.data "$wwwroot/_framework/data.data"
+    mv data.data "$wwwroot/data.data"
     sed -i "2d" data.js.tmp
     content=$(<data.js.tmp)
     content=${content/\.data\'\);/.data\'); doneCallback();}
