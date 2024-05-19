@@ -1,8 +1,7 @@
 /Content
-wwwroot/data.js
 Patches/Restore
 compiled.html
-assets.json
+wasm.pak
 data.data
 
 *.swp

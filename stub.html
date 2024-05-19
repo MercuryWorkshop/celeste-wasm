@@ -10,13 +10,18 @@
   <link rel="stylesheet" href="BASE64LOAD:text/css:styles.css:">
 
 
-  <script type="application/json">
+  <script id="wasm_pak" type="application/json">
     SEDHERE_IMPORTS
+  </script>
+
+  <script id="game_data" type="application/json">
+    SEDHERE_GAME_DATA
   </script>
 
   <script src="BASE64LOAD:text/javascript:monkeypatch.js:"></script>
 
 
+  <script src="BASE64LOAD:text/javascript:data.js:"></script>
   <script src="BASE64LOAD:text/javascript:dreamland.js:"></script>
   <script type='module' src="BASE64LOAD:text/javascript:main.js:"></script>
 </head>
