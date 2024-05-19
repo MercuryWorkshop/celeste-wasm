@@ -132,7 +132,7 @@ pack_html() {
 
   echo "$beforeassets" >> "$file"
 
-  base64 -w0 bin/Release/net8.0/wwwroot/data.data >> "$file"
+  base64 -w0 bin/Release/net8.0/wwwroot/_framework/data.data >> "$file"
 
   echo "$afterassets" >> "$file"
 
@@ -211,12 +211,13 @@ publish() {
   wwwroot=bin/$mode/net8.0/wwwroot/
 
 
-  if [ -z $2 ]; then
+  if [ -z $3 ]; then
     "$file_packager" data.data --preload Content/@/Content --js-output="data.js.tmp" --lz4 --no-node --use-preload-cache
     echo packed
     mv data.data "$wwwroot/_framework/data.data"
     sed -i "2d" data.js.tmp
     content=$(<data.js.tmp)
+    # if this line is commented out it is a mistake (i forgot to recomment it in)
     # content=${content/\.data\'\);/.data\'); doneCallback();}
 
     echo "function loadData(Module, doneCallback) {" > "$wwwroot/data.js"
