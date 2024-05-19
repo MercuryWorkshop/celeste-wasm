@@ -11,8 +11,9 @@
 8. place your celeste Content dir in a temp dir
 9. copy in the exported fmod v2 banks to `Content/FMOD/Desktop/` in the temp dir
 10. run `path/to/emsdk/upstream/emscripten/tools/file_packager.py data.data --preload path/to/Content/@/Content --js-output=data.js --lz4 --no-node --use-preload-cache` and copy the data.js into `wwwroot/`
-11. run `dotnet publish` (or `dotnet run -v d` if you hate fast loading times)
-12. copy data.data into `bin/Release/net8.0/publish/wwwroot` and run a http server in that dir if you ran `dotnet publish`
+11. apply data.patch to data.js
+12. run `dotnet publish` (or `dotnet run -v d` if you hate fast loading times)
+13. copy data.data into `bin/Release/net8.0/publish/wwwroot` and run a http server in that dir if you ran `dotnet publish`
 
 **main improvements that need to be done:**
 1. ~~persistent fs~~
