@@ -232,6 +232,7 @@ function App() {
 
     const start = async () => {
         this.started = true;
+        console.info("Starting...");
 
         // we load the asset manifest early so that we can use it to set the dotnet config
         let assetManifest = await globalThis.fetch("asset_manifest.csv");
@@ -246,7 +247,7 @@ function App() {
             .split("\n")
             .filter((i) => i)
             .map((i) => i.trim().replace("\\", "/"));
-        ilog("blue", `Found ${assetList.length} assets in manifest`);
+        console.info(`Found ${assetList.length} assets in manifest`);
 
         const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
             .withModuleConfig({
@@ -257,7 +258,7 @@ function App() {
 
                     for (let asset of assetList) {
                         asset = asset.trim().replace(/^\/assets\//, "");
-                        console.log(`Found ${asset}, adding to VFS`);
+                        console.debug(`Found ${asset}, adding to VFS`);
                         config.resources.vfs[asset] = {};
                         const assetPath = `../assets/${asset}`;
                         config.resources.vfs[asset][assetPath] = null;
@@ -419,16 +420,16 @@ console.log = (...args) => {
     ilog("var(--fg)", ...args)
 }
 console.warn = (...args) => {
-    ilog("var(--warning)", "WARN: ", ...args)
+    ilog("var(--warning)", ...args)
 }
 console.error = (...args) => {
-    ilog("var(--error)", "ERROR: ", ...args)
+    ilog("var(--error)", ...args)
 }
 console.info = (...args) => {
-    ilog("var(--info)", "INFO: ", ...args)
+    ilog("var(--info)", ...args)
 }
 console.debug = (...args) => {
-    ilog("var(--fg4)", "DEBUG: ", ...args)
+    ilog("var(--fg6)", ...args)
 }
 
 document.body.appendChild(app.root);
