@@ -238,7 +238,9 @@ function App() {
             .withApplicationArgumentsFromQuery()
             .create();
 
-        await new Promise(r=>loadData(dotnet.instance.Module, r));
+
+        await new Promise(r => loadData(dotnet.instance.Module, r));
+        console.info("Loaded assets into VFS");
 
         dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
         dotnet.instance.Module.FS.mount(
@@ -373,9 +375,9 @@ function FuckMozilla() {
         <div>
             <h1>
             <span class="material-symbols-rounded">warning</span>
-            Incompatible browser
+            THIS MIGHT NOT WORK WELL ON FIREFOX
             </h1>
-            <p>Due to incompetence on Mozilla's part, Firefox's WebAssembly implementation sucks. To get actually decent performance, use a Chromium-based browser like a normal person.</p>
+            <p>The chromium WASM implemenation is generally better, and it was what was tested on the most. It will probably still work (might not!) but you should be using chromium</p>
 
             <button on:click=${() => this.root.remove()}>Dismiss</button>
         </div>
