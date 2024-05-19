@@ -70,9 +70,7 @@ pack_html() {
 
 
   while [[ "$rest" == *BASE64LOAD* ]]; do
-    parsed=${rest%%$searchstring*}
-
-    echo 
+    parsed=${parsed}${rest%%$searchstring*}
     rest=${rest#*$searchstring}
 
     # cut off leading :
@@ -102,6 +100,10 @@ pack_html() {
 
       base64=$(echo -n "$content" | base64 -w 0)
       # o=import(e.resolvedUrl)
+    elif [ $file == "data.js" ]; then
+      content=$(<"$WWWROOT/$file")
+      content=${content/packageName, t/assetblob, t}
+      base64=$(echo -n "$content" | base64 -w 0)
     else
       base64=$(base64 -w 0 "$WWWROOT/$file")
     fi
@@ -130,11 +132,12 @@ pack_html() {
 
   echo "$beforeassets" >> "$file"
 
-  base64 -w0 bin/Release/net8.0/wwwroot/_framework/data.data >> "$file"
+  base64 -w0 bin/Release/net8.0/wwwroot/data.data >> "$file"
 
   echo "$afterassets" >> "$file"
 
 }
+
 pack_wasm() {
   file=wasm.pak
   echo -n > "$file"
@@ -209,7 +212,7 @@ publish() {
     mv data.data "$wwwroot/_framework/data.data"
     sed -i "2d" data.js.tmp
     content=$(<data.js.tmp)
-    content=${content/\.data\'\);/.data\'); doneCallback();}
+    # content=${content/\.data\'\);/.data\'); doneCallback();}
 
     echo "function loadData(Module, doneCallback) {" > "$wwwroot/data.js"
     echo "$content" >> "$wwwroot/data.js"
