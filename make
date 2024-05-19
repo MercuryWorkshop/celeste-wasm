@@ -1,7 +1,10 @@
+#!/bin/bash
+
+
 CONTENTROOT=wwwroot/assets/Content
 RESTORE=Patches/Restore/Content
 
-_patch() {
+apply() {
   if [ -d "$RESTORE" ]; then
     echo "Error: need to restore before patching again"
     return
@@ -173,3 +176,27 @@ tohex() {
 toint() {
 	printf "%08x" "$1"
 }
+
+
+serve() {
+  mode=${1:-Debug}
+
+	dotnet run -v d -c $mode
+}
+
+build() {
+  mode=${1:-Debug}
+
+
+  dotnet build -c $mode
+  cp -r wwwroot/* "bin/$mode/net8.0/wwwroot/"
+}
+
+extract() {
+  # ilspycmd: 9.0.0.7625
+  # ICSharpCode.Decompiler: 9.0.0.7625
+
+  ilspycmd $1 -p -o Decompiled
+}
+
+$@
