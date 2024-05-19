@@ -233,40 +233,12 @@ function App() {
         this.started = true;
         console.info("Starting...");
 
-        // we load the asset manifest early so that we can use it to set the dotnet config
-        let assetManifest = await globalThis.fetch("asset_manifest.csv");
-        let assetManifestText = "";
-        if (!assetManifest.ok) {
-            console.error("Unable to load asset manifest");
-            console.error(assetManifest);
-        } else {
-            assetManifestText = await assetManifest.text();
-        }
-        let assetList = assetManifestText
-            .split("\n")
-            .filter((i) => i)
-            .map((i) => i.trim().replace("\\", "/"));
-        console.info(`Found ${assetList.length} assets in manifest`);
-
         const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
-            .withModuleConfig({
-                onConfigLoaded: (config) => {
-                    if (!config.resources.vfs) {
-                        config.resources.vfs = {};
-                    }
-
-                    for (let asset of assetList) {
-                        asset = asset.trim().replace(/^\/assets\//, "");
-                        console.debug(`Found ${asset}, adding to VFS`);
-                        config.resources.vfs[asset] = {};
-                        const assetPath = `../assets/${asset}`;
-                        config.resources.vfs[asset][assetPath] = null;
-                    }
-                },
-            })
             .withDiagnosticTracing(false)
             .withApplicationArgumentsFromQuery()
             .create();
+
+        await new Promise(r=>loadData(dotnet.instance.Module, r));
 
         dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
         dotnet.instance.Module.FS.mount(

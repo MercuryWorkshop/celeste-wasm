@@ -1,6 +1,6 @@
 # read me
 
-1. install arch packages `dotnet-host dotnet-runtime dotnet-sdk dotnet-targeting-pack aspnet-runtime fmodstudio`
+1. install arch packages `dotnet-host dotnet-runtime dotnet-sdk dotnet-targeting-pack aspnet-runtime fmodstudio` & emscripten sdk
 2. clone FNA latest in the parent dir
 3. apply `FNA.patch` to FNA
 4. run `sudo dotnet workload restore` in this dir
@@ -8,10 +8,11 @@
 6. open in fmodstudio and migrate the project
 7. [optional] click the Assets tab and select every folder, click "add a custom platform encoding setting" and set the compression quality to your taste
 8. press f7 in fmod studio to export the banks
-8. place your celeste Content dir in `wwwroot/assets/`
-9. copy in the exported fmod v2 banks to `wwwroot/assets/Content/FMOD/Desktop/`
-10. run `dotnet publish` (or `dotnet run -v d` if you hate fast loading times)
-11. run a http server in `bin/Release/net8.0/publish/wwwroot` if you ran `dotnet publish`
+8. place your celeste Content dir in a temp dir
+9. copy in the exported fmod v2 banks to `Content/FMOD/Desktop/` in the temp dir
+10. run `path/to/emsdk/upstream/emscripten/tools/file_packager.py data.data --preload path/to/Content/@/Content --js-output=data.js --lz4 --no-node --use-preload-cache` and copy the data.js into `wwwroot/`
+11. run `dotnet publish` (or `dotnet run -v d` if you hate fast loading times)
+12. copy data.data into `bin/Release/net8.0/publish/wwwroot` and run a http server in that dir if you ran `dotnet publish`
 
 **main improvements that need to be done:**
 1. ~~persistent fs~~
