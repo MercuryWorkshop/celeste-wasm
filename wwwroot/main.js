@@ -214,7 +214,7 @@ function App() {
         // todo: get a proper hook for initialization
         //this.canvas.removeAttribute("width");
         //this.canvas.removeAttribute("height");
-    }, 5000);
+    }, 1000);
 
     const start = async () => {
         this.started = true;
@@ -223,8 +223,8 @@ function App() {
         let assetManifest = await globalThis.fetch("asset_manifest.csv");
         let assetManifestText = "";
         if (!assetManifest.ok) {
-            log("Unable to load asset manifest");
-            log(assetManifest);
+            console.error("Unable to load asset manifest");
+            console.error(assetManifest);
         } else {
             assetManifestText = await assetManifest.text();
         }
@@ -232,7 +232,7 @@ function App() {
             .split("\n")
             .filter((i) => i)
             .map((i) => i.trim().replace("\\", "/"));
-        log(`Found ${assetList.length} assets in manifest`);
+        ilog("blue", `Found ${assetList.length} assets in manifest`);
 
         const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
             .withModuleConfig({
@@ -243,7 +243,7 @@ function App() {
 
                     for (let asset of assetList) {
                         asset = asset.trim().replace(/^\/assets\//, "");
-                        log(`Found ${asset}, adding to VFS`);
+                        console.log(`Found ${asset}, adding to VFS`);
                         config.resources.vfs[asset] = {};
                         const assetPath = `../assets/${asset}`;
                         config.resources.vfs[asset][assetPath] = null;
@@ -261,7 +261,7 @@ function App() {
             "/libsdl",
         );
         await new Promise((r) => dotnet.instance.Module.FS.syncfs(true, r));
-        log("synced; exposing dotnet FS");
+        console.log("synced; exposing dotnet FS");
         window.FS = dotnet.instance.Module.FS;
 
         setModuleImports("main.js", {
@@ -396,19 +396,33 @@ let olog = console.log;
 
 let logs = [];
 let ringsize = 200;
-export function log(...args) {
+export function ilog(color, ...args) {
     olog(...args);
-    logs.push(/*`[${new Date().toISOString()}] ` +*/ args.join(" ") + "\n"); // feel free to uncomment the date stuff i guess
-    if (logs.length > ringsize) {
-        logs.shift();
-    }
+    logs.push([color, `[${new Date().toISOString()}] ` + args.join(" ") + "\n"]);
 }
 setInterval(() => {
-    let logs_reversed = logs
-    logs_reversed.reverse()
-    app.log.innerText = logs.join("\n");
-}, 5000);
+    for (let log of logs) {
+        app.log.append(h("span", { style: { color: log[0] } }, log[1]));
 
-// console.log = log
+        if (app.log.children.length > ringsize) {
+            app.log.children[0].remove();
+        }
+    }
+    logs = []
+
+    app.log.scrollTop = app.log.scrollHeight
+}, 3000);
+
+console.log = (...args) => {
+    ilog("white", ...args)
+}
+console.warn = (...args) => {
+    ilog("yellow", "WARN: ", ...args)
+}
+console.error = (...args) => {
+    ilog("red", "ERROR: ", ...args)
+}
+ilog("green", "loaded frontend....")
 
 document.body.appendChild(app.root);
+
