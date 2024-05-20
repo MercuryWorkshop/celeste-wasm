@@ -13,7 +13,7 @@ apply() {
 
   find Patches/Content -type f -name "*.patch" | while read patch; do
     local patchfile=${patch#Patches/Content/}
-    local file=${patchfile%.patch} 
+    local file=${patchfile%.patch}
 
     if [[ $patchfile == *disabled* ]]; then
       echo "Skipping patchfile $file"
@@ -210,7 +210,7 @@ build() {
 publish() {
   mode=${1:-Debug}
   build "$mode" "$2"
-  
+
 
   emsdk=$(dirname "$(which emcc)")
   file_packager="$emsdk/tools/file_packager"
@@ -224,7 +224,7 @@ publish() {
     sed -i "2d" data.js.tmp
     content=$(<data.js.tmp)
     # if this line is commented out it is a mistake (i forgot to recomment it in)
-    # content=${content/\.data\'\);/.data\'); doneCallback();}
+    content=${content/\.data\'\);/.data\'); doneCallback();}
 
     echo "function loadData(Module, doneCallback) {" > "$wwwroot/data.js"
     echo "$content" >> "$wwwroot/data.js"
