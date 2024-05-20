@@ -238,6 +238,11 @@ function App() {
         console.info("Starting...");
 
         const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
+            .withModuleConfig({
+                onConfigLoaded: (config) => {
+                    config.disableIntegrityCheck = true;
+                },
+            })
             .withDiagnosticTracing(false)
             .withApplicationArgumentsFromQuery()
             .create();
