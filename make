@@ -229,7 +229,6 @@ publish() {
     echo "function loadData(Module, doneCallback) {" > "$wwwroot/data.js"
     echo "$content" >> "$wwwroot/data.js"
     echo "}" >> "$wwwroot/data.js"
-    cp "$wwwroot/data.js" data.js
     rm data.js.tmp
   fi
 
