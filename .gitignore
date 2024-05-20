@@ -3,6 +3,10 @@ Patches/Restore
 compiled.html
 wasm.pak
 data.data
+FAudio.a
+FNA3D.a
+libmojoshader.a
+SDL2.a
 
 *.swp
 *.*~

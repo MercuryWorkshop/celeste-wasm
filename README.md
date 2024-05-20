@@ -1,6 +1,6 @@
 # read me
 
-1. install arch packages `dotnet-host dotnet-runtime dotnet-sdk dotnet-targeting-pack aspnet-runtime fmodstudio` & emscripten sdk
+1. install arch packages `dotnet-host dotnet-runtime dotnet-sdk dotnet-targeting-pack aspnet-runtime fmodstudio xxd wget` & emscripten sdk
 2. clone FNA latest in the parent dir
 3. apply `FNA.patch` to FNA
 4. run `sudo dotnet workload restore` in this dir
