@@ -10,7 +10,7 @@
 8. press f7 in fmod studio to export the banks
 8. Copy the `Content` folder from your celeste install and put it in the root of this project
 9. copy in the exported fmod v2 banks to `Content/FMOD/Desktop/`
-10. run `./make patch`
+10. run `./make download`
 12. run `./make publish`
 
 **main improvements that need to be done:**
