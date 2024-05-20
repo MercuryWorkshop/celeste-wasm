@@ -285,7 +285,7 @@ function App() {
         <span class="flex vcenter gap left">
           <span class="flex vcenter">
             <img id="logo" src=${window.SINGLEFILE &&
-        $("link[rel=icon").href
+        document.querySelector("link[rel=icon]").href
         || "/assets/app.ico"
         } />
             <h1>celeste-wasm<subt>v${version}</subt></h1>
