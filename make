@@ -189,13 +189,6 @@ toint() {
 	printf "%08x" "$1"
 }
 
-
-# serve() {
-#   mode=${1:-Debug}
-#
-# 	dotnet run -v d -c $mode
-# }
-
 build() {
   mode=${1:-Debug}
 
@@ -218,7 +211,7 @@ publish() {
 
 
   if [ -z $3 ]; then
-    "$file_packager" data.data --preload Content/@/Content --js-output="data.js.tmp" --lz4 --no-node --use-preload-cache
+    "$file_packager" data.data --preload Content/@/Content --js-output="data.js.tmp" --lz4 --no-node --use-preload-cache --quiet
     echo packed
     mv data.data "$wwwroot/_framework/data.data"
     sed -i "2d" data.js.tmp
@@ -236,7 +229,7 @@ publish() {
 
   cd "bin/$mode/net8.0/wwwroot" || return
 
-  if which http-server > /dev/null; then
+  if which http-server 2> /dev/null; then
     http-server -c1
   else
     python3 -m http.server
