@@ -98,6 +98,7 @@ pack_html() {
       content=$(<"$WWWROOT/$file")
       content=${content/.\/_framework\/dotnet.js/$dotnet64}
 
+      echo "BASE64: dotnet.js"
       base64=$(echo -n "$content" | base64 -w 0)
       # o=import(e.resolvedUrl)
     elif [ $file == "data.js" ]; then
@@ -125,12 +126,16 @@ pack_html() {
 
   echo "$beforemap" > "$file"
 
+  echo "BASE64: wasm.pak"
+
   base64 -w0 wasm.pak >> "$file"
 
   beforeassets=${aftermap%%SEDHERE_GAME_DATA*}
   afterassets=${aftermap#*SEDHERE_GAME_DATA}
 
   echo "$beforeassets" >> "$file"
+
+  echo "BASE64: data.data"
 
   base64 -w0 bin/Release/net8.0/wwwroot/_framework/data.data >> "$file"
 
@@ -143,8 +148,6 @@ pack_wasm() {
   echo -n > "$file"
 
   while read bfile; do
-    echo "Baking $bfile"
-
     bfile=${bfile#$WWWROOT/_framework/}
 
     bfilename=${bfile}
@@ -159,12 +162,15 @@ pack_wasm() {
       echo -n "$contents" > "$bfile"
     fi
 
-    {
-      toint "$(echo -n "$bfilename" | wc -c)" | fromhex
-      echo -n "$bfilename"
-      toint "$(stat -c %s "$WWWROOT/_framework/$bfile")" | fromhex
-      cat "$WWWROOT/_framework/$bfile"
-    }  >> "$file"
+    if ! [[ $bfile =~ (.gz|.data|.pdb|.map)$ ]]; then
+      echo "Baking $bfilename"
+      {
+        toint "$(echo -n "$bfilename" | wc -c)" | fromhex
+        echo -n "$bfilename"
+        toint "$(stat -c %s "$WWWROOT/_framework/$bfile")" | fromhex
+        cat "$WWWROOT/_framework/$bfile"
+      }  >> "$file"
+    fi
   done <<< "$(find "$WWWROOT/_framework" -type f)"
 }
 
