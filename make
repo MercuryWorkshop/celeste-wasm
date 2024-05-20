@@ -257,4 +257,8 @@ download() {
   wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/SDL2.a
 }
 
+clean() {
+  rm -rvf bin obj
+}
+
 $@
