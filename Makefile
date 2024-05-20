@@ -17,6 +17,7 @@ $(WASMOUT): $(STATICS) $(wildcard celeste/**/*.*) Program.cs fna-wasm.csproj
 	@echo "Building WASM..."
 	dotnet build -c $(Profile)
 	cp -r wwwroot/* $(WWWROOT)
+	rm -rvf $(WWWROOT)/**/*.gz
 
 
 $(VFSFILE): $(ASSETS)
@@ -58,4 +59,4 @@ compress: $(WASMOUT) $(VFSFILE)
 all: $(WASMOUT) $(VFSFILE)
 	cp -r wwwroot/* $(WWWROOT)
 
-.PHONY: clean singlefile build serve copyweb all
+.PHONY: clean singlefile build serve copyweb compress all
