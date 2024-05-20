@@ -13,7 +13,7 @@ let store = $store(
     { ident: "user-options", backing: "localstorage", autosave: "auto" }
 );
 
-if (SINGLEFILE) {
+if (window.SINGLEFILE) {
     document.body.querySelector("#interstitial").remove();
 }
 
@@ -279,7 +279,7 @@ function App() {
       <div class="flex vcenter gap space-between top-bar">
         <span class="flex vcenter gap left">
           <span class="flex vcenter">
-            <img id="logo" src=${SINGLEFILE &&
+            <img id="logo" src=${window.SINGLEFILE &&
         $("link[rel=icon").href
         || "/assets/app.ico"
         } />
