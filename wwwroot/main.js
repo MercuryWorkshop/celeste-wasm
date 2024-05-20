@@ -227,10 +227,6 @@ function App() {
 
     setInterval(() => {
         this.fps = fps;
-
-        // todo: get a proper hook for initialization
-        //this.canvas.removeAttribute("width");
-        //this.canvas.removeAttribute("height");
     }, 1000);
 
     const start = async () => {
@@ -250,6 +246,10 @@ function App() {
 
         await new Promise(r => loadData(dotnet.instance.Module, r));
         console.info("Loaded assets into VFS");
+        localStorage["vfs_populated"] = true
+        if (window.assetblob) {
+            URL.revokeObjectURL(window.assetblob);
+        }
 
         dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
         dotnet.instance.Module.FS.mount(

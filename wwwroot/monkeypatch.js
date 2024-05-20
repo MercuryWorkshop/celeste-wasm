@@ -20,11 +20,7 @@ function getblob(url) {
 
 
 async function unpak_wasm() {
-  // let blob = b64toBlob(wasm_pak.innerText, "application/octet-stream");
-  // let zbuf = await blob.arrayBuffer();
-
-  let f = await ofetch("data:application/octet-stream;base64," + wasm_pak.innerText);
-  let zbuf = new Uint8Array(await f.arrayBuffer());
+  let zbuf = Uint8Array.from(atob(wasm_pak.innerText), c => c.charCodeAt(0))
   wasm_pak.remove();
 
   await zdecoder.init();
@@ -95,7 +91,8 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 }
 
 function loadfrompacked() {
-  window.assetblob = URL.createObjectURL(b64toBlob(game_data.innerText));
+  let a = b64toBlob(game_data.innerText, "text/javascript");
+  window.assetblob = URL.createObjectURL(a);
   game_data.remove();
 }
 
