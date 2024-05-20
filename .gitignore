@@ -7,6 +7,7 @@ FAudio.a
 FNA3D.a
 libmojoshader.a
 SDL2.a
+celeste-wasm.tar.zst
 
 *.swp
 *.*~

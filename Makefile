@@ -50,6 +50,11 @@ serve: $(WASMOUT) $(VFSFILE)
 	cp -r wwwroot/* $(WWWROOT)
 	sh helpers/server.sh "$(WWWROOT)"
 
+compress: $(WASMOUT) $(VFSFILE)
+	@echo "Compressing..."
+	cp -r wwwroot/* $(WWWROOT)
+	tar cavf celeste-wasm.tar.zst -C $(WWWROOT) .
+
 all: $(WASMOUT) $(VFSFILE)
 	cp -r wwwroot/* $(WWWROOT)
 
