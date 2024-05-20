@@ -1,60 +1,88 @@
 <!DOCTYPE html>
-<html>
+<meta charset="ascii">
 
-<body>
+<!--
 
-  <div id="interstitial">
-    <style>
-      #interstitial {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        font-family: 'Inter', sans-serif;
-        font-size: 1.2rem;
-        color: #fff;
-        background-color: #000;
-        padding: 2em;
-      }
-    </style>
+Offline mode build of celeste-wasm (https://github.com/MercuryWorkshop/celeste-wasm)
+
+To correctly download this file on github, right click on this page of code and press 'Save As...'
+
+To correctly download this file on google drive, press the download button at the top right of the screen near the picture of your google account photo
+
+-->
 
 
-    <h1>
-      loading celeste-wasm single file mode. your browser is currently parsing the html file and will continue parsing
-      it for a
-      long time. please wait
-    </h1>
-  </div>
-</body>
+<title>CelesteWasm - SINGLEFILE</title>
+
+
+
 
 <head>
-  <title>CelesteWasm - SINGLEFILE</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="icon" type="image/png" href="BASE64LOAD:image/png:assets/app.ico:">
   <link rel="stylesheet" href="BASE64LOAD:text/css:styles.css:">
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:wght@100..900&family=Material+Symbols+Rounded&display=swap"
-    rel="stylesheet" />
-
-
-  <script id="wasm_pak" type="application/json">
-    SEDHERE_IMPORTS
-  </script>
-
-  <script id="game_data">
-    SEDHERE_GAME_DATA
-  </script>
-
-  <script src="BASE64LOAD:text/javascript:monkeypatch.js:"></script>
-
-
-  <script src="BASE64LOAD:text/javascript:data.js:"></script>
-  <script src="BASE64LOAD:text/javascript:dreamland.js:"></script>
-  <script type='module' src="BASE64LOAD:text/javascript:main.js:"></script>
+  <style>
+    #interstitial {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.2rem;
+      color: #fff;
+      background-color: #000;
+      padding: 2em;
+    }
+  </style>
 </head>
 
+<!-- put temporary body before any large files load -->
+<div id="interstitial">
+  <h1>
+    celeste-wasm is loading.....<br><br>
+    This may take a very long time (>5 minutes) for the first load. Subsequent loads will be faster
+  </h1>
+</div>
 
-</html>
+<!-- wasm.pak is much smaller and will not be cached -->
+<script id="wasm_pak" type="application/json">
+  SEDHERE_IMPORTS
+</script>
+
+<!-- we can load the real frontend now -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link
+  href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:wght@100..900&family=Material+Symbols+Rounded&display=swap"
+  rel="stylesheet" />
+<link rel="icon" type="image/png" href="BASE64LOAD:image/png:assets/app.ico:">
+
+<script src="BASE64LOAD:text/javascript:dreamland.js:"></script>
+<script src="BASE64LOAD:text/javascript:zstd.js:"></script>
+<script src="BASE64LOAD:text/javascript:wasm.pak.size.js:"></script>
+<script src="BASE64LOAD:text/javascript:data.js:"></script>
+<script src="BASE64LOAD:text/javascript:monkeypatch.js:"></script>
+<script>
+  let modscripts = "BASE64LOAD:text/javascript:main.js:";
+</script>
+
+
+<!-- order of the scripts is very intentional. if we're storing the game data in IDB we won't need the rest of the html file. we can tell the browser to stop parsing it, which will cut off everything after this script-->
+<script>
+
+  if (localStorage["vfs_populated"]) {
+    // no need to parse the game data
+    window.stop();
+  }
+
+  unpak_wasm();
+
+  // domcontentloaded never fires, meaning modules never load so we have to manually
+  import(modscripts);
+</script>
+
+<script id="game_data">
+  SEDHERE_GAME_DATA
+</script>
+
+
+<script>
+  loadfrompacked();
+</script>

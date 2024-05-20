@@ -35,7 +35,7 @@ clean:
 	rm -f wasm.pak
 
 
-wasm.pak: $(WASMOUT)
+wasm.pak: $(WASMOUT) helpers/pack_wasm.sh
 	@echo "Building pak file..."
 	sh helpers/pack_wasm.sh "$(WWWROOT)"
 

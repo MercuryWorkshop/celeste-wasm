@@ -18,23 +18,17 @@ function getblob(url) {
   return URL.createObjectURL(blob);
 }
 
-globalThis.fetch = async (url) => {
-  let blob = getblob(url);
-  return await ofetch(blob);
-};
 
-window.importfill = (url) => {
-  console.warn("filled import " + url);
+async function unpak_wasm() {
+  // let blob = b64toBlob(wasm_pak.innerText, "application/octet-stream");
+  // let zbuf = await blob.arrayBuffer();
 
-  let blob = getblob(url);
-  return import(blob);
-};
-
-
-async function load() {
   let f = await ofetch("data:application/octet-stream;base64," + wasm_pak.innerText);
-  let buf = new Uint8Array(await f.arrayBuffer());
+  let zbuf = new Uint8Array(await f.arrayBuffer());
   wasm_pak.remove();
+
+  await zdecoder.init();
+  let buf = await zdecoder.decode(zbuf, WASM_PACK_SIZE);
   let decoder = new TextDecoder();
 
   console.log("loaded wasm.pak: ", buf.length);
@@ -65,9 +59,22 @@ async function load() {
 
     i += len;
   }
+
+
+  globalThis.fetch = async (url) => {
+    let blob = getblob(url);
+    return await ofetch(blob);
+  };
+
+  window.importfill = (url) => {
+    console.warn("filled import " + url);
+
+    let blob = getblob(url);
+    return import(blob);
+  };
 }
 
-const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
   const byteCharacters = atob(b64Data);
   const byteArrays = [];
 
@@ -82,8 +89,8 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
     const byteArray = new Uint8Array(byteNumbers);
     byteArrays.push(byteArray);
   }
-    
-  const blob = new Blob(byteArrays, {type: contentType});
+
+  const blob = new Blob(byteArrays, { type: contentType });
   return blob;
 }
 
@@ -106,8 +113,4 @@ function loadfromfile() {
   });
   input.click();
 
-
 }
-
-load();
-loadfrompacked();
