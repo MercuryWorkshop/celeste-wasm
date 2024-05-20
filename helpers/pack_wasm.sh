@@ -2,7 +2,7 @@
 . helpers/lib.sh
 WWWROOT=$1
 
-file=wasm.pak
+file=wasm.pak.uncompressed
 echo -n > "$file"
 
 while read bfile; do
@@ -30,3 +30,8 @@ while read bfile; do
     }  >> "$file"
   fi
 done <<< "$(find "$WWWROOT/_framework" -type f)"
+
+<"$file" > wasm.pak zstd --ultra -22
+echo -n "const WASM_PACK_SIZE = " > wwwroot/wasm.pak.size.js
+stat -c %s "$file" >> wwwroot/wasm.pak.size.js
+rm "$file"

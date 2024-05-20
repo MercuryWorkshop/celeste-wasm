@@ -8,6 +8,10 @@ FNA3D.a
 libmojoshader.a
 SDL2.a
 celeste-wasm.tar.zst
+node_modules
+
+wwwroot/zstd.js
+wwwroot/wasm.pak.size.js
 
 *.swp
 *.*~
