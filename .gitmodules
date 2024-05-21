@@ -1,0 +1,3 @@
+[submodule "celeste/Celeste"]
+	path = celeste/Celeste
+	url = https://github.com/MercuryWorkshop/celeste-wasm-internal
