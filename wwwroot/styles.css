@@ -138,3 +138,68 @@ input {
 main > * {
     width: 100%;
 }
+
+button {
+    user-select: none;
+    background-color: var(--surface1);
+    padding: 0.5em 1em;
+    color: var(--fg);
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    &:hover {
+        background-color: var(--surface3);
+    }
+    &:active {
+        background-color: var(--surface5);
+    }
+
+    &:has(.material-symbols-rounded):not(:has(.label)) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+    }
+
+    .material-symbols-rounded {
+        font-size: 1.3rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    &.important {
+        background-color: var(--accent);
+
+        &:hover {
+            background-color: color-mix(in srgb, var(--accent) 80%, white);
+        }
+
+        &:active {
+            background-color: color-mix(in srgb, var(--accent) 70%, white);
+        }
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s;
+    &:hover {
+        color: color-mix(in srgb, var(--accent) 80%, white);
+    }
+}

@@ -1,6 +1,7 @@
 Profile ?= Release
 
 DRM ?= 0
+SPLIT ?= 0
 
 WWWROOT = bin/${Profile}/net8.0/wwwroot
 
@@ -25,15 +26,24 @@ $(WASMOUT): $(wildcard celeste/**/*.*) Program.cs fna-wasm.csproj
 $(VFSFILE): $(ASSETS)
 	@echo "Building VFS bundle..."
 	sh helpers/buildvfs.sh "$(WWWROOT)"
+	echo -n "const SIZE = " > "$(WWWROOT)/cfg.js"
+	stat -c %s "$(VFSFILE)" >> "$(WWWROOT)/cfg.js"
+	echo "const DRM = $(DRM);" >> "$(WWWROOT)/cfg.js"
 ifeq ($(DRM),1)
 	@echo "Encrypting VFS bundle..."
 	python3 helpers/xor.py "$(VFSFILE)" $(DRMKEY) > "$(VFSFILE).enc"
 	mv "$(VFSFILE)" "$(VFSFILE).old"
 	mv "$(VFSFILE).enc" "$(VFSFILE)"
-	echo "const DRM = true;" > "$(WWWROOT)/cfg.js"
-else
-	echo "const DRM = false;" > "$(WWWROOT)/cfg.js"
 endif
+	echo "const SPLIT = $(SPLIT);" >> "$(WWWROOT)/cfg.js"
+ifeq ($(SPLIT),1)
+	@echo "Splitting VFS bundle..."
+	mkdir -p $(WWWROOT)/_framework/data
+	split -b20M $(VFSFILE) $(WWWROOT)/_framework/data/
+endif
+	echo -n "const splits = [" >> "$(WWWROOT)/cfg.js"
+	ls -1 $(WWWROOT)/_framework/data/ | sed 's/^/"/' | sed 's/$$/",/' | tr -d '\n' >> "$(WWWROOT)/cfg.js"
+	echo "];" >> "$(WWWROOT)/cfg.js"
 
 $(STATICS):
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FAudio.a
