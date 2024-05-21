@@ -10,8 +10,8 @@
 8. press f7 in fmod studio to export the banks
 8. Copy the `Content` folder from your celeste install and put it in the root of this project
 9. copy in the exported fmod v2 banks to `Content/FMOD/Desktop/`
-10. run `./make download`
-12. run `./make publish`
+10. run `make statics`
+11. run `make publish`
 
 **main improvements that need to be done:**
 1. ~~persistent fs~~
@@ -24,5 +24,5 @@
 ## fna game porting guide
 1. decompile it
 2. follow instructions over at [FNA.WASM.Sample](https://github.com/RedMike/FNA.WASM.Sample/wiki/Manually-setting-up-FNA-Project-for-WASM#set-up-wasm-project) to get a basic project up, replacing `MyGame` with the default xna `Game`
-3. follow instructions from `FNA.WASM.Sample` for complex asset system
+3. follow instructions from `FNA.WASM.Sample` for complex asset system (or take a look in `helpers/buildvfs.sh` and `wwwroot/main.js`)
 4. once assets are loading copy in the decompiled game and replace the default `Game` object, copy in anything the Main function does from the original game

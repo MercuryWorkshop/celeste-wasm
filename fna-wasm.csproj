@@ -6,9 +6,7 @@
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         <WasmNativeStrip>false</WasmNativeStrip>
         <RunAOTCompilation>true</RunAOTCompilation>
-    </PropertyGroup>
-
-    <PropertyGroup>
+        <RunAOTCompilationAfterBuild>true</RunAOTCompilationAfterBuild>
         <Nullable>disable</Nullable>
         <EmccLinkOptimizationFlag>-O3</EmccLinkOptimizationFlag>
         <EmccExtraLDFlags>--js-library $(MSBuildProjectDirectory.Replace('\', '/'))/js/library-fixemscripten.js -sFULL_ES3 -lidbfs.js -sLZ4</EmccExtraLDFlags>
