@@ -1,11 +1,8 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+import { Logs, log } from "./Logs.js";
+import { App, Logo } from "./App.js";
+import { init } from "./game.js";
 
-import { dotnet } from "./_framework/dotnet.js";
-
-const version = "1.4.0.0";
-
-let store = $store(
+export let store = $store(
     {
         theme: (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark",
     },
@@ -16,28 +13,9 @@ if (window.SINGLEFILE) {
     document.body.querySelector("#interstitial").remove();
 }
 
-const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
-    .withModuleConfig({
-        onConfigLoaded: (config) => {
-            config.disableIntegrityCheck = true;
-        },
-    })
-    .withDiagnosticTracing(false)
-    .withApplicationArgumentsFromQuery()
-    .create();
-
-dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
-dotnet.instance.Module.FS.mount(
-    dotnet.instance.Module.FS.filesystems.IDBFS,
-    {},
-    "/libsdl",
-);
-await new Promise((r) => dotnet.instance.Module.FS.syncfs(true, r));
-console.log("synced; exposing dotnet FS");
-window.FS = dotnet.instance.Module.FS;
-
-function App() {
+function IntroSplash() {
     this.css = `
+
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -47,486 +25,159 @@ function App() {
     background-color: var(--bg);
     color: var(--fg);
 
-    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    .game {
-        margin-inline: 2em;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .info {
+        border-radius: 1em;
+        background-color: var(--surface0);
+        max-width: 90%;
 
-        canvascontainer {
-            display: grid;
-            min-width: min(960px, 100%);
-            min-height: min(540px, 100%);
-            max-height: 85vh;
-            max-width: 100%;
-            aspect-ratio: 16 / 9;
-            border: 0.7px solid var(--surface5);
-            border-radius: 0.6rem;
-            overflow: hidden;
-            background-color: var(--surface1);
+        padding: 2em;
+    }
+    `
 
-            &:has(.hidden) {
-              background-color: black;
+    this.progress = 0;
+
+    this.downloading = false;
+    this.downloaded = false;
+    this.decrypted = !DRM;
+
+    this.decrypterror = "";
+
+
+    let encbuf;
+
+    let download = async () => {
+        this.downloading = true;
+        this.progress = 0;
+
+        if (SPLIT) {
+            encbuf = new Uint8Array(SIZE);
+
+            let cur = 0;
+            for (let split of splits) {
+                let data = await fetch(`_framework/data/${split}`);
+                let buf = new Uint8Array(await data.arrayBuffer());
+
+                encbuf.set(buf, cur);
+                cur += buf.length;
+
+                this.progress += 100 / splits.length;
             }
-
-            & > * {
-                grid-area: 1 / 1;
-            }
-
-            & > div {
-                &.hidden {
-                    display: none;
-                }
-
-                .material-symbols-rounded {
-                    font-size: 3em;
-                }
-
-                h3 {
-                    margin: 0.2rem;
-                    font-weight: 570;
-                }
-
-                user-select: none;
-                text-align: center;
-                color: var(--fg6);
-                font-size: 1.5em;
-                font-weight: 550;
-
-                z-index: 5;
-                width: 100%;
-                height: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-        }
-        canvas {
-            width: 100%;
-            display: block;
-        }
-    }
-    .pinned {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: auto;
-    }
-
-    button,
-    input::-webkit-file-upload-button,
-    .fakebutton {
-        user-select: none;
-        background-color: var(--surface1);
-        padding: 0.5em 1em;
-        color: var(--fg);
-        border: none;
-        border-radius: 0.6rem;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        font-size: 0.95rem;
-        font-family: var(--font-body);
-        font-weight: 500;
-        &:hover {
-            background-color: var(--surface3);
-        }
-        &:active {
-            background-color: var(--surface5);
+        } else {
+            let data = await fetch("_framework/data.data");
+            this.progress = 20;
+            let buf = await data.arrayBuffer();
+            this.progress = 100;
+            encbuf = new Uint8Array(buf);
         }
 
-        &:has(.material-symbols-rounded):not(:has(.label)) {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0;
-          width: 2rem;
-          height: 2rem;
-          border-radius: 50%;
-        }
-
-        .material-symbols-rounded {
-            font-size: 1.3rem;
-            margin: 0;
-            padding: 0;
-        }
-
-        &.important {
-            background-color: var(--accent);
-
-            &:hover {
-                background-color: color-mix(in srgb, var(--accent) 80%, white);
-            }
-
-            &:active {
-                background-color: color-mix(in srgb, var(--accent) 70%, white);
-            }
-        }
-    }
-
-    input[type="file"] {
-        display: none; /* this SUCKS for accessibility but since when did we care about that again */
-    }
-
-    .logs {
-      width: min(960px, 100%);
-      pre {
-          overflow-y: scroll;
-          font-size: 0.9em;
-          max-height: 32em;
-          border: 0.7px solid var(--surface5);
-          border-radius: 0.7em;
-          padding: 1em;
-          background-color: var(--surface0);
-          font-family: var(--font-mono);
-          min-height: 16em;
-      }
-    }
-
-    #logo {
-      image-rendering: pixelated;
-      -ms-interpolation-mode: nearest-neighbor;
-      width: 3.75rem;
-      height: 3.75rem;
-      margin: 0;
-      padding: 0;
-    }
-
-    .top-bar {
-      margin-bottom: 1.5em;
-      padding-inline: 1.7em;
-      background-color: var(--surface0);
-
-      h1 {
-        font-size: 2rem;
-        display: flex;
-      }
-
-      h1 subt {
-        font-size: 0.5em;
-        margin-left: 0.25em;
-        color: var(--fg6);
-      }
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      font-family: var(--font-display);
-    }
-`;
-
-    this.started = false;
-
-    this.fullscreen = false;
-
-
-    document.addEventListener("fullscreenchange", () => {
-        this.fullscreen = document.fullscreen;
-    });
-
-    let ts = performance.now();
-    let fps;
-    const MainLoop = (cb) => {
-        dotnet.instance.Module.setMainLoop(() => {
-            let now = performance.now();
-            let dt = now - ts;
-            ts = now;
-            fps = 1000 / dt;
-
-            cb();
-        });
+        this.downloaded = true;
     };
 
-    setInterval(() => {
-        this.fps = fps;
-    }, 1000);
+    let decrypt = async () => {
+        let input = h("input", { type: "file" });
 
-    const start = async () => {
-        if (!localStorage["vfs_populated"]) {
-            if (!window.SINGLEFILE) {
-                let data = await fetch("_framework/data.data");
-                if (DRM)
-                    window.xorbuf = new Uint8Array(await data.arrayBuffer());
-                else
-                    window.assetblob = URL.createObjectURL(await data.blob());
+        input.addEventListener("change", async () => {
+            if (input.files.length === 0) {
+                this.decrypterror = "No file selected";
+                return;
+            }
+            let file = input.files[0];
+
+            console.log(file);
+            if (file.size !== 3072) {
+                this.decrypterror = "Invalid key file (or a different version of the game?)";
+                return;
             }
 
-            if (DRM)
-                await new Promise(r => {
-                    let input = h("input", { type: "file" });
+            let reader = new FileReader();
+            reader.onload = async () => {
+                let key = new Uint8Array(reader.result);
 
-                    input.addEventListener("change", async () => {
-                        let file = input.files[0];
+                console.log("Decrypting asssets");
+                this.progress = 0;
+                console.log(encbuf.length);
+                console.log(this);
+                for (let i = 0; i < encbuf.length; i += 4096) {
+                    encbuf[i] ^= key[i % key.length];
 
-                        if (file.size !== 3072) {
-                            alert("Invalid key file (or a different version of the game?)");
-                            return;
-                        }
-
-                        let reader = new FileReader();
-                        reader.onload = async () => {
-                            let key = new Uint8Array(reader.result);
-
-                            console.log("Decrypting asssets");
-                            for (let i = 0; i < xorbuf.length; i += 4096) {
-                                xorbuf[i] ^= key[i % key.length];
-                            }
-
-                            window.assetblob = URL.createObjectURL(new Blob([xorbuf], { type: "application/octet-stream" }));
-
-                            r();
-                        };
-                        reader.readAsArrayBuffer(file);
-                    });
-                    document.body.appendChild(input);
-                    input.click();
-                    input.remove();
-                });
-        }
-
-        this.started = true;
-        console.info("Starting...");
-
-        await new Promise(r => loadData(dotnet.instance.Module, r));
-        console.info("Loaded assets into VFS");
-        localStorage["vfs_populated"] = true
-        if (window.assetblob) {
-            URL.revokeObjectURL(window.assetblob);
-        }
-
-        setModuleImports("main.js", {
-            setMainLoop: MainLoop,
-            syncFs: (cb) => dotnet.instance.Module.FS.syncfs(false, cb),
+                    if (i % (4096 * 200) == 0) {
+                        this.progress = i / encbuf.length * 100;
+                        await new Promise(r => setTimeout(r, 0));
+                    }
+                }
+                console.log("done");
+                this.decrypted = true;
+            };
+            reader.readAsArrayBuffer(file);
         });
 
-        dotnet.instance.Module.canvas = this.canvas;
+        document.body.appendChild(input);
+        input.click();
+        input.remove();
+    };
 
-        await dotnet.run();
+    let finish = async () => {
 
-        let Exports = await getAssemblyExports("fna-wasm");
+        window.assetblob = URL.createObjectURL(new Blob([encbuf]));
 
-        Exports.Program.StartGame();
+        await loadfrontend();
+        this.root.remove();
     };
 
     return html`
-    <main class=${[
-            use(store.theme)
-        ]}>
-      <div class="flex vcenter gap space-between top-bar">
-        <span class="flex vcenter gap left">
-          <span class="flex vcenter">
-            <img id="logo" src=${window.SINGLEFILE &&
-        document.querySelector("link[rel=icon]").href
-        || "/assets/app.ico"
-        } />
-            <h1>celeste-wasm<subt>v${version}</subt></h1>
-          </span>
-          ${$if(
-            use(this.started),
-            html` <p>FPS: ${use(this.fps, Math.floor)}</p> `,
-        )}
-        </span>
-        <span class="flex gap-md right vcenter">
-          <button on:click=${() => {
-            if (store.theme === "light") {
-                store.theme = "dark";
-            } else {
-                store.theme = "light";
-            }
-        }}>
-            <span class="material-symbols-rounded">${use(store.theme, (theme) => (theme === "light" ? "dark_mode" : "light_mode"))
-        }</span>
-          </button>
-            <button
-              on:click=${() => {
-            if (this.canvas.requestFullscreen()) {
-                this.fullscreen = true;
-            }
-        }}
-            >
-              <span class="material-symbols-rounded">fullscreen</span>
-            </button>
-            <button
-              class=${[
-            use(this.started, (started) => (started ? "s" : "important")),
-        ]}
-              on:click=${start}
-            >
-              <span class="material-symbols-rounded">play_arrow</span>
-            </button>
-          <label for="upload" class="flex vcenter gap-sm fakebutton"><span class="material-symbols-rounded">upload</span><span class="label">Upload Data</span></label>
-          <input type="file" id="upload" />
-        </span>
-      </div>
+        <main class=${[use(store.theme)]}>
+            <div class="info">
+                <${Logo}/>
+                <p>This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a> to the browser using Blazor and <a href="https://github.com/FNA-XNA/FNA">FNA.WASM</a><br>
+                It needs around 1.6gb of memory and will probably not work on mobile devices<br><br>
 
-      ${(navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />`) ||
-        ""}
+                <br><br>
 
-      <div class="game">
-        <canvascontainer>
-          <div class=${[use(this.started, (f) => f && "hidden")]}>
-            <div>
-              <span class="material-symbols-rounded">videogame_asset_off</span>
-              <br>
-              <h3>Game not running.</h3>
+
+                You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer.<br>
+                ${!window.SINGLEFILE && "This will download around  ~700mb of assets to your browser's local storage."}<br><br>
+            
+
+                ${$if(use(this.downloading),
+        html`<p> progress: <progress value=${use(this.progress)} max="100"></progress></p>`,
+        html`<button on:click=${download}>Download Assets</button>`,
+
+    )}
+    <br>
+
+            ${$if(use(this.downloaded),
+        $if(use(this.decrypted),
+            html`<button on:click=${finish}>Continue</button>`,
+            html`
+                <div>
+                    <p>Downloaded assets. Now you need to decrypt them. Find the game files directory for celeste and upload Celeste.Content.dll</p>
+                    <button on:click=${decrypt}>Decrypt Assets</button>
+                    <br>
+                    <p>${use(this.decrypterror)}</p>
+                </div>`
+        ))}
             </div>
-          </div>
-          <canvas
-            id="canvas"
-            class=${[use(this.fullscreen, (f) => f && "pinned")]}
-            bind:this=${use(this.canvas)}
-            on:contextmenu=${(e) => e.preventDefault()}
-          ></canvas>
-        </canvascontainer>
-      </div>
-
-      <${FsExplorer} />
-
-      <div class="logs">
-      <h2>Log</h2>
-      <pre bind:this=${use(this.log)}></pre>
-      </div>
-    </main>
-  `;
-}
-
-function FuckMozilla() {
-    this.css = `
-        width: min(960px, 100%);
-
-        background-color: var(--accent);
-        color: var(--fg);
-        padding: 1em;
-        padding-top: 0.5em;
-        margin-bottom: 1em;
-        border-radius: 0.6rem;
-
-
-        h1 {
-          display: flex;
-          align-items: center;
-          gap: 0.25em;
-          span {
-            font-size: 2.25rem;
-          }
-        }
-    `;
-
-    return html`
-        <div>
-            <h1>
-            <span class="material-symbols-rounded">warning</span>
-            THIS MIGHT NOT WORK WELL ON FIREFOX
-            </h1>
-            <p>The chromium WASM implemenation is generally better, and it was what was tested on the most. It will probably still work (might not!) but you should be using chromium</p>
-
-            <button on:click=${() => this.root.remove()}>Dismiss</button>
-        </div>
+        </main>
     `
 }
 
-function FsExplorer() {
-    this.fs = window.FS;
 
-    this.path = "/";
-    this.listing = [];
+async function loadfrontend() {
 
-    this.displayingFile = false;
-    this.filePath = "";
-    this.fileData = "";
+    await init();
+    const app = h(App).$;
 
+    document.body.appendChild(app.root);
 
-    this.mount = () => {
-        this.listing = this.fs.readdir(this.path);
-    }
-
-    this.css = `
-        width: min(960px, 100%);
-    `
-
-    return html`
-        <div>
-            <pre>${use(this.path)}</pre>
-            ${use(this.listing, r => r.map((r) => {
-            let mode = this.fs.stat(this.path + r).mode;
-            if (this.fs.isDir(mode)) {
-                return html`
-                    <div on:click=${() => {
-                        if (r == ".") {
-                            this.mount();
-                        } else if (r == "..") {
-                            if (this.path == "/") return;
-                            this.path = this.path.split("/").toSpliced(-2, 1).join("/");
-                            this.mount();
-                        } else {
-                            this.path += `${r}/`;
-                            this.mount();
-                        }
-                    }}><pre>${r}/</pre></div>
-                `
-            } else {
-                return html`
-                    <div on:click=${() => { this.displayingFile = true; this.filePath = this.path + r; this.fileData = (new TextDecoder()).decode(this.fs.readFile(this.path+r));}}><pre>${r}</pre></div>
-                `
-            }
-        }))}
-            ${$if(use(this.displayingFile), html`
-                <div>
-                    <div>file: <pre>${use(this.filePath)}</pre></div>
-                    <button on:click=${() => { this.fs.writeFile(this.filePath, (new TextEncoder()).encode(this.fileData)); this.filePath = ""; this.fileData = ""; this.displayingFile = false; }}>saveandclose</button>
-                    <textarea bind:value=${use(this.fileData)}></textarea>
-                <div>
-            `)}
-        </div>
-    `
+    log("var(--success)", "Loaded frontend!");
 }
 
-const app = h(App).$;
-
-let olog = console.log;
-
-let logs = [];
-let ringsize = 200;
-function ilog(color, ...args) {
-    olog(...args);
-    logs.push([color, `[${new Date().toISOString()}] ` + args.join(" ") + "\n"]);
+if (localStorage["vfs_populated"] !== "true") {
+    document.body.appendChild(h(IntroSplash));
+} else {
+    loadfrontend();
 }
-
-console.log = (...args) => {
-    ilog("var(--fg)", ...args)
-}
-console.warn = (...args) => {
-    ilog("var(--warning)", ...args)
-}
-console.error = (...args) => {
-    ilog("var(--error)", ...args)
-}
-console.info = (...args) => {
-    ilog("var(--info)", ...args)
-}
-console.debug = (...args) => {
-    ilog("var(--fg6)", ...args)
-}
-
-document.body.appendChild(app.root);
-
-ilog("var(--success)", "Loaded frontend!");
-
-setInterval(() => {
-    for (let log of logs) {
-        app.log.append(h("span", { style: { color: log[0] } }, log[1]));
-
-        if (app.log.children.length > ringsize) {
-            app.log.children[0].remove();
-        }
-    }
-    logs = []
-
-    app.log.scrollTop = app.log.scrollHeight
-}, 1500);
