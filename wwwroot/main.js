@@ -391,6 +391,7 @@ function App() {
             id="canvas"
             class=${[use(this.fullscreen, (f) => f && "pinned")]}
             bind:this=${use(this.canvas)}
+            on:contextmenu=${(e)=>e.preventDefault()}
           ></canvas>
         </canvascontainer>
       </div>
