@@ -67,8 +67,9 @@ To correctly download this file on google drive, press the download button at th
   <script>
 
     if (localStorage["vfs_populated"]) {
-      // no need to parse the game data
+      // magical window.stop()! the browser won't have to parse the rest of the html file. i think this is the first time anyone has ever used this
       window.stop();
+
       unpak_wasm();
       // domcontentloaded never fires, meaning modules never load so we have to manually
       import(modscripts);
