@@ -25,14 +25,14 @@ $(VFSFILE): $(ASSETS)
 	sh helpers/buildvfs.sh "$(WWWROOT)"
 
 $(STATICS):
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/FAudio.a
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/FNA3D.a
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/libmojoshader.a
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/SDL2.a
+	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FAudio.a
+	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FNA3D.a
+	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/libmojoshader.a
+	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/SDL2.a
 
 clean: 
 	rm -rvf bin obj
-	rm -f wasm.pak
+	rm -f wasm.pak FAudio.a FNA3D.a libmojoshader.a SDL2.a
 
 
 wasm.pak: $(WASMOUT) helpers/pack_wasm.sh
