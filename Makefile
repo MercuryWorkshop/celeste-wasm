@@ -36,15 +36,14 @@ else
 endif
 
 $(STATICS):
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/FAudio.a
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/FNA3D.a
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/libmojoshader.a
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/SDL2.a
+	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FAudio.a
+	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FNA3D.a
+	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/libmojoshader.a
+	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/SDL2.a
 
 clean: 
 	rm -rvf bin obj
-	rm -f wasm.pak
-	# rm $(STATICS)
+	rm -f wasm.pak $(STATICS)
 
 
 wasm.pak: $(WASMOUT) helpers/pack_wasm.sh
