@@ -230,6 +230,44 @@ function App() {
     }, 1000);
 
     const start = async () => {
+        if (!localStorage["vfs_populated"] && DRM) {
+            if (!window.SINGLEFILE) {
+                let data = await fetch("_framework/data.data");
+                window.xorbuf = new Uint8Array(await data.arrayBuffer());
+            }
+
+            await new Promise(r => {
+                let input = h("input", { type: "file" });
+
+                input.addEventListener("change", async () => {
+                    let file = input.files[0];
+
+                    if (file.size !== 3072) {
+                        alert("Invalid key file (or a different version of the game?)");
+                        return;
+                    }
+
+                    let reader = new FileReader();
+                    reader.onload = async () => {
+                        let key = new Uint8Array(reader.result);
+
+                        console.log("Decrypting asssets");
+                        for (let i = 0; i < xorbuf.length; i += 4096) {
+                            xorbuf[i] ^= key[i % key.length];
+                        }
+
+                        window.assetblob = URL.createObjectURL(new Blob([xorbuf], { type: "application/octet-stream" }));
+
+                        r();
+                    };
+                    reader.readAsArrayBuffer(file);
+                });
+                document.body.appendChild(input);
+                input.click();
+                input.remove();
+            });
+        }
+
         this.started = true;
         console.info("Starting...");
 

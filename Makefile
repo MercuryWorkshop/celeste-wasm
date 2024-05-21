@@ -1,5 +1,7 @@
 Profile ?= Release
 
+DRM ?= 0
+
 WWWROOT = bin/${Profile}/net8.0/wwwroot
 
 VFSFILE=$(WWWROOT)/_framework/data.data
@@ -13,7 +15,7 @@ WASMOUT = $(WWWROOT)/_framework/fna-wasm.wasm
 STATICS = FAudio.a FNA3D.a libmojoshader.a SDL2.a
 
 
-$(WASMOUT): $(STATICS) $(wildcard celeste/**/*.*) Program.cs fna-wasm.csproj
+$(WASMOUT): $(wildcard celeste/**/*.*) Program.cs fna-wasm.csproj
 	@echo "Building WASM..."
 	dotnet build -c $(Profile)
 	cp -r wwwroot/* $(WWWROOT)
@@ -23,6 +25,15 @@ $(WASMOUT): $(STATICS) $(wildcard celeste/**/*.*) Program.cs fna-wasm.csproj
 $(VFSFILE): $(ASSETS)
 	@echo "Building VFS bundle..."
 	sh helpers/buildvfs.sh "$(WWWROOT)"
+ifeq ($(DRM),1)
+	@echo "Encrypting VFS bundle..."
+	python3 helpers/xor.py "$(VFSFILE)" $(DRMKEY) > "$(VFSFILE).enc"
+	mv "$(VFSFILE)" "$(VFSFILE).old"
+	mv "$(VFSFILE).enc" "$(VFSFILE)"
+	echo "const DRM = true;" > "$(WWWROOT)/cfg.js"
+else
+	echo "const DRM = false;" > "$(WWWROOT)/cfg.js"
+endif
 
 $(STATICS):
 	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/FAudio.a
@@ -33,6 +44,7 @@ $(STATICS):
 clean: 
 	rm -rvf bin obj
 	rm -f wasm.pak
+	# rm $(STATICS)
 
 
 wasm.pak: $(WASMOUT) helpers/pack_wasm.sh

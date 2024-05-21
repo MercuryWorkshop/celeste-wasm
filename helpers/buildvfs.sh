@@ -7,8 +7,8 @@ echo packed
 mv data.data "$wwwroot/_framework/data.data"
 sed -i "2d" data.js.tmp
 content=$(<data.js.tmp)
-# if this line is commented out it is a mistake (i forgot to recomment it in)
 content=${content/\.data\'\);/.data\'); doneCallback();}
+content=${content/packageName, t/assetblob, t}
 
 echo "function loadData(Module, doneCallback) {" > "$wwwroot/data.js"
 echo "$content" >> "$wwwroot/data.js"
