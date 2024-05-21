@@ -93,11 +93,7 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 async function loadfrompacked() {
   let blob = b64toBlob(game_data.innerText, "text/javascript");
   game_data.remove();
-  if (DRM) {
-    window.xorbuf = new Uint8Array(await blob.arrayBuffer());
-  } else {
-    window.assetblob = URL.createObjectURL(blob);
-  }
+  window.xorbuf = new Uint8Array(await blob.arrayBuffer());
 }
 
 function loadfromfile() {

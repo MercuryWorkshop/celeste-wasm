@@ -1,5 +1,5 @@
 import { Logs, log } from "./Logs.js";
-import { fps, version, start } from "./game.js";
+import { fps, version, init, start } from "./game.js";
 import { store } from "./main.js";
 
 export function App() {
@@ -92,6 +92,12 @@ export function App() {
       background-color: var(--surface0);
     }
 `;
+
+
+  this.mount = () => {
+    init();
+  }
+
 
   this.started = false;
 
