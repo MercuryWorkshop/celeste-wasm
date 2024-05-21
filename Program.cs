@@ -17,17 +17,9 @@ public static partial class Program
     }
 
 
-    [System.Runtime.InteropServices.JavaScript.JSExport()]
-    public static void SetConfig(bool debug)
-    {
-        Console.WriteLine("SetConfig: debug:" + debug);
-        Settings.Instance.LaunchInDebugMode = debug;
-    }
-
-    [System.Runtime.InteropServices.JavaScript.JSExport()]
+    [JSExport()]
     public static void StartGame()
     {
-
         game = new Celeste.Celeste();
 
         SetMainLoop(MainLoop);

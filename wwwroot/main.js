@@ -8,7 +8,6 @@ const version = "1.4.0.0";
 let store = $store(
     {
         theme: (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark",
-        debug: false,
     },
     { ident: "user-options", backing: "localstorage", autosave: "auto" }
 );
@@ -17,6 +16,25 @@ if (window.SINGLEFILE) {
     document.body.querySelector("#interstitial").remove();
 }
 
+const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
+    .withModuleConfig({
+        onConfigLoaded: (config) => {
+            config.disableIntegrityCheck = true;
+        },
+    })
+    .withDiagnosticTracing(false)
+    .withApplicationArgumentsFromQuery()
+    .create();
+
+dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
+dotnet.instance.Module.FS.mount(
+    dotnet.instance.Module.FS.filesystems.IDBFS,
+    {},
+    "/libsdl",
+);
+await new Promise((r) => dotnet.instance.Module.FS.syncfs(true, r));
+console.log("synced; exposing dotnet FS");
+window.FS = dotnet.instance.Module.FS;
 
 function App() {
     this.css = `
@@ -275,33 +293,12 @@ function App() {
         this.started = true;
         console.info("Starting...");
 
-        const { setModuleImports, getAssemblyExports, getConfig } = await dotnet
-            .withModuleConfig({
-                onConfigLoaded: (config) => {
-                    config.disableIntegrityCheck = true;
-                },
-            })
-            .withDiagnosticTracing(false)
-            .withApplicationArgumentsFromQuery()
-            .create();
-
-
         await new Promise(r => loadData(dotnet.instance.Module, r));
         console.info("Loaded assets into VFS");
         localStorage["vfs_populated"] = true
         if (window.assetblob) {
             URL.revokeObjectURL(window.assetblob);
         }
-
-        dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
-        dotnet.instance.Module.FS.mount(
-            dotnet.instance.Module.FS.filesystems.IDBFS,
-            {},
-            "/libsdl",
-        );
-        await new Promise((r) => dotnet.instance.Module.FS.syncfs(true, r));
-        console.log("synced; exposing dotnet FS");
-        window.FS = dotnet.instance.Module.FS;
 
         setModuleImports("main.js", {
             setMainLoop: MainLoop,
@@ -313,8 +310,6 @@ function App() {
         await dotnet.run();
 
         let Exports = await getAssemblyExports("fna-wasm");
-
-        Exports.Program.SetConfig(store.debug);
 
         Exports.Program.StartGame();
     };
@@ -336,11 +331,6 @@ function App() {
             use(this.started),
             html` <p>FPS: ${use(this.fps, Math.floor)}</p> `,
         )}
-
-          <div>
-            <label for="debug">Debug: </label>
-            <input type="checkbox" bind:checked=${use(store.debug)} />
-          </div>
         </span>
         <span class="flex gap-md right vcenter">
           <button on:click=${() => {
@@ -391,10 +381,12 @@ function App() {
             id="canvas"
             class=${[use(this.fullscreen, (f) => f && "pinned")]}
             bind:this=${use(this.canvas)}
-            on:contextmenu=${(e)=>e.preventDefault()}
+            on:contextmenu=${(e) => e.preventDefault()}
           ></canvas>
         </canvascontainer>
       </div>
+
+      <${FsExplorer} />
 
       <div class="logs">
       <h2>Log</h2>
@@ -439,13 +431,69 @@ function FuckMozilla() {
     `
 }
 
+function FsExplorer() {
+    this.fs = window.FS;
+
+    this.path = "/";
+    this.listing = [];
+
+    this.displayingFile = false;
+    this.filePath = "";
+    this.fileData = "";
+
+
+    this.mount = () => {
+        this.listing = this.fs.readdir(this.path);
+    }
+
+    this.css = `
+        width: min(960px, 100%);
+    `
+
+    return html`
+        <div>
+            <pre>${use(this.path)}</pre>
+            ${use(this.listing, r => r.map((r) => {
+            let mode = this.fs.stat(this.path + r).mode;
+            if (this.fs.isDir(mode)) {
+                return html`
+                    <div on:click=${() => {
+                        if (r == ".") {
+                            this.mount();
+                        } else if (r == "..") {
+                            if (this.path == "/") return;
+                            this.path = this.path.split("/").toSpliced(-2, 1).join("/");
+                            this.mount();
+                        } else {
+                            this.path += `${r}/`;
+                            this.mount();
+                        }
+                    }}><pre>${r}/</pre></div>
+                `
+            } else {
+                return html`
+                    <div on:click=${() => { this.displayingFile = true; this.filePath = this.path + r; this.fileData = (new TextDecoder()).decode(this.fs.readFile(this.path+r));}}><pre>${r}</pre></div>
+                `
+            }
+        }))}
+            ${$if(use(this.displayingFile), html`
+                <div>
+                    <div>file: <pre>${use(this.filePath)}</pre></div>
+                    <button on:click=${() => { this.fs.writeFile(this.filePath, (new TextEncoder()).encode(this.fileData)); this.filePath = ""; this.fileData = ""; this.displayingFile = false; }}>saveandclose</button>
+                    <textarea bind:value=${use(this.fileData)}></textarea>
+                <div>
+            `)}
+        </div>
+    `
+}
+
 const app = h(App).$;
 
 let olog = console.log;
 
 let logs = [];
 let ringsize = 200;
-export function ilog(color, ...args) {
+function ilog(color, ...args) {
     olog(...args);
     logs.push([color, `[${new Date().toISOString()}] ` + args.join(" ") + "\n"]);
 }
