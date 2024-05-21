@@ -38,16 +38,24 @@ function IntroSplash() {
     }
     `
 
+    let encbuf;
     this.progress = 0;
 
     this.downloading = false;
     this.downloaded = false;
+
+    if (window.SINGLEFILE) {
+        this.downloaded = true;
+        this.downloading = true;
+        this.progress = 100;
+        encbuf = window.xorbuf;
+        window.xorbuf = null;
+    }
     this.decrypted = !DRM;
 
     this.decrypterror = "";
 
 
-    let encbuf;
 
     let download = async () => {
         this.downloading = true;
@@ -87,7 +95,6 @@ function IntroSplash() {
             }
             let file = input.files[0];
 
-            console.log(file);
             if (file.size !== 3072) {
                 this.decrypterror = "Invalid key file (or a different version of the game?)";
                 return;
@@ -97,10 +104,7 @@ function IntroSplash() {
             reader.onload = async () => {
                 let key = new Uint8Array(reader.result);
 
-                console.log("Decrypting asssets");
                 this.progress = 0;
-                console.log(encbuf.length);
-                console.log(this);
                 for (let i = 0; i < encbuf.length; i += 4096) {
                     encbuf[i] ^= key[i % key.length];
 
@@ -109,7 +113,6 @@ function IntroSplash() {
                         await new Promise(r => setTimeout(r, 0));
                     }
                 }
-                console.log("done");
                 this.decrypted = true;
             };
             reader.readAsArrayBuffer(file);
@@ -167,8 +170,6 @@ function IntroSplash() {
 
 
 async function loadfrontend() {
-
-    await init();
     const app = h(App).$;
 
     document.body.appendChild(app.root);

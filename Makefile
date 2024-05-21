@@ -32,14 +32,13 @@ $(VFSFILE): $(ASSETS)
 ifeq ($(DRM),1)
 	@echo "Encrypting VFS bundle..."
 	python3 helpers/xor.py "$(VFSFILE)" $(DRMKEY) > "$(VFSFILE).enc"
-	mv "$(VFSFILE)" "$(VFSFILE).old"
 	mv "$(VFSFILE).enc" "$(VFSFILE)"
 endif
 	echo "const SPLIT = $(SPLIT);" >> "$(WWWROOT)/cfg.js"
-ifeq ($(SPLIT),1)
+ifneq ($(SPLIT),0)
 	@echo "Splitting VFS bundle..."
 	mkdir -p $(WWWROOT)/_framework/data
-	split -b20M $(VFSFILE) $(WWWROOT)/_framework/data/data
+	split -b$(SPLIT)M $(VFSFILE) $(WWWROOT)/_framework/data/data
 endif
 	echo -n "const splits = [" >> "$(WWWROOT)/cfg.js"
 	ls -1 $(WWWROOT)/_framework/data/ | sed 's/^/"/' | sed 's/$$/",/' | tr -d '\n' >> "$(WWWROOT)/cfg.js"
@@ -55,7 +54,7 @@ jslibs/node_modules: jslibs/package.json
 	cd jslibs && npm install
 
 wwwroot/zlib.js: jslibs/node_modules jslibs/pack.js
-	npx esbuild --minify --bundle ./pack.js --outfile=../wwwroot/zstd.js
+	npx esbuild --minify --bundle jslibs/pack.js --outfile=wwwroot/zstd.js
 
 statics: $(STATICS)
 

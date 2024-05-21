@@ -31,6 +31,7 @@ while read bfile; do
   fi
 done <<< "$(find "$WWWROOT/_framework" -type f)"
 
+echo "compressing wasm.pak"
 <"$file" > wasm.pak zstd --ultra -22
 echo -n "const WASM_PACK_SIZE = " > wwwroot/wasm.pak.size.js
 stat -c %s "$file" >> wwwroot/wasm.pak.size.js
