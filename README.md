@@ -9,6 +9,11 @@ A mostly-complete port of Celeste (2018) to WebAssembly using Blazor and [FNA.WA
 
 ![image](https://github.com/MercuryWorkshop/celeste-wasm/assets/58010778/ba547bea-1763-48ad-b6b5-bbf8682d8d15)
 
+# Limitations
+- Loading the game consumes too much memory for mobile and lower end devices
+- AOT compilation makes runtime reflection and detouring infeasible, so [Everest](https://github.com/EverestAPI/Everest) was not able to be included
+- You may encounter issues on firefox.
+
 # I want to play this
 First, you need to own the game. There is a standalone html file [here](https://github.com/MercuryWorkshop/celeste-wasm/releases/download/latest/celeste.html) that can be played completely offline.
 
