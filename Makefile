@@ -41,10 +41,11 @@ $(STATICS):
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/libmojoshader.a
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/SDL2.a
 
+statics: $(STATICS)
+
 clean: 
 	rm -rvf bin obj
 	rm -f wasm.pak $(STATICS)
-
 
 wasm.pak: $(WASMOUT) helpers/pack_wasm.sh
 	@echo "Building pak file..."

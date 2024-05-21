@@ -3,7 +3,7 @@
 
 import { dotnet } from "./_framework/dotnet.js";
 
-const version = "4.0.0.0";
+const version = "1.4.0.0";
 
 let store = $store(
     {
