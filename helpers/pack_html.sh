@@ -41,10 +41,6 @@ WWWROOT=$1
       echo "BASE64: dotnet.js"
       base64=$(echo -n "$content" | base64 -w 0)
       # o=import(e.resolvedUrl)
-    elif [ $file == "data.js" ]; then
-      content=$(<"$WWWROOT/$file")
-      content=${content/packageName, t/assetblob, t}
-      base64=$(echo -n "$content" | base64 -w 0)
     else
       base64=$(base64 -w 0 "$WWWROOT/$file")
     fi

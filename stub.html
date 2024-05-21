@@ -12,6 +12,8 @@ To correctly download this file on google drive, press the download button at th
 <html>
 
 
+<link rel="stylesheet" href="BASE64LOAD:text/css:styles.css:">
+
 <body>
   <style>
     #interstitial {
@@ -50,8 +52,8 @@ To correctly download this file on google drive, press the download button at th
     rel="stylesheet" />
   <link rel="icon" type="image/png" href="BASE64LOAD:image/png:assets/app.ico:">
 
-  <link rel="stylesheet" href="BASE64LOAD:text/css:styles.css:">
   <script src="BASE64LOAD:text/javascript:dreamland.js:"></script>
+  <script src="BASE64LOAD:text/javascript:cfg.js:"></script>
   <script src="BASE64LOAD:text/javascript:zstd.js:"></script>
   <script src="BASE64LOAD:text/javascript:wasm.pak.size.js:"></script>
   <script src="BASE64LOAD:text/javascript:data.js:"></script>
@@ -77,7 +79,7 @@ To correctly download this file on google drive, press the download button at th
 
 
   <script>
-    console.log("EEEEEEEEEEEEEEYIKES!");
+    document.querySelector("h1").innerText = "Decompressing game data...";
     unpak_wasm();
     loadfrompacked();
 
