@@ -39,7 +39,7 @@ endif
 ifeq ($(SPLIT),1)
 	@echo "Splitting VFS bundle..."
 	mkdir -p $(WWWROOT)/_framework/data
-	split -b20M $(VFSFILE) $(WWWROOT)/_framework/data/
+	split -b20M $(VFSFILE) $(WWWROOT)/_framework/data/data
 endif
 	echo -n "const splits = [" >> "$(WWWROOT)/cfg.js"
 	ls -1 $(WWWROOT)/_framework/data/ | sed 's/^/"/' | sed 's/$$/",/' | tr -d '\n' >> "$(WWWROOT)/cfg.js"
@@ -51,6 +51,12 @@ $(STATICS):
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/libmojoshader.a
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/SDL2.a
 
+jslibs/node_modules: jslibs/package.json
+	cd jslibs && npm install
+
+wwwroot/zlib.js: jslibs/node_modules jslibs/pack.js
+	npx esbuild --minify --bundle ./pack.js --outfile=../wwwroot/zstd.js
+
 statics: $(STATICS)
 
 clean: 
@@ -61,7 +67,7 @@ wasm.pak: $(WASMOUT) helpers/pack_wasm.sh
 	@echo "Building pak file..."
 	sh helpers/pack_wasm.sh "$(WWWROOT)"
 
-singlefile: wasm.pak $(VFSFILE)
+singlefile: wasm.pak $(VFSFILE) wwwroot/zlib.js
 	@echo "Building single file..."
 	cp -r wwwroot/* $(WWWROOT)
 	ksh helpers/pack_html.sh "$(WWWROOT)"
