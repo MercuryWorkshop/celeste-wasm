@@ -1,5 +1,16 @@
 
+<img src="wwwroot/assets/app.ico" width=100 align="left">
 
+<h1>celeste-wasm</h1>
+
+<br>
+
+A mostly-complete port of Celeste (2018) to WebAssembly using Blazor and [FNA.WASM](https://github.com/FNA-XNA/FNA)
+
+![image](https://github.com/MercuryWorkshop/celeste-wasm/assets/58010778/ba547bea-1763-48ad-b6b5-bbf8682d8d15)
+
+# I want to play this
+First, you need to own the game. There is a standalone html file [here](https://github.com/MercuryWorkshop/celeste-wasm/releases/download/latest/celeste.html) that can be played completely offline.
 
 # I want to build this
 if you can't reproduce this (it's really finnicky) feel free to ask us, the instructions can definitely be imrpoved
