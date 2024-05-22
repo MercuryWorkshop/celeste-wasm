@@ -1,9 +1,10 @@
 import { Logs, log } from "./Logs.js";
+import { FsExplorer } from "./FsExplorer.js";
 import { fps, version, init, start } from "./game.js";
 import { store } from "./main.js";
 
 export function App() {
-  this.css = `
+    this.css = `
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -94,64 +95,61 @@ export function App() {
 `;
 
 
-  this.mount = () => {
-    init();
-  }
+    window.initPromise = init();
+
+    this.started = false;
+
+    this.fullscreen = false;
 
 
-  this.started = false;
+    document.addEventListener("fullscreenchange", () => {
+        this.fullscreen = document.fullscreen;
+    });
 
-  this.fullscreen = false;
+    setInterval(() => {
+        this.fps = fps;
+    }, 1000);
 
+    const startgame = () => {
+        this.started = true;
 
-  document.addEventListener("fullscreenchange", () => {
-    this.fullscreen = document.fullscreen;
-  });
+        start(this.canvas);
+    };
 
-  setInterval(() => {
-    this.fps = fps;
-  }, 1000);
-
-  const startgame = () => {
-    this.started = true;
-
-    start(this.canvas);
-  };
-
-  return html`
+    return html`
     <main class=${[use(store.theme)]}>
       <div class="flex vcenter gap space-between top-bar">
         <span class="flex vcenter gap left">
           <${Logo} />
           ${$if(
-    use(this.started),
-    html` <p>FPS: ${use(this.fps, Math.floor)}</p> `,
-  )}
+        use(this.started),
+        html` <p>FPS: ${use(this.fps, Math.floor)}</p> `,
+    )}
         </span>
         <span class="flex gap-md right vcenter">
           <button on:click=${() => {
-      if (store.theme === "light") {
-        store.theme = "dark";
-      } else {
-        store.theme = "light";
-      }
-    }}>
+            if (store.theme === "light") {
+                store.theme = "dark";
+            } else {
+                store.theme = "light";
+            }
+        }}>
             <span class="material-symbols-rounded">${use(store.theme, (theme) => (theme === "light" ? "dark_mode" : "light_mode"))
-    }</span>
+        }</span>
           </button>
             <button
               on:click=${() => {
-      if (this.canvas.requestFullscreen()) {
-        this.fullscreen = true;
-      }
-    }}
+            if (this.canvas.requestFullscreen()) {
+                this.fullscreen = true;
+            }
+        }}
             >
               <span class="material-symbols-rounded">fullscreen</span>
             </button>
             <button
               class=${[
-      use(this.started, (started) => (started ? "s" : "important")),
-    ]}
+            use(this.started, (started) => (started ? "s" : "important")),
+        ]}
               on:click=${startgame}
             >
               <span class="material-symbols-rounded">play_arrow</span>
@@ -160,7 +158,7 @@ export function App() {
       </div>
 
       ${(navigator.userAgent.includes("Firefox") && html`<${FuckMozilla} />`) ||
-    ""}
+        ""}
 
       <div class="game">
         <canvascontainer>
@@ -179,6 +177,7 @@ export function App() {
         </canvascontainer>
       </div>
 
+      <${FsExplorer} />
 
       <div class="logs">
       <h2>Log</h2>
@@ -189,7 +188,7 @@ export function App() {
 }
 
 function FuckMozilla() {
-  this.css = `
+    this.css = `
         width: min(960px, 100%);
 
         background-color: var(--accent);
@@ -210,7 +209,7 @@ function FuckMozilla() {
         }
     `;
 
-  return html`
+    return html`
         <div>
             <h1>
             <span class="material-symbols-rounded">warning</span>
@@ -224,7 +223,7 @@ function FuckMozilla() {
 }
 
 export function Logo() {
-  this.css = `
+    this.css = `
     .logo {
       image-rendering: pixelated;
       -ms-interpolation-mode: nearest-neighbor;
@@ -245,7 +244,7 @@ export function Logo() {
       color: var(--fg6);
     }
   `
-  return html`
+    return html`
     <span class="flex vcenter">
       <img class="logo" src=${document.querySelector("link[rel=icon]").href} />
       <h1>celeste-wasm<subt>v${version}</subt></h1>
