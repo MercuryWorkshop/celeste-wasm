@@ -94,13 +94,21 @@ export function App() {
     }
 `;
 
-
-    window.initPromise = init();
-
+    this.loaded = false;
     this.started = false;
+    this.allowPlay = false;
+
+    let updatePlay = ()=>{this.allowPlay = this.loaded || this.started};
+    handle(use(this.loaded), updatePlay);
+    handle(use(this.started), updatePlay);
+
+    window.initPromise = (async () => {
+        await init();
+        this.loaded = true;
+        log("var(--success)", "Loaded frontend!");
+    })();
 
     this.fullscreen = false;
-
 
     document.addEventListener("fullscreenchange", () => {
         this.fullscreen = document.fullscreen;
@@ -148,7 +156,7 @@ export function App() {
             </button>
             <button
               class=${[
-            use(this.started, (started) => (started ? "s" : "important")),
+            use(this.allowPlay, (allowed) => (!allowed ? "disabled" : "important")),
         ]}
               on:click=${startgame}
             >

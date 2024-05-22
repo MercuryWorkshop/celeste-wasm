@@ -9,6 +9,7 @@ libmojoshader.a
 SDL2.a
 celeste-wasm.tar.zst
 node_modules
+src/pnpm-lock.yaml
 
 *.swp
 *.*~
