@@ -1,5 +1,12 @@
-let ofetch = fetch;
+import { ZSTDDecoder } from 'zstddec';
+let zdecoder = new ZSTDDecoder();
 window.SINGLEFILE = 1;
+
+// only runs in singlefile mode, runs before the rest of the frontend
+// loads assets and wasm.pak from the html 
+
+
+let ofetch = fetch;
 const importmap = {};
 
 function getblob(url) {

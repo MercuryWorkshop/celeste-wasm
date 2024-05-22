@@ -1,4 +1,3 @@
-import { dotnet } from "./_framework/dotnet.js";
 export const version = "1.4.0.0";
 let setModuleImports, getAssemblyExports, getConfig;
 export async function init() {
@@ -58,4 +57,4 @@ export async function start(canvas) {
   let Exports = await getAssemblyExports("fna-wasm");
 
   Exports.Program.StartGame();
-};
+}

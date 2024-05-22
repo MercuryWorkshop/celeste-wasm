@@ -10,9 +10,6 @@ SDL2.a
 celeste-wasm.tar.zst
 node_modules
 
-wwwroot/zstd.js
-wwwroot/wasm.pak.size.js
-
 *.swp
 *.*~
 project.lock.json

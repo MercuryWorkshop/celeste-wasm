@@ -1,3 +1,5 @@
+import "dreamland/dev";
+
 import { Logs, log } from "./Logs.js";
 import { App, Logo } from "./App.js";
 import { init } from "./game.js";
@@ -141,7 +143,7 @@ function IntroSplash() {
         <main class=${[use(store.theme)]}>
             <div class="info">
                 <${Logo}/>
-                <p>This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a> to the browser using Blazor and <a href="https://github.com/RedMike/FNA.WASM.Sample">FNA.WASM.Sample</a>
+                <p>This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a> to the browser using Blazor and <a href="https://github.com/RedMike/FNA.WASM.Sample">FNA.WASM.Sample</a><br>
                 It needs around 1.6gb of memory and will probably not work on mobile devices<br><br>
 
                 <br><br>

@@ -1,5 +1,5 @@
 {
-  "name": "jslibs",
+  "name": "celeste-wasm-js",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dreamland": "^0.0.21",
     "esbuild": "^0.21.3",
     "zstddec": "^0.1.0"
   }
