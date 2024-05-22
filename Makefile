@@ -47,7 +47,7 @@ endif
 	echo "];" >> "$(WWWROOT)/cfg.js"
 
 $(STATICS):
-	wget https://github.com/ public/FNA-WASM-Build/releases/latest/download/FAudio.a
+	wget https://github.com/public/FNA-WASM-Build/releases/latest/download/FAudio.a
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FNA3D.a
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/libmojoshader.a
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/SDL2.a
@@ -58,7 +58,7 @@ src/node_modules: src/package.json
 $(WWWROOT)/bundle.js: src/node_modules $(JSSRC)
 	sh helpers/bundle.sh "$(WWWROOT)"
 
-$(WWWROOT)/singlefileloader.js: src/node_modules jslibs/pack.js
+$(WWWROOT)/singlefileloader.js: src/node_modules
 	cd src && npx esbuild --minify --bundle ../src/singlefileloader.js --outfile="../$(WWWROOT)/singlefileloader.js"
 
 statics: $(STATICS)
