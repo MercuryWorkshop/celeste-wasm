@@ -18,7 +18,24 @@ export function FsExplorer() {
 
     return html`
         <div>
-            <pre>${use(this.path)}</pre>
+            <pre>${use(this.path)}</pre><button on:click=${()=>{
+                let input = h("input", { type: "file" });
+
+                input.addEventListener("change", () => {
+                    let file = input.files[0];
+                    let reader = new FileReader();
+                    reader.onload = async () => {
+                        let data = new Uint8Array(reader.result);
+                        this.fs.writeFile(this.path + file.name, data);
+                        this.mount();
+                    };
+                    reader.readAsArrayBuffer(file);
+                });
+
+                document.body.appendChild(input);
+                input.click();
+                input.remove();
+            }}>upload</button>
             ${use(this.listing, r => r.map((r) => {
                 let mode = this.fs.stat(this.path + r).mode;
                 if (this.fs.isDir(mode)) {
@@ -52,6 +69,11 @@ export function FsExplorer() {
                                 el.click();
                                 e.stopPropagation();
                             }}>download</button>
+                            <button on:click=${(e) => {
+                                this.fs.unlink(this.path + r);
+                                this.mount();
+                                e.stopPropagation();
+                            }}>delete</button>
                         </div>
                     `
                 }
