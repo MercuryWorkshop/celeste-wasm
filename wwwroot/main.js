@@ -43,10 +43,12 @@ function IntroSplash() {
 
     this.downloading = false;
     this.downloaded = false;
+    this.showprogress = true;
 
     if (window.SINGLEFILE) {
         this.downloaded = true;
         this.downloading = true;
+        this.showprogress = false;
         this.progress = 100;
         encbuf = window.xorbuf;
         window.xorbuf = null;
@@ -141,12 +143,12 @@ function IntroSplash() {
                 <br><br>
 
 
-                You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer.<br>
-                ${!window.SINGLEFILE && "This will download around  ~700mb of assets to your browser's local storage."}<br><br>
+                ${DRM && "You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer." || ""}<br>
+                ${!window.SINGLEFILE && "This will download around  ~700mb of assets to your browser's local storage." || ""}<br><br>
             
 
                 ${$if(use(this.downloading),
-        html`<p> progress: <progress value=${use(this.progress)} max="100"></progress></p>`,
+        $if(use(this.showprogress), html`<p> progress: <progress value=${use(this.progress)} max="100"></progress></p>`),
         html`<button on:click=${download}>Download Assets</button>`,
 
     )}
