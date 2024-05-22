@@ -26,7 +26,7 @@ function getblob(url) {
 }
 
 
-async function unpak_wasm() {
+window.unpak_wasm = async function() {
   let zbuf = Uint8Array.from(atob(wasm_pak.innerText), c => c.charCodeAt(0))
   wasm_pak.remove();
 
@@ -97,7 +97,7 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
   return blob;
 }
 
-async function loadfrompacked() {
+window.loadfrompacked = async function() {
   let blob = b64toBlob(game_data.innerText, "text/javascript");
   game_data.remove();
   window.xorbuf = new Uint8Array(await blob.arrayBuffer());
