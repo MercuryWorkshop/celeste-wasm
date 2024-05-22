@@ -53,7 +53,7 @@ $(STATICS):
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/SDL2.a
 
 src/node_modules: src/package.json
-	cd src && npm install
+	cd src && pnpm install
 
 $(WWWROOT)/bundle.js: src/node_modules $(JSSRC)
 	sh helpers/bundle.sh "$(WWWROOT)"

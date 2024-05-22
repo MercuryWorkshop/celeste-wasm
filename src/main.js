@@ -2,7 +2,6 @@ import "dreamland/dev";
 
 import { Logs, log } from "./Logs.js";
 import { App, Logo } from "./App.js";
-import { init } from "./game.js";
 
 export let store = $store(
     {
@@ -182,8 +181,6 @@ async function loadfrontend() {
     const app = h(App).$;
 
     document.body.appendChild(app.root);
-
-    log("var(--success)", "Loaded frontend!");
 }
 
 if (localStorage["vfs_populated"] !== "true") {
