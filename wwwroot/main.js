@@ -35,6 +35,10 @@ function IntroSplash() {
         max-width: 90%;
 
         padding: 2em;
+
+        pre {
+            display: inline;
+        }
     }
     `
 
@@ -137,9 +141,9 @@ function IntroSplash() {
         <main class=${[use(store.theme)]}>
             <div class="info">
                 <${Logo}/>
-                <p>This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a> to the browser using Blazor and <a href="https://github.com/FNA-XNA/FNA">FNA.WASM</a><br>
-                It needs around 1.6gb of memory and will probably not work on mobile devices<br><br>
-
+                This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a> to the browser using dotnet's <pre>wasmbrowser</pre> template, <a href="https://github.com/RedMike/FNA-WASM-Build">FNA WASM libraries</a>, and <a href="https://github.com/RedMike/FNA.WASM.Sample/wiki/Manually-setting-up-FNA-Project-for-WASM">FNA.WASM.Sample guide</a>.
+                <br>
+                It needs around 1.6gb of memory and will probably not work on mobile devices.
                 <br><br>
 
 
@@ -153,6 +157,7 @@ function IntroSplash() {
 
     )}
     <br>
+
 
             ${$if(use(this.downloaded),
         $if(use(this.decrypted),
