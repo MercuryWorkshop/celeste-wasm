@@ -142,15 +142,12 @@ function IntroSplash() {
         <main class=${[use(store.theme)]}>
             <div class="info">
                 <${Logo}/>
-                <p>This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a> to the browser using Blazor and <a href="https://github.com/RedMike/FNA.WASM.Sample">FNA.WASM.Sample</a><br>
+                This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a> to the browser using dotnet's <pre>wasmbrowser</pre> template and <a href="https://github.com/RedMike/FNA.WASM.Sample">FNA.WASM.Sample</a><br>
+
                 It needs around 1.6gb of memory and will probably not work on mobile devices<br><br>
 
-                <br><br>
-
-
                 ${DRM && "You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer." || ""}<br>
-                ${!window.SINGLEFILE && "This will download around  ~700mb of assets to your browser's local storage." || ""}<br><br>
-            
+                ${!window.SINGLEFILE && "This will download around ~700mb of assets to your browser's local storage." || ""}<br><br>
 
                 ${$if(use(this.downloading),
         $if(use(this.showprogress), html`<p> progress: <progress value=${use(this.progress)} max="100"></progress></p>`),
