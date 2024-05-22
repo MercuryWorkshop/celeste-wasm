@@ -40,7 +40,7 @@ endif
 ifneq ($(SPLIT),0)
 	@echo "Splitting VFS bundle..."
 	mkdir -p $(WWWROOT)/_framework/data
-	split -b$(SPLIT)M $(VFSFILE) $(WWWROOT)/_framework/data/data
+	split -b$(SPLIT)M --additional-suffix .data $(VFSFILE) $(WWWROOT)/_framework/data/data
 endif
 	echo -n "const splits = [" >> "$(WWWROOT)/cfg.js"
 	ls -1 $(WWWROOT)/_framework/data/ | sed 's/^/"/' | sed 's/$$/",/' | tr -d '\n' >> "$(WWWROOT)/cfg.js"
