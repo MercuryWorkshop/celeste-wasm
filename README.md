@@ -1,5 +1,5 @@
 
-<img src="wwwroot/assets/app.ico" width=100 align="left">
+<img src="public/assets/app.ico" width=100 align="left">
 
 <h1>celeste-wasm</h1>
 
