@@ -56,7 +56,7 @@ src/node_modules: src/package.json
 	cd src && pnpm install
 
 $(WWWROOT)/bundle.js: src/node_modules $(JSSRC)
-	SINGLEFILE=0 sh helpers/bundle.sh "$(WWWROOT)"
+	SINGLEFILE= sh helpers/bundle.sh "$(WWWROOT)"
 
 $(WWWROOT)/bundlesingle.js: src/node_modules $(JSSRC)
 	SINGLEFILE=1 sh helpers/bundle.sh "$(WWWROOT)" 
