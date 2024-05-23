@@ -151,11 +151,21 @@ button {
     font-size: 0.95rem;
     font-family: var(--font-body);
     font-weight: 500;
+    display: flex;
+    align-items: center;
+
     &:hover {
         background-color: var(--surface3);
     }
     &:active {
         background-color: var(--surface5);
+    }
+
+
+    .material-symbols-rounded {
+        font-size: 1.3rem;
+        margin: 0;
+        padding: 0;
     }
 
     &:has(.material-symbols-rounded):not(:has(.label)) {
@@ -168,10 +178,8 @@ button {
       border-radius: 50%;
     }
 
-    .material-symbols-rounded {
-        font-size: 1.3rem;
-        margin: 0;
-        padding: 0;
+    &:has(.label) .material-symbols-rounded {
+        margin-right: 0.5rem!important;
     }
 
     &.disabled {
