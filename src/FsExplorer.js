@@ -1,4 +1,4 @@
-export function FsExplorer() {
+export function FSExplorer() {
     this.path = "/";
     this.listing = [];
 
