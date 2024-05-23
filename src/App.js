@@ -1,7 +1,8 @@
 import { Logs, log } from "./Logs.js";
-import { FsExplorer } from "./FsExplorer.js";
-import { fps, version, init, start, downloadsave, uploadsave } from "./game.js";
+import {FSExplorer} from "./FsExplorer.js";
+import { fps, version, init, start} from "./game.js";
 import { store } from "./main.js";
+import {SaveManager} from './SaveManager.js'
 
 export function App() {
     this.css = `
@@ -101,11 +102,11 @@ export function App() {
     dialog {
       background: var(--bg);
       color: var(--fg);
-      border: 0.1em solid var(--surface5);
-      border-radius: 0.5em;
+      border: 0.1em solid var(--surface3);
+      border-radius: 0.6em;
       opacity: 0;
       scale: 0.8;
-      width: 60vw;
+      max-width: 60vw;
 
       transition: opacity 0.2s ease, scale 0.2s ease;
 
@@ -117,6 +118,9 @@ export function App() {
 
       button {
         float: right;
+      }
+      div {
+        width: 100%;
       }
     }
 
@@ -242,27 +246,18 @@ export function App() {
           <button on:click=${() => this.fs.close()} class="plain">
           <span class="material-symbols-rounded">close</span>
           </button>
-        <${FsExplorer} />
+        <${FSExplorer} />
       </dialog>
 
-      <dialog bind:this=${use(this.savesmenu)}>
-          <div class="flex gap">
-              <button on:click=${() => this.savesmenu.close()} class="plain">
-              <span class="material-symbols-rounded">close</span>
-              </button>
-            <button on:click=${async () => {
-            await uploadsave();
-            this.savesmenu.close();
-        }}>
-                upload save.zip
-            </button>
-            <button on:click=${async () => {
-            await downloadsave();
-            this.savesmenu.close();
-        }}>
-                download save.zip
-            </button>
-        </div>
+      <dialog bind:this=${use(this.savesmenu)} style=${{
+        maxWidth: "max(30vw, max(480px, 40rem))",
+        height: "auto",
+        aspectRatio: "1/1"
+      }}>
+        <button on:click=${() => this.fs.close()} class="plain">
+                <span class="material-symbols-rounded">close</span>
+        </button>
+        <${SaveManager} />
       </dialog>
 
       <div class="logs">
