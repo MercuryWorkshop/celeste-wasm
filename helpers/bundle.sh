@@ -20,7 +20,7 @@ fi
 cat "src/game.js.bak" >> "src/game.js"
 
 cd src || exit
-npx esbuild --bundle "../src/main.js" --format=esm --platform=node --outfile="../$WWWROOT/bundle.js.tmp"
+npx esbuild --bundle "../src/main.js" --format=esm --outfile="../$WWWROOT/bundle.js.tmp"
 cd ..
 
 mv "src/game.js.bak" "src/game.js"

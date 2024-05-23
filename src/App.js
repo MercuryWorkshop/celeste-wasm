@@ -1,6 +1,6 @@
 import { Logs, log } from "./Logs.js";
 import { FsExplorer } from "./FsExplorer.js";
-import { fps, version, init, start } from "./game.js";
+import { fps, version, init, start, downloadsave, uploadsave } from "./game.js";
 import { store } from "./main.js";
 
 export function App() {
@@ -98,7 +98,7 @@ export function App() {
       background: color-mix(in srgb, black 35%, color-mix(in srgb, var(--bg), transparent 70%))!important;
     }
 
-    #fs {
+    dialog {
       background: var(--bg);
       color: var(--fg);
       border: 0.1em solid var(--surface5);
@@ -127,7 +127,7 @@ export function App() {
     padding: 0.5em;
     border-top: 0.1em solid var(--surface5);
     background-color: var(--surface0);
-    padding-top: 2em;
+    margin-top: 2em;
   }
 `;
 
@@ -173,7 +173,7 @@ export function App() {
         </span>
         <span class="flex gap-md right vcenter">
         <button on:click=${() => {
-            this.fs.showModal();
+            this.savesmenu.showModal();
         }}>
               <span class="material-symbols-rounded">save</span>
           </button>
@@ -238,6 +238,26 @@ export function App() {
           <span class="material-symbols-rounded">close</span>
           </button>
         <${FsExplorer} />
+      </dialog>
+
+      <dialog bind:this=${use(this.savesmenu)}>
+          <div class="flex gap">
+              <button on:click=${() => this.savesmenu.close()} class="plain">
+              <span class="material-symbols-rounded">close</span>
+              </button>
+            <button on:click=${async () => {
+            await uploadsave();
+            this.savesmenu.close();
+        }}>
+                upload save.zip
+            </button>
+            <button on:click=${async () => {
+            await downloadsave();
+            this.savesmenu.close();
+        }}>
+                download save.zip
+            </button>
+        </div>
       </dialog>
 
       <div class="logs">
