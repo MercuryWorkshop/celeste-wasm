@@ -125,15 +125,11 @@ export function App() {
     }
 
   footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.5em;
     padding: 0.5em;
-    border-top: 0.1em solid var(--surface5);
-    background-color: var(--surface0);
+    border-top: 0.1em solid var(--surface1);
+    background-color: var(--bg-sub);
     margin-top: 2em;
-
-
+    font-size: 0.8em;
     position: relative;
     bottom: 0;
 
@@ -264,18 +260,18 @@ export function App() {
       <h2>Log</h2>
       <${Logs} />
     </div>
-        <footer>
-            <kbd>
-                port by <a href="https://mercurywork.shop">mercury workshop</a>
-            </kbd>
+        <footer class="flex space-between gap-sm">
+            <span>
+                Ported by <a href="https://mercurywork.shop" target="_blank">Mercury Workshop</a>
+            </span>
 
-            <kbd>
-                all game assets and code belong to EXOK
-            </kbd>
+            <span>
+                All game assets and code belong to <a href="https://exok.com/" target="_blank">Extremely OK Games, Ltd.</a> All rights reserved.
+            </span>
 
-            <kbd>
-                check out the project on <a href="https://github.com/MercuryWorkshop/celeste-wasm">github</a>
-            </kbd>
+            <span>
+                Check out the project on <a href="https://github.com/MercuryWorkshop/celeste-wasm">GitHub!</a>
+            </span>
         </footer>
     </main>
   `;
