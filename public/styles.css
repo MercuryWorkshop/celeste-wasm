@@ -53,6 +53,29 @@ main.light {
     --fg6: #5f5f5f;
 }
 
+main.ctp {
+    --bg-sub: #181825;
+    --bg: #1e1e2e;
+    --surface0: #313244;
+    --surface1: #45475a;
+    --surface2: #585b70;
+    --surface3: #6c7086;
+    --surface4: #7f849c;
+    --surface5: #9399b2;
+    --surface6: #a6adc8;
+    --accent: #f38ba8;
+    --error: #f38ba8;
+    --success: #a6e3a1;
+    --warning: #f9e2af;
+    --info: #cba6f7;
+    --fg: #cdd6f4;
+    --fg2: #bac2de;
+    --fg3: #a6adc8;
+    --fg4: #9399b2;
+    --fg5: #7f849c;
+    --fg6: #6c7086;
+}
+
 main,
 canvascontainer,
 pre {
