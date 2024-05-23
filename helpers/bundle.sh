@@ -1,6 +1,15 @@
 WWWROOT=$1
 
-cp "src/game.js" "src/game.js.bak"
+cd src || exit
+npx esbuild --bundle "../src/main.js" --format=esm --outfile="../$WWWROOT/bundle.js.tmp"
+cd ..
+
+
+if [ -n "$SINGLEFILE" ]; then
+  TARGET="$WWWROOT/bundlesingle.js"
+else
+  TARGET="$WWWROOT/bundle.js"
+fi
 
 if [ -n "$SINGLEFILE" ]; then
   dotnetjs="$WWWROOT/_framework/dotnet.js"
@@ -12,29 +21,8 @@ if [ -n "$SINGLEFILE" ]; then
 
   dotnet64=$(base64 -w0 <(echo -n "$dotnet"))
 
-  echo "import { dotnet } from 'data:text/javascript;base64,$dotnet64';" > "src/game.js"
+  echo "import { dotnet } from 'data:text/javascript;base64,$dotnet64';" > "$TARGET"
 else
-  :> "src/game.js"
-fi
-
-cat "src/game.js.bak" >> "src/game.js"
-
-cd src || exit
-npx esbuild --bundle "../src/main.js" --format=esm --outfile="../$WWWROOT/bundle.js.tmp"
-cd ..
-
-mv "src/game.js.bak" "src/game.js"
-
-
-if [ -n "$SINGLEFILE" ]; then
-  TARGET="$WWWROOT/bundlesingle.js"
-else
-  TARGET="$WWWROOT/bundle.js"
-fi
-
-:> "$TARGET"
-
-if [ -z "$SINGLEFILE" ]; then
   echo "import { dotnet } from './_framework/dotnet.js';" > "$TARGET"
 fi
 
