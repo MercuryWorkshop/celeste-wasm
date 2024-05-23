@@ -30,10 +30,47 @@ function IntroSplash() {
     justify-content: center;
     align-items: center;
 
+    .mountain {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        background-image: url("/assets/mountain.png");
+        background-size: cover;
+        background-position: center;
+    }
+
+    #opaque {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: 1;
+          background-color: var(--bg);
+          opacity: 0;
+          animation: fadeout 1.3s ease 0s 1;
+    }
+
+    #blur {
+      backdrop-filter: blur(24px);
+      background-color: color-mix(in srgb, var(--bg) 60%, transparent);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2;
+    }
+
     .info {
+        z-index: 3;
         border-radius: 1em;
-        background-color: var(--surface0);
-        max-width: 90%;
+        background-color: color-mix(in srgb, var(--surface0) 80%, transparent);
+        backdrop-filter: blur(30px);
+        max-width: max(480px, 40%);
 
         padding: 2em;
 
@@ -41,7 +78,11 @@ function IntroSplash() {
             display: inline!important;
         }
 
-        animation: fadein 0.7s ease 0s 1;
+        animation: fadeandmove 1s ease 0s 1;
+
+        div {
+          margin-block: 1em;
+        }
     }
 
     button,
@@ -61,9 +102,14 @@ function IntroSplash() {
       font-size: 1rem;
     }
 
-    @keyframes fadein {
+    @keyframes fadeandmove {
         from { opacity: 0; transform: translateY(1em); }
         to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeout {
+        from { opacity: 1; }
+        to { opacity: 0; }
     }
     `
 
@@ -164,6 +210,9 @@ function IntroSplash() {
 
     return html`
         <main class=${[use(store.theme)]}>
+            <div class="mountain"></div>
+            <div id="opaque"></div>
+            <div id="blur"></div>
             <div class="info">
                 <${Logo}/>
                 <div class="inner">
