@@ -119,13 +119,23 @@ export function App() {
         float: right;
       }
     }
+
+  footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5em;
+    padding: 0.5em;
+    border-top: 0.1em solid var(--surface5);
+    background-color: var(--surface0);
+    padding-top: 2em;
+  }
 `;
 
     this.loaded = false;
     this.started = false;
     this.allowPlay = false;
 
-    let updatePlay = ()=>{this.allowPlay = this.loaded || this.started};
+    let updatePlay = () => { this.allowPlay = this.loaded || this.started };
     handle(use(this.loaded), updatePlay);
     handle(use(this.started), updatePlay);
 
@@ -165,7 +175,7 @@ export function App() {
 
           <button on:click=${() => {
             document.getElementById("fs").showModal();
-          }}>
+        }}>
               <span class="material-symbols-rounded">folder_open</span>
           </button>
 
@@ -220,9 +230,9 @@ export function App() {
       </div>
 
       <dialog id="fs">
-      <button on:click=${()=>{
-        document.getElementById("fs").close();
-      }} class="plain">
+      <button on:click=${() => {
+            document.getElementById("fs").close();
+        }} class="plain">
       <span class="material-symbols-rounded">close</span>
       </button>
         <${FsExplorer} />
@@ -231,7 +241,20 @@ export function App() {
       <div class="logs">
       <h2>Log</h2>
       <${Logs} />
-      </div>
+    </div>
+        <footer>
+            <kbd>
+                port by <a href="https://mercurywork.shop">mercury workshop</a>
+            </kbd>
+
+            <kbd>
+                all game assets and code belong to EXOK
+            </kbd>
+
+            <kbd>
+                check out the project on <a href="https://github.com/MercuryWorkshop/celeste-wasm">github</a>
+            </kbd>
+        </footer>
     </main>
   `;
 }
