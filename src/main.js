@@ -249,7 +249,7 @@ function IntroSplash() {
             html`<button class="important" on:click=${finish}><span class="material-symbols-rounded">stadia_controller</span><span class="label">Play</span></button>`,
             html`
                 <div>
-                    <p>Downloaded assets. Now you need to decrypt them. Find the game files directory for your copy of Celeste and upload Celeste.Content.dll.</p>
+                    <p>Downloaded assets. Now you need to decrypt them. Find the game files directory for your copy of Celeste and upload <kbd>Content/Dialog/english.txt</kbd>.</p>
                     <button class="important" on:click=${decrypt}><span class="material-symbols-rounded">encrypt</span><span class="label">Decrypt</span>s</button>
                     <br>
                     <p>${use(this.decrypterror)}</p>
@@ -262,8 +262,9 @@ function IntroSplash() {
 }
 
 
+export let app;
 async function loadfrontend() {
-    const app = h(App).$;
+    app = h(App).$;
 
     document.body.appendChild(app.root);
 }
