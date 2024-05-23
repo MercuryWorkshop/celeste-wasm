@@ -13,34 +13,43 @@ export function FsExplorer() {
     }
 
     this.css = `
-        width: min(960px, 100%);
+        width: 100%;
+
+        .item {
+            display: flex;
+            align-items: center;
+            margin-block: 0.15rem;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .material-symbols-rounded {
+            font-size: 1.3rem;
+        }
+
+        pre {
+            display: inline;
+        }
+
+        button {
+          float: right;
+        }
+
+        #path {
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-family: var(--font-display)
+        }
     `
 
     return html`
         <div>
-            <pre>${use(this.path)}</pre><button on:click=${()=>{
-                let input = h("input", { type: "file" });
-
-                input.addEventListener("change", () => {
-                    let file = input.files[0];
-                    let reader = new FileReader();
-                    reader.onload = async () => {
-                        let data = new Uint8Array(reader.result);
-                        this.fs.writeFile(this.path + file.name, data);
-                        this.mount();
-                    };
-                    reader.readAsArrayBuffer(file);
-                });
-
-                document.body.appendChild(input);
-                input.click();
-                input.remove();
-            }}>upload</button>
+            <div id="path">${use(this.path)}</div>
             ${use(this.listing, r => r.map((r) => {
                 let mode = this.fs.stat(this.path + r).mode;
                 if (this.fs.isDir(mode)) {
                     return html`
-                        <div on:click=${() => {
+                        <div class="item" role="button" on:click=${() => {
                             if (r == ".") {
                                 this.mount();
                             } else if (r == "..") {
@@ -51,17 +60,21 @@ export function FsExplorer() {
                                 this.path += `${r}/`;
                                 this.mount();
                             }
-                        }}><pre>${r}/</pre></div>
+                        }}>
+                        <span class="material-symbols-rounded">folder</span>
+                        <pre>${r}/</pre>
+                        </div>
                     `
                 } else {
                     return html`
-                        <div on:click=${() => {
+                        <div class="item" role="button" on:click=${() => {
                             this.displayingFile = true;
                             this.filePath = this.path + r;
                             try {
                                 this.fileData = (new TextDecoder()).decode(this.fs.readFile(this.path + r));
                             } catch {}
                         }}>
+                            <span class="material-symbols-rounded">description</span>
                             <pre>${r}</pre>
                             <button on:click=${(e) => {
                                 let data = this.fs.readFile(this.path + r);
@@ -90,7 +103,26 @@ export function FsExplorer() {
                     <textarea bind:value=${use(this.fileData)}></textarea>
                 <div>
             `)}
+            <button class="large" on:click=${()=>{
+                            let input = h("input", { type: "file" });
+
+                            input.addEventListener("change", () => {
+                                let file = input.files[0];
+                                let reader = new FileReader();
+                                reader.onload = async () => {
+                                    let data = new Uint8Array(reader.result);
+                                    this.fs.writeFile(this.path + file.name, data);
+                                    this.mount();
+                                };
+                                reader.readAsArrayBuffer(file);
+                            });
+
+                            document.body.appendChild(input);
+                            input.click();
+                            input.remove();
+              }}>
+              <span class="material-symbols-rounded">upload</span>
+              </button>
         </div>
     `
 }
-

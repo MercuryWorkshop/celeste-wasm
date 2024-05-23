@@ -178,12 +178,12 @@ function IntroSplash() {
         $if(use(this.showprogress), html`
           <div>
           <p>Downloading... (${use(this.progress)}% done)</p>
-          <div id="bar" style="width: 100%; height: 0.5em; background-color: var(--surface1); border-radius: 0.1em;">
+          <div id="bar" style="width: 100%; height: 0.5em; background-color: var(--surface1); border-radius: 0.2em;">
             <div id="progress" style=${{
               width: use`${this.progress}%`,
               height: "0.5em",
               backgroundColor: "var(--accent)",
-              borderRadius: "0.1em"
+              borderRadius: "0.2em"
             }}></div>
           </div>
           </div>
