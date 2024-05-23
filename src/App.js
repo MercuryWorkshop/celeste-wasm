@@ -307,9 +307,9 @@ function FuckMozilla() {
         <div>
             <h1>
             <span class="material-symbols-rounded">warning</span>
-            THIS MIGHT NOT WORK WELL ON FIREFOX
+            THIS MIGHT NOT WORK WELL ON FIREFOX!
             </h1>
-            <p>The chromium WASM implemenation is generally better, and it was what was tested on the most. It will probably still work (might not!) but you should be using chromium</p>
+            <p>Chromium's WASM implementation is generally better, and it was what was tested on the most. It will probably still work (might not!) on Firefox but you should really be using a Chromium-based browser for this.</p>
 
             <button on:click=${() => this.root.remove()}>Dismiss</button>
         </div>
