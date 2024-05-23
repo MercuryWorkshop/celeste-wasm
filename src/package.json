@@ -12,6 +12,8 @@
   "dependencies": {
     "dreamland": "^0.0.21",
     "esbuild": "^0.21.3",
+    "fflate": "^0.8.2",
+    "jszip": "^3.10.1",
     "zstddec": "^0.1.0"
   }
 }

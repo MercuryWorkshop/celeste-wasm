@@ -1,3 +1,5 @@
+import { zip, unzip } from "fflate";
+
 export const version = "1.4.0.0";
 let setModuleImports, getAssemblyExports, getConfig;
 export async function init() {
@@ -57,3 +59,28 @@ export async function start(canvas) {
 
     Exports.Program.StartGame();
 };
+
+export async function downloadsave() {
+    await new Promise(r => dotnet.instance.Module.FS.syncfs(false, r));
+
+    let tozip = {};
+
+    let saves = dotnet.instance.Module.FS.readdir("/libsdl/Celeste/Saves");
+    for (let save of saves) {
+        if (save === "." || save === "..") continue;
+        let savepath = `/libsdl/Celeste/Saves/${save}`;
+        let data = dotnet.instance.Module.FS.readFile(savepath);
+        tozip[save] = data;
+    }
+    const zipped = await new Promise((r) => zip(tozip, (err, data) => r(data)));
+
+    let blob = new Blob([zipped], { type: "application/zip" });
+    let url = URL.createObjectURL(blob);
+    let a = h("a", { href: url, download: "saves.zip" });
+    a.click();
+    a.remove();
+}
+
+export async function uploadsave() {
+
+}
