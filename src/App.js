@@ -119,7 +119,7 @@ export function App() {
       button {
         float: right;
       }
-      div {
+      & > div {
         width: 100%;
       }
     }
@@ -133,7 +133,7 @@ export function App() {
     background-color: var(--surface0);
     margin-top: 2em;
 
-    
+
     position: relative;
     bottom: 0;
 
