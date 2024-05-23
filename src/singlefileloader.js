@@ -18,6 +18,11 @@ function getblob(url) {
   url = url.replaceAll(folder, "");
   url = url.replaceAll(folder2, "");
 
+  let q = url.indexOf("?");
+  if (q !== -1) {
+    url = url.substring(0, q);
+  }
+
   let blob = importmap[url];
 
   if (!blob) throw new Error("Asset not found: " + url);
@@ -27,9 +32,31 @@ function getblob(url) {
 
 
 window.unpak_wasm = async function() {
-  let zbuf = Uint8Array.from(atob(wasm_pak.innerText), c => c.charCodeAt(0))
-  wasm_pak.remove();
+  if (wasm_pak.innerText.length > 100) {
+    let zbuf = Uint8Array.from(atob(wasm_pak.innerText), c => c.charCodeAt(0))
+    wasm_pak.remove();
+    await unpak(zbuf);
+  } else {
+    await new Promise((resolve) => {
+      document.querySelector("h1").innerText = "Please upload wasm.pak";
+      let input = document.createElement("input");
+      input.type = "file";
+      document.body.appendChild(input);
+      input.addEventListener("change", async () => {
+        let file = input.files[0];
 
+        let buf = await file.arrayBuffer();
+
+        await unpak(new Uint8Array(buf));
+
+        input.remove();
+        resolve();
+      });
+    });
+  }
+}
+
+async function unpak(zbuf) {
   await zdecoder.init();
   let buf = await zdecoder.decode(zbuf, WASM_PACK_SIZE);
   let decoder = new TextDecoder();
@@ -75,6 +102,7 @@ window.unpak_wasm = async function() {
     let blob = getblob(url);
     return import(blob);
   };
+
 }
 
 const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
@@ -98,23 +126,33 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 }
 
 window.loadfrompacked = async function() {
-  let blob = b64toBlob(game_data.innerText, "text/javascript");
-  game_data.remove();
-  window.xorbuf = new Uint8Array(await blob.arrayBuffer());
+  if (game_data.innerText.length > 100) {
+    let blob = b64toBlob(game_data.innerText, "text/javascript");
+    game_data.remove();
+    window.xorbuf = new Uint8Array(await blob.arrayBuffer());
+  } else {
+    console.log("loading from file");
+    await loadfromfile();
+  }
 }
 
-function loadfromfile() {
-  let input = h("input", { type: "file" });
-  document.body.appendChild(input);
-  input.addEventListener("change", async () => {
-    let file = input.files[0];
-    let blob = new Blob([await file.arrayBuffer()], {
-      type: "text/javascript",
+async function loadfromfile() {
+
+  await new Promise((resolve) => {
+    document.querySelector("h1").innerText = "Please upload data.data";
+    let input = document.createElement("input");
+    input.type = "file";
+    document.body.appendChild(input);
+    input.addEventListener("change", async () => {
+      let file = input.files[0];
+
+      let buf = await file.arrayBuffer();
+      window.xorbuf = new Uint8Array(buf);
+
+      input.remove();
+      resolve();
+
     });
-
-    window.assetblob = URL.createObjectURL(blob);
-
   });
-  input.click();
 
 }

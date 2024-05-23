@@ -42,7 +42,9 @@ echo "$beforemap" > "$file"
 
 echo "BASE64: wasm.pak"
 
-base64 -w0 wasm.pak >> "$file"
+if [ -z "$SKIPPAK" ]; then
+  base64 -w0 wasm.pak >> "$file"
+fi
 
 beforeassets=${aftermap%%SEDHERE_GAME_DATA*}
 afterassets=${aftermap#*SEDHERE_GAME_DATA}
@@ -51,6 +53,8 @@ echo "$beforeassets" >> "$file"
 
 echo "BASE64: data.data"
 
-base64 -w0 $WWWROOT/_framework/data.data >> "$file"
+if [ -z "$SKIPDATA" ]; then
+  base64 -w0 $WWWROOT/_framework/data.data >> "$file"
+fi
 
 echo "$afterassets" >> "$file"
