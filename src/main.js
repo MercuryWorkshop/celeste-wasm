@@ -221,7 +221,7 @@ function IntroSplash() {
                 </div>
                 <div>It needs around 1.6GB of memory and will probably not work on mobile devices.<br><br></div>
                 ${DRM && "You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer." || ""}<br>
-                The game will autosave your progress, but the browser may wipe it after a while. Remember to periodically use the save icon at the top<br>
+                The game will autosave your progress, but the browser may wipe it after a while. Remember to periodically use the save icon at the top.<br><br>
                 ${!window.SINGLEFILE && "This will download around ~700MB of assets to your browser's local storage." || ""}<br><br>
 
                 ${$if(use(this.downloading),
