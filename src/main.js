@@ -1,6 +1,5 @@
 import "dreamland/dev";
 
-import { Logs, log } from "./Logs.js";
 import { App, Logo } from "./App.js";
 
 export let store = $store(
