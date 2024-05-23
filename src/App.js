@@ -90,7 +90,34 @@ export function App() {
     .top-bar {
       margin-bottom: 1.5em;
       padding-inline: 1.7em;
+      border: none;
       background-color: var(--surface0);
+    }
+
+    dialog:-internal-dialog-in-top-layer::backdrop {
+      background: color-mix(in srgb, black 35%, color-mix(in srgb, var(--bg), transparent 70%))!important;
+    }
+
+    #fs {
+      background: var(--bg);
+      color: var(--fg);
+      border: 0.1em solid var(--surface5);
+      border-radius: 0.5em;
+      opacity: 0;
+      scale: 0.8;
+      width: 60vw;
+
+      transition: opacity 0.2s ease, scale 0.2s ease;
+
+      &[open] {
+        opacity: 1;
+        scale: 1;
+        transition: opacity 0.2s ease, scale 0.2s ease;
+      }
+
+      button {
+        float: right;
+      }
     }
 `;
 
@@ -135,6 +162,13 @@ export function App() {
     )}
         </span>
         <span class="flex gap-md right vcenter">
+
+          <button on:click=${() => {
+            document.getElementById("fs").showModal();
+          }}>
+              <span class="material-symbols-rounded">folder_open</span>
+          </button>
+
           <button on:click=${() => {
             if (store.theme === "light") {
                 store.theme = "dark";
@@ -185,7 +219,14 @@ export function App() {
         </canvascontainer>
       </div>
 
-      <${FsExplorer} />
+      <dialog id="fs">
+      <button on:click=${()=>{
+        document.getElementById("fs").close();
+      }} class="plain">
+      <span class="material-symbols-rounded">close</span>
+      </button>
+        <${FsExplorer} />
+      </dialog>
 
       <div class="logs">
       <h2>Log</h2>

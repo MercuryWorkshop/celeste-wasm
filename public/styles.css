@@ -176,6 +176,15 @@ button {
       width: 2rem;
       height: 2rem;
       border-radius: 50%;
+
+      &.large {
+        width: 3.5rem;
+        height: 3.5rem;
+
+        .material-symbols-rounded {
+          font-size: 1.75rem;
+        }
+      }
     }
 
     &:has(.label) .material-symbols-rounded {
@@ -195,6 +204,15 @@ button {
 
         &:active {
             background-color: color-mix(in srgb, var(--accent) 70%, white);
+        }
+    }
+
+    &.plain {
+        background-color: transparent;
+        color: var(--fg);
+
+        &:hover {
+            background-color: var(--surface1);
         }
     }
 }
