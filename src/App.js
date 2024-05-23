@@ -128,6 +128,11 @@ export function App() {
     border-top: 0.1em solid var(--surface5);
     background-color: var(--surface0);
     margin-top: 2em;
+
+    
+    position: relative;
+    bottom: 0;
+
   }
 `;
 
