@@ -53,6 +53,7 @@ main.light {
     --fg6: #5f5f5f;
 }
 
+/* world's worst port of catppuccin mocha but who gaf */
 main.ctp {
     --bg-sub: #181825;
     --bg: #1e1e2e;
@@ -251,10 +252,23 @@ h5,
 h6 {
   font-family: var(--font-display);
 }
+
+h1 {
+    font-weight: 680;
+}
+
+h2 {
+    font-weight: 600;
+}
+
+h3 {
+    font-weight: 500;
+}
+
 a {
     color: var(--accent);
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.15s;
     &:hover {
         color: color-mix(in srgb, var(--accent) 80%, white);
     }
