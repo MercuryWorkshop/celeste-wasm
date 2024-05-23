@@ -82,5 +82,25 @@ export async function downloadsave() {
 }
 
 export async function uploadsave() {
+    let input = h("input", { type: "file" });
+    await new Promise(r => {
+        input.onchange = async () => {
+            let file = input.files[0];
+            let data = await file.arrayBuffer();
+            let unzipped = await new Promise((r) => unzip(new Uint8Array(data), (err, data) => r(data)));
+            let files = Object.entries(unzipped);
 
+            if (!dotnet.instance.Module.FS.analyzePath("/libsdl/Celeste").path) {
+                dotnet.instance.Module.FS.mkdir("/libsdl/Celeste", 0o755);
+                dotnet.instance.Module.FS.mkdir("/libsdl/Celeste/Saves", 0o755);
+            }
+            for (let [name, data] of files) {
+                dotnet.instance.Module.FS.writeFile(`/libsdl/Celeste/Saves/${name}`, data);
+            }
+            await new Promise(r => dotnet.instance.Module.FS.syncfs(false, r));
+            r();
+        };
+        input.click();
+        input.remove();
+    })
 }
