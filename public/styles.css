@@ -8,6 +8,7 @@
 
 main,
 main.dark {
+    --bg-sub: #131313;
     --bg: #171717;
     --surface0: #1e1e1e;
     --surface1: #2b2b2b;
@@ -30,6 +31,7 @@ main.dark {
 }
 
 main.light {
+    --bg-sub: #fafafa;
     --bg: #f0f0f0;
     --surface0: #e0e0e0;
     --surface1: #d0d0d0;
