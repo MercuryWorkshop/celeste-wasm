@@ -254,7 +254,7 @@ export function App() {
         height: "auto",
         aspectRatio: "1/1"
       }}>
-        <button on:click=${() => this.fs.close()} class="plain">
+        <button on:click=${() => this.savemenu.close()} class="plain">
                 <span class="material-symbols-rounded">close</span>
         </button>
         <${SaveManager} />
