@@ -58,7 +58,7 @@ src/node_modules: src/package.json
 $(WWWROOT)/bundle.js: src/node_modules $(JSSRC)
 	sh helpers/bundle.sh "$(WWWROOT)"
 
-$(WWWROOT)/singlefileloader.js: src/node_modules
+$(WWWROOT)/singlefileloader.js: src/node_modules src/singlefileloader.js
 	cd src && npx esbuild --minify --bundle ../src/singlefileloader.js --outfile="../$(WWWROOT)/singlefileloader.js"
 
 statics: $(STATICS)
