@@ -8,7 +8,7 @@ if [ -n "$SINGLEFILE" ]; then
 
   dotnet=${dotnet//o=import\(e.resolvedUrl\)/o=window.importfill\(e.resolvedUrl\)}
   dotnet=${dotnet//n=import\(t.resolvedUrl\)/n=window.importfill\(t.resolvedUrl\)}
-  # dotnet=${dotnet//import.meta.url/window.location.href}
+  dotnet=${dotnet//import.meta.url/window.location.href}
 
   dotnet64=$(base64 -w0 <(echo -n "$dotnet"))
 
@@ -26,12 +26,18 @@ cd ..
 mv "src/game.js.bak" "src/game.js"
 
 
-:> "$WWWROOT/bundle.js"
-
-if [ -z "$SINGLEFILE" ]; then
-  echo "import { dotnet } from './_framework/dotnet.js';" > "$WWWROOT/bundle.js"
+if [ -n "$SINGLEFILE" ]; then
+  TARGET="$WWWROOT/bundlesingle.js"
+else
+  TARGET="$WWWROOT/bundle.js"
 fi
 
-cat "$WWWROOT/bundle.js.tmp" >> "$WWWROOT/bundle.js"
+:> "$TARGET"
+
+if [ -z "$SINGLEFILE" ]; then
+  echo "import { dotnet } from './_framework/dotnet.js';" > "$TARGET"
+fi
+
+cat "$WWWROOT/bundle.js.tmp" >> "$TARGET"
 
 
