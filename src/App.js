@@ -172,9 +172,13 @@ export function App() {
     )}
         </span>
         <span class="flex gap-md right vcenter">
-
+        <button on:click=${() => {
+            this.fs.showModal();
+        }}>
+              <span class="material-symbols-rounded">save</span>
+          </button>
           <button on:click=${() => {
-            document.getElementById("fs").showModal();
+            this.fs.showModal();
         }}>
               <span class="material-symbols-rounded">folder_open</span>
           </button>
@@ -229,12 +233,10 @@ export function App() {
         </canvascontainer>
       </div>
 
-      <dialog id="fs">
-      <button on:click=${() => {
-            document.getElementById("fs").close();
-        }} class="plain">
-      <span class="material-symbols-rounded">close</span>
-      </button>
+      <dialog bind:this=${use(this.fs)} id="fs">
+          <button on:click=${() => this.fs.close()} class="plain">
+          <span class="material-symbols-rounded">close</span>
+          </button>
         <${FsExplorer} />
       </dialog>
 
