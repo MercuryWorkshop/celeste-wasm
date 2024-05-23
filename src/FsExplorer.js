@@ -37,15 +37,15 @@ export function FsExplorer() {
 
         #path {
             font-size: 1.5rem;
-            font-weight: 600;
-            font-family: var(--font-display)
+            font-weight: 650;
+            font-family: var(--font-display);
+            margin-block: 0.5rem;
         }
     `
 
     return html`
         <div>
-            <h1>emscripten file browser</h1>
-            <div id="path">${use(this.path)}</div>
+            <div id="path">${use(this.path, path => path == "/" ? "File Browser" : path)}</div>
             ${use(this.listing, r => r.map((r) => {
         let mode = this.fs.stat(this.path + r).mode;
         if (this.fs.isDir(mode)) {
