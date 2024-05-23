@@ -92,8 +92,12 @@ export async function uploadsave() {
 
             if (!dotnet.instance.Module.FS.analyzePath("/libsdl/Celeste").path) {
                 dotnet.instance.Module.FS.mkdir("/libsdl/Celeste", 0o755);
+            }
+
+            if (!dotnet.instance.Module.FS.analyzePath("/libsdl/Celeste/Save").path) {
                 dotnet.instance.Module.FS.mkdir("/libsdl/Celeste/Saves", 0o755);
             }
+
             for (let [name, data] of files) {
                 dotnet.instance.Module.FS.writeFile(`/libsdl/Celeste/Saves/${name}`, data);
             }
