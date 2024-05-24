@@ -31,8 +31,7 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
 8. Copy the `Content` folder from your celeste install and put it in the root of this project
 9. copy in the exported fmod v2 banks to `Content/FMOD/Desktop/`
 11. go to the releases tab, download celeste.patched.zip.xor, and then run `python3 helpers/xor.py celeste.patched.zip.xor /path/to/your/celeste/install/Content/Dialog/english.txt > celeste.patched.zip` and then extract it into `celeste/Celeste`
-12. run `make statics`
-13. run `make serve`
+12. run `make statics serve`
 
 ## i want to build this as an html file
 1. run `make singlefile`
@@ -50,5 +49,5 @@ we couldn't get the output of ilspy to be stable enough for a patch system to wo
 ## (bonus) simple fna game porting guide
 1. decompile it
 2. follow instructions over at [`FNA.WASM.Sample`](https://github.com/RedMike/FNA.WASM.Sample/wiki/Manually-setting-up-FNA-Project-for-WASM#set-up-wasm-project) to get a basic project up, replacing `MyGame` with the default xna `Game`
-3. follow instructions from `FNA.WASM.Sample` for complex asset system (or take a look in `helpers/buildvfs.sh` and `wwwroot/main.js`)
+3. follow instructions from `FNA.WASM.Sample` for complex asset system (or take a look in `helpers/buildvfs.sh` and `src/game.js`)
 4. once assets are loading copy in the decompiled game and replace the default `Game` object, copy in anything the Main function does from the original game
