@@ -32,6 +32,11 @@ apply() {
       continue
     fi
 
+    if [[ $file == *FMOD* ]] && [ -z "$STRIPFMOD" ]; then
+      echo "FMOD: Skipping $file"
+      continue
+    fi
+
     echo "$file"
     mkdir -p "$RESTORE/$(dirname "$file")"
     cp "$CONTENTROOT/$file" "$RESTORE/$file"
