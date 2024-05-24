@@ -53,7 +53,7 @@ function IntroSplash() {
 			top: 0;
 			left: 0;
 			z-index: 0;
-			background-image: url("/assets/mountain.png");
+			background-image: url(${mountainsrc.href});
 			background-size: cover;
 			background-position: center;
 		}
