@@ -7,6 +7,8 @@ export function SaveManager() {
 		justify-content: center;
 		align-items: center;
 		gap: 0.75rem;
+		width: 100%;
+		height: calc(100% - 3rem);
 		& > div {
 			display: flex;
 
@@ -19,12 +21,14 @@ export function SaveManager() {
 			border: 2px dashed var(--fg6);
 			border-radius: 0.6rem;
 			color: var(--fg6);
-			transition: 0.3s;
+			transition: 0.3s ease;
 
 			&.dragover {
+			  color: var(--fg3);
 				border-color: var(--accent);
 				background-color: color-mix(in srgb, var(--accent) 5%, color-mix(in srgb, var(--surface2) 40%, transparent));
-				transition: 0.3s;
+				transition: 0.3s ease;
+				box-shadow: 0 0 28px 0 color-mix(in srgb, var(--accent) 20%, transparent);
 			}
 
 			h1 {
@@ -69,7 +73,7 @@ export function SaveManager() {
 				}}
 			>
 				<div class="material-symbols-rounded" style="font-size: 5rem;">cloud_upload</div>
-				<h1>Drag and drop file</h1>
+				<h1>Drag and drop savefile</h1>
 
 				<div>
 					<button id="upload" on:click={async () => {
