@@ -43,8 +43,11 @@ export function App() {
 				}
 
 				& > div {
+				  transition: 0.3s ease;
 					&.hidden {
-						display: none;
+						opacity: 0;
+						pointer-events: none;
+						transition: 0.3s ease;
 					}
 
 					.material-symbols-rounded {
