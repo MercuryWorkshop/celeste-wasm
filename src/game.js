@@ -25,7 +25,7 @@ export async function init() {
 		);
 	}
 	await new Promise((r) => dotnet.instance.Module.FS.syncfs(true, r));
-	console.log("synced; exposing dotnet FS");
+	console.debug("synced; exposing dotnet FS");
 
 	window.FS = dotnet.instance.Module.FS;
 	setModuleImports("main.js", {
