@@ -15,8 +15,13 @@
 
         <EmccEnvironment>web</EmccEnvironment>
         <EmccExtraLDFlags>--js-library $(MSBuildProjectDirectory.Replace('\', '/'))/js/library-fixemscripten.js -sFULL_ES3 -lidbfs.js -sLZ4</EmccExtraLDFlags>
+
+		<HybridGlobalization>true</HybridGlobalization>
+
         <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
-        <WasmNativeStrip>false</WasmNativeStrip>
+		<WasmNativeStrip>false</WasmNativeStrip>
+		<WasmNativeDebugSymbols>false</WasmNativeDebugSymbols>
+		<WasmEnableSIMD>true</WasmEnableSIMD>
     </PropertyGroup>
 
     <ItemGroup>
