@@ -18,7 +18,7 @@ A mostly-complete port of Celeste (2018) to WebAssembly using dotnet's `wasmbrow
 First, you need to own the game. There is a standalone html file [here](https://github.com/MercuryWorkshop/celeste-wasm/releases/download/latest/celeste.html) that can be played completely offline. There is also a public build [here](https://celeste.r58playz.dev).
 
 # I want to build this
-if you can't reproduce this (it's really finnicky) feel free to ask us, the instructions can definitely be imrpoved
+if you can't reproduce this (it's really finnicky) feel free to ask us, the instructions can definitely be improved
 
 1. install arch packages `dotnet-host dotnet-runtime dotnet-sdk dotnet-targeting-pack aspnet-runtime fmodstudio xxd wget` & emscripten sdk
 2. clone FNA latest in the parent dir (`../`)
