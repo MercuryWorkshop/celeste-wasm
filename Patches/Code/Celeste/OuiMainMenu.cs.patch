@@ -1,6 +1,26 @@
 --- ../decomp/Celeste/OuiMainMenu.cs	2024-05-17 02:12:39.000000000 -0400
-+++ celeste/Celeste/OuiMainMenu.cs	2024-05-21 12:02:13.757071475 -0400
-@@ -301,6 +301,7 @@
++++ celeste/Celeste/OuiMainMenu.cs	2024-05-23 20:50:24.407740279 -0400
+@@ -95,12 +95,13 @@
+ 			MainMenuSmallButton credits = new MainMenuSmallButton("menu_credits", "menu/credits", this, at, at + tweenAdd, OnCredits);
+ 			buttons.Add(credits);
+ 			at += Vector2.UnitY * credits.ButtonHeight;
+-			if (!Celeste.IsGGP)
+-			{
+-				MainMenuSmallButton exit = new MainMenuSmallButton("menu_exit", "menu/exit", this, at, at + tweenAdd, OnExit);
+-				buttons.Add(exit);
+-				at += Vector2.UnitY * exit.ButtonHeight;
+-			}
++			// exit button just crashes wasm
++			// if (!Celeste.IsGGP)
++			// {
++			// 	MainMenuSmallButton exit = new MainMenuSmallButton("menu_exit", "menu/exit", this, at, at + tweenAdd, OnExit);
++			// 	buttons.Add(exit);
++			// 	at += Vector2.UnitY * exit.ButtonHeight;
++			// }
+ 			for (int i = 0; i < buttons.Count; i++)
+ 			{
+ 				if (i > 0)
+@@ -301,6 +302,7 @@
  			{
  				Engine.Scene = new Scene();
  				Engine.Instance.Exit();
