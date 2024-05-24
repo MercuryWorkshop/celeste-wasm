@@ -255,7 +255,7 @@ button {
 		background-color: var(--surface4);
 	}
 
-	&.important {
+	&.primary {
 		background-color: var(--accent);
 
 		&:hover {

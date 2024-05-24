@@ -252,7 +252,7 @@ export function App() {
 
 					<button
 						class={[
-							use(this.allowPlay, (allowed) => (!allowed ? "disabled" : "important")),
+							use(this.allowPlay, (allowed) => (!allowed ? "disabled" : "primary")),
 						]}
 						on:click={startgame}
 						title="Start Game"

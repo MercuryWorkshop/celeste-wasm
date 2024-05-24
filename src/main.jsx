@@ -217,7 +217,7 @@ function IntroSplash() {
 	};
 
 	let finish = async () => {
-		$el.classList.remove("important");
+		$el.classList.remove("primary");
 		$el.classList.add("disabled");
 		this.playlabel.innerText = "Initializing...";
 		window.assetblob = URL.createObjectURL(new Blob([encbuf]));
@@ -271,7 +271,7 @@ function IntroSplash() {
 						)),
 						(
 							<div>
-								<button class="action important" on:click={download}>
+								<button class="action primary" on:click={download}>
 									<span class="material-symbols-rounded">download</span>
 									<span class="label">Download Assets</span>
 								</button>
@@ -282,7 +282,7 @@ function IntroSplash() {
 					{$if(use(this.downloaded),
 						$if(use(this.decrypted),
 							(
-								<button class="action important" on:click={finish}>
+								<button class="action primary" on:click={finish}>
 									<span class="material-symbols-rounded">stadia_controller</span>
 									<span bind:this={use(this.playlabel)} class="label">Play</span>
 								</button>
@@ -293,7 +293,7 @@ function IntroSplash() {
 										Downloaded assets. Now you need to decrypt them. Find the game files directory for your copy of Celeste and upload <code>Content/Dialog/english.txt</code>.
 									</p>
 
-									<button class="action important" on:click={decrypt}>
+									<button class="action primary" on:click={decrypt}>
 										<span class="material-symbols-rounded">encrypted</span>
 										<span class="label">Decrypt</span>
 									</button>
