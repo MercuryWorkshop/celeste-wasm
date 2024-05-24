@@ -16,8 +16,6 @@ export function FSExplorer() {
 		width: 100%;
 
 		.item {
-			display: flex;
-			align-items: center;
 			margin-block: 0.15rem;
 			gap: 0.5rem;
 			cursor: pointer;
@@ -31,9 +29,35 @@ export function FSExplorer() {
 			display: inline;
 		}
 
-		button {
-			float: right;
-			bottom: 0;
+		button.large {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+		}
+
+		.actions {
+		    pointer-events: none;
+				opacity: 0;
+				transition: opacity 0.15s ease;
+		}
+
+		.item:hover .actions {
+		    pointer-events: all;
+				opacity: 1;
+				transition: opacity 0.15s ease;
+		}
+
+		.item {
+		  width: 100%;
+			border-radius: 0.6rem;
+			padding-inline: 0.5rem;
+			background: var(--bg);
+			transition: background 0.15s ease;
+		}
+
+		.item:hover {
+		  background: var(--surface0);
+			transition: background 0.15s ease;
 		}
 
 		#path {
@@ -42,16 +66,23 @@ export function FSExplorer() {
 			font-family: var(--font-display);
 			margin-block: 0.5rem;
 		}
+
+		#listing {
+		  width: 100%;
+			height: 100%;
+			overflow-y: auto;
+		}
     `
 
 	return (
 		<div>
 			<div id="path">{use(this.path, path => path == "/" ? "File Browser" : path)}</div>
+			<div id="listing">
 			{use(this.listing, r => r.map((r) => {
 				let mode = this.fs.stat(this.path + r).mode;
 				if (this.fs.isDir(mode)) {
 					return (
-						<div class="item" role="button" on:click={() => {
+						<div class="item flex vcenter space-between" role="button" on:click={() => {
 							if (r == ".") {
 								this.mount();
 							} else if (r == "..") {
@@ -63,37 +94,48 @@ export function FSExplorer() {
 								this.mount();
 							}
 						}}>
-							<span class="material-symbols-rounded">folder</span>
-							<pre>{r}/</pre>
+						  <div class="title flex vcenter gap-sm">
+  							<span class="material-symbols-rounded">folder</span>
+  							<pre>{r}/</pre>
+							</div>
 						</div>
 					)
 				} else {
 					return (
-						<div class="item" role="button" on:click={() => {
+						<div class="item flex vcenter space-between" role="button" on:click={() => {
 							this.displayingFile = true;
 							this.filePath = this.path + r;
 							try {
 								this.fileData = (new TextDecoder()).decode(this.fs.readFile(this.path + r));
 							} catch { }
 						}}>
-							<span class="material-symbols-rounded">description</span>
-							<pre>{r}</pre>
-							<button on:click={(e) => {
-								let data = this.fs.readFile(this.path + r);
-								let el = (<a href={URL.createObjectURL(new Blob([data]))} download={r}></a>)
-								el.click();
-								e.stopPropagation();
-							}}>download</button>
-							<button on:click={(e) => {
-								this.fs.unlink(this.path + r);
-								this.mount();
-								this.fs.syncfs(false, () => { });
-								e.stopPropagation();
-							}}>delete</button>
+						  <div class="title flex vcenter gap-sm">
+  							<span class="material-symbols-rounded">description</span>
+  							<pre>{r}</pre>
+           	  </div>
+							<div class="actions flex vcenter gap-xs">
+  							<button title="Download" class="plain" on:click={(e) => {
+  								let data = this.fs.readFile(this.path + r);
+  								let el = (<a href={URL.createObjectURL(new Blob([data]))} download={r}></a>)
+  								el.click();
+  								e.stopPropagation();
+  							}}>
+  							  <span class="material-symbols-rounded">download</span>
+  							</button>
+  							<button title="Delete" class="plain" on:click={(e) => {
+  								this.fs.unlink(this.path + r);
+  								this.mount();
+  								this.fs.syncfs(false, () => { });
+  								e.stopPropagation();
+  							}}>
+  							  <span class="material-symbols-rounded" style="color: var(--accent)">delete</span>
+  							</button>
+							</div>
 						</div>
 					)
 				}
 			}))}
+			</div>
 			{$if(use(this.displayingFile), (
 				<div>
 					<div>file: <pre>{use(this.filePath)}</pre></div>
@@ -108,7 +150,7 @@ export function FSExplorer() {
 					<textarea bind:value={use(this.fileData)}></textarea>
 				</div>
 			))}
-			<button class="large" on:click={() => {
+			<button class="large" title="Upload to this directory" on:click={() => {
 				let input = h("input", { type: "file" });
 
 				input.addEventListener("change", () => {
