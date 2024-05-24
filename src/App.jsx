@@ -18,7 +18,7 @@ export function App() {
 		overflow-x: hidden;
 
 		.game {
-			margin-inline: 2em;
+			width: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -31,15 +31,11 @@ export function App() {
 				border: 0.7px solid var(--surface5);
 				border-radius: 0.6rem;
 				overflow: hidden;
-				background-color: var(--surface1);
+				background-color: black;
 
-				&:has(.hidden) {
-					background-color: black;
-				}
-
-				&:not(:has(.hidden)) {
-					width: 960px;
-					height: 540px;
+				&:not(:has(canvas[width])) {
+					min-width: min(100%, 960px);
+					min-height: min(100%, 540px);
 				}
 
 				& > * {
@@ -60,6 +56,7 @@ export function App() {
 						font-weight: 570;
 					}
 
+					background-color: var(--surface1);
 					user-select: none;
 					text-align: center;
 					color: var(--fg6);
@@ -93,10 +90,22 @@ export function App() {
 		}
 
 		.top-bar {
-			margin-bottom: 1.5em;
-			padding-inline: 1.7em;
+			padding-bottom: 1em;
 			border: none;
 			background-color: var(--surface0);
+			flex-direction: column;
+			align-items: center;
+			gap: 0.5em;
+		}
+
+		.expand { flex: 1 }
+
+		.content {
+			padding: 0 1em;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			flex: 1;
 		}
 
 		dialog:-internal-dialog-in-top-layer::backdrop {
@@ -110,7 +119,9 @@ export function App() {
 			border-radius: 0.6em;
 			opacity: 1;
 			scale: 1;
-			max-width: 60vw;
+			max-height: 75vh;
+			width: unset;
+			aspect-ratio: 1 / 1;
 
 			transition: opacity 0.25s, transform 0.25s;
 			transition-timing-function: ease;
@@ -136,10 +147,26 @@ export function App() {
 			padding: 0.5em;
 			border-top: 0.1em solid var(--surface1);
 			background-color: var(--bg-sub);
-			margin-top: 2em;
 			font-size: 0.8em;
 			position: relative;
 			bottom: 0;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+		}
+
+		@media screen and (min-width: 950px) {
+			footer {
+				flex-direction: row !important;
+			}
+		}
+
+		@media screen and (min-width: 700px) {
+			.top-bar {
+				flex-direction: row !important;
+				gap: 1.5em !important;
+				padding: 0 1.5em !important;
+			}
 		}
 	`;
 
@@ -175,8 +202,8 @@ export function App() {
 	};
 
 	return (
-		<main class={[use(store.theme)]}>
-			<div class="flex vcenter gap space-between top-bar">
+		<main class={["gap-md", use(store.theme)]}>
+			<div class="flex vcenter space-between top-bar">
 				<span class="flex vcenter gap left">
 					<Logo />
 					{$if(
@@ -184,7 +211,7 @@ export function App() {
 						(<p>FPS: {use(this.fps, Math.floor)}</p>),
 					)}
 				</span>
-
+				<span class="expand" />
 				<span class="flex gap-md right vcenter">
 					<button on:click={() => {
 						this.savesmenu.showModal();
@@ -231,53 +258,49 @@ export function App() {
 					</button>
 				</span>
 			</div>
+			<div class="content">
+				{(navigator.userAgent.includes("Firefox") && (<FuckMozilla />)) || ""}
 
-			{(navigator.userAgent.includes("Firefox") && (<FuckMozilla />)) || ""}
-
-			<div class="game">
-				<canvascontainer>
-					<div class={[use(this.started, (f) => f && "hidden")]}>
-						<div>
-							<span class="material-symbols-rounded">videogame_asset_off</span>
-							<br />
-							<h3>Game not running.</h3>
+				<div class="game">
+					<canvascontainer>
+						<div class={[use(this.started, (f) => f && "hidden")]}>
+							<div>
+								<span class="material-symbols-rounded">videogame_asset_off</span>
+								<br />
+								<h3>Game not running.</h3>
+							</div>
 						</div>
-					</div>
 
-					<canvas
-						id="canvas"
-						bind:this={use(this.canvas)}
-						on:contextmenu={(e) => e.preventDefault()}
-					></canvas>
-				</canvascontainer>
+						<canvas
+							id="canvas"
+							bind:this={use(this.canvas)}
+							on:contextmenu={(e) => e.preventDefault()}
+						></canvas>
+					</canvascontainer>
+				</div>
+
+				<dialog bind:this={use(this.fs)} id="fs">
+					<button on:click={() => this.fs.close()} class="plain">
+						<span class="material-symbols-rounded">close</span>
+					</button>
+
+					<FSExplorer />
+				</dialog>
+
+				<dialog bind:this={use(this.savesmenu)}>
+					<button on:click={() => this.savesmenu.close()} class="plain">
+						<span class="material-symbols-rounded">close</span>
+					</button>
+
+					<SaveManager />
+				</dialog>
+
+				<div class="logs">
+					<h2>Log</h2>
+
+					<Logs />
+				</div>
 			</div>
-
-			<dialog bind:this={use(this.fs)} id="fs">
-				<button on:click={() => this.fs.close()} class="plain">
-					<span class="material-symbols-rounded">close</span>
-				</button>
-
-				<FSExplorer />
-			</dialog>
-
-			<dialog bind:this={use(this.savesmenu)} style={{
-				maxWidth: "max(30vw, max(480px, 40rem))",
-				height: "auto",
-				aspectRatio: "1/1"
-			}}>
-				<button on:click={() => this.savesmenu.close()} class="plain">
-					<span class="material-symbols-rounded">close</span>
-				</button>
-
-				<SaveManager />
-			</dialog>
-
-			<div class="logs">
-				<h2>Log</h2>
-
-				<Logs />
-			</div>
-
 			<footer class="flex space-between gap-sm">
 				<span>
 					Ported by <a href="https://mercurywork.shop" target="_blank">Mercury Workshop</a>

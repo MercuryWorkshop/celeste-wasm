@@ -1,250 +1,256 @@
 :root {
-    --font-body: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-            Roboto, "Helvetica Neue", Arial, sans-serif;
-    --font-display: 'Inter Tight', 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
-            Roboto, "Helvetica Neue", Arial, sans-serif;
-    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	--font-body: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+		Roboto, "Helvetica Neue", Arial, sans-serif;
+	--font-display: 'Inter Tight', 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+		Roboto, "Helvetica Neue", Arial, sans-serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 main,
 main.dark {
-    --bg-sub: #131313;
-    --bg: #171717;
-    --surface0: #1e1e1e;
-    --surface1: #2b2b2b;
-    --surface2: #333333;
-    --surface3: #3b3b3b;
-    --surface4: #444444;
-    --surface5: #4c4c4c;
-    --surface6: #555555;
-    --accent: #f02424;
-    --error: #f02424;
-    --success: #84f084;
-    --warning: #f0f084;
-    --info: #7c98f6;
-    --fg: #f0f0f0;
-    --fg2: #e0e0e0;
-    --fg3: #d0d0d0;
-    --fg4: #c0c0c0;
-    --fg5: #b0b0b0;
-    --fg6: #a0a0a0;
+	--bg-sub: #131313;
+	--bg: #171717;
+	--surface0: #1e1e1e;
+	--surface1: #2b2b2b;
+	--surface2: #333333;
+	--surface3: #3b3b3b;
+	--surface4: #444444;
+	--surface5: #4c4c4c;
+	--surface6: #555555;
+	--accent: #f02424;
+	--error: #f02424;
+	--success: #84f084;
+	--warning: #f0f084;
+	--info: #7c98f6;
+	--fg: #f0f0f0;
+	--fg2: #e0e0e0;
+	--fg3: #d0d0d0;
+	--fg4: #c0c0c0;
+	--fg5: #b0b0b0;
+	--fg6: #a0a0a0;
 }
 
 main.light {
-    --bg-sub: #fafafa;
-    --bg: #f0f0f0;
-    --surface0: #e0e0e0;
-    --surface1: #d0d0d0;
-    --surface2: #c0c0c0;
-    --surface3: #b0b0b0;
-    --surface4: #a0a0a0;
-    --surface5: #909090;
-    --surface6: #808080;
-    --accent: #f06060;
-    --error: #e43e3e;
-    --success: #14b614;
-    --warning: #e0e060;
-    --info: #6097f0;
-    --fg: #171717;
-    --fg2: #2b2b2b;
-    --fg3: #3b3b3b;
-    --fg4: #4c4c4c;
-    --fg5: #555555;
-    --fg6: #5f5f5f;
+	--bg-sub: #fafafa;
+	--bg: #f0f0f0;
+	--surface0: #e0e0e0;
+	--surface1: #d0d0d0;
+	--surface2: #c0c0c0;
+	--surface3: #b0b0b0;
+	--surface4: #a0a0a0;
+	--surface5: #909090;
+	--surface6: #808080;
+	--accent: #f06060;
+	--error: #e43e3e;
+	--success: #14b614;
+	--warning: #e0e060;
+	--info: #6097f0;
+	--fg: #171717;
+	--fg2: #2b2b2b;
+	--fg3: #3b3b3b;
+	--fg4: #4c4c4c;
+	--fg5: #555555;
+	--fg6: #5f5f5f;
 }
 
 /* world's worst port of catppuccin mocha but who gaf */
 main.ctp {
-    --bg-sub: #181825;
-    --bg: #1e1e2e;
-    --surface0: #313244;
-    --surface1: #45475a;
-    --surface2: #585b70;
-    --surface3: #6c7086;
-    --surface4: #7f849c;
-    --surface5: #9399b2;
-    --surface6: #a6adc8;
-    --accent: #f38ba8;
-    --error: #f38ba8;
-    --success: #a6e3a1;
-    --warning: #f9e2af;
-    --info: #cba6f7;
-    --fg: #cdd6f4;
-    --fg2: #bac2de;
-    --fg3: #a6adc8;
-    --fg4: #9399b2;
-    --fg5: #7f849c;
-    --fg6: #6c7086;
+	--bg-sub: #181825;
+	--bg: #1e1e2e;
+	--surface0: #313244;
+	--surface1: #45475a;
+	--surface2: #585b70;
+	--surface3: #6c7086;
+	--surface4: #7f849c;
+	--surface5: #9399b2;
+	--surface6: #a6adc8;
+	--accent: #f38ba8;
+	--error: #f38ba8;
+	--success: #a6e3a1;
+	--warning: #f9e2af;
+	--info: #cba6f7;
+	--fg: #cdd6f4;
+	--fg2: #bac2de;
+	--fg3: #a6adc8;
+	--fg4: #9399b2;
+	--fg5: #7f849c;
+	--fg6: #6c7086;
 }
 
 main,
 canvascontainer,
 pre {
-    transition: background-color 0.3s, color 0.3s;
+	transition: background-color 0.3s, color 0.3s;
 }
 
 html,
 body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    font-size: 100%;
-    font-family: var(--font-body);
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	height: 100vh;
+	font-size: 100%;
+	font-family: var(--font-body);
+	overflow: hidden;
 }
 
 input {
-    font-family: var(--font-body);
+	font-family: var(--font-body);
 }
 
 * {
-    box-sizing: border-box;
-    accent-color: var(--accent) !important;
-    outline-color: var(--accent) !important;
+	box-sizing: border-box;
+	accent-color: var(--accent) !important;
+	outline-color: var(--accent) !important;
 }
 
 ::selection,
 ::-moz-selection {
-    background-color: var(--accent)!important;
-    color: var(--fg)!important;
+	background-color: var(--accent) !important;
+	color: var(--fg) !important;
 }
 
 .flex {
-    display: flex;
+	display: flex;
 }
 
 .col {
-    flex-direction: column;
+	flex-direction: column;
 }
 
 .hcenter {
-    justify-content: center;
+	justify-content: center;
 }
 
 .vcenter {
-    align-items: center;
+	align-items: center;
 }
 
 .gap {
-    gap: 1.5em;
+	gap: 1.5em;
 }
 
 .gap-md {
-    gap: 1em;
+	gap: 1em;
 }
 
 .gap-sm {
-    gap: 0.5em;
+	gap: 0.5em;
 }
 
 .space-between {
-    justify-content: space-between;
+	justify-content: space-between;
 }
 
 *::-webkit-scrollbar {
-    width: 0.7em;
-    height: 0.7em;
-    background-color: transparent;
-}
-*::-webkit-scrollbar-thumb {
-    background-color: var(--surface4);
-    border-radius: 0.7em;
-}
-*::-webkit-scrollbar-thumb:hover {
-    background-color: var(--accent)
-}
-*::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-*::-webkit-scrollbar-corner,
-*::-webkit-scrollbar-button {
-    display: none;
+	width: 0.7em;
+	height: 0.7em;
+	background-color: transparent;
 }
 
-main > * {
-    width: 100%;
+*::-webkit-scrollbar-thumb {
+	background-color: var(--surface4);
+	border-radius: 0.7em;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background-color: var(--accent)
+}
+
+*::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+*::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-button {
+	display: none;
+}
+
+main>* {
+	width: 100%;
 }
 
 button {
-    user-select: none;
-    background-color: var(--surface1);
-    padding: 0.5em 1em;
-    color: var(--fg);
-    border: none;
-    border-radius: 0.6rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 0.95rem;
-    font-family: var(--font-body);
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	user-select: none;
+	background-color: var(--surface1);
+	padding: 0.5em 1em;
+	color: var(--fg);
+	border: none;
+	border-radius: 0.6rem;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	font-size: 0.95rem;
+	font-family: var(--font-body);
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-    &:hover {
-        background-color: var(--surface3);
-    }
-    &:active {
-        background-color: var(--surface5);
-    }
+	&:hover {
+		background-color: var(--surface3);
+	}
+
+	&:active {
+		background-color: var(--surface5);
+	}
 
 
-    .material-symbols-rounded {
-        font-size: 1.3rem;
-        margin: 0;
-        padding: 0;
-    }
+	.material-symbols-rounded {
+		font-size: 1.3rem;
+		margin: 0;
+		padding: 0;
+	}
 
-    &:has(.material-symbols-rounded):not(:has(.label)) {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      width: 2rem;
-      height: 2rem;
-      border-radius: 50%;
+	&:has(.material-symbols-rounded):not(:has(.label)) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
 
-      &.large {
-        width: 3.5rem;
-        height: 3.5rem;
+		&.large {
+			width: 3.5rem;
+			height: 3.5rem;
 
-        .material-symbols-rounded {
-          font-size: 1.75rem;
-        }
-      }
-    }
+			.material-symbols-rounded {
+				font-size: 1.75rem;
+			}
+		}
+	}
 
-    &:has(.label) .material-symbols-rounded {
-        margin-right: 0.5rem!important;
-    }
+	&:has(.label) .material-symbols-rounded {
+		margin-right: 0.5rem !important;
+	}
 
-    &.disabled {
-        pointer-events: none;
-        cursor: not-allowed;
-        color: var(--fg6);
-        background-color: var(--surface4);
-    }
+	&.disabled {
+		pointer-events: none;
+		cursor: not-allowed;
+		color: var(--fg6);
+		background-color: var(--surface4);
+	}
 
-    &.important {
-        background-color: var(--accent);
+	&.important {
+		background-color: var(--accent);
 
-        &:hover {
-            background-color: color-mix(in srgb, var(--accent) 80%, white);
-        }
+		&:hover {
+			background-color: color-mix(in srgb, var(--accent) 80%, white);
+		}
 
-        &:active {
-            background-color: color-mix(in srgb, var(--accent) 70%, white);
-        }
-    }
+		&:active {
+			background-color: color-mix(in srgb, var(--accent) 70%, white);
+		}
+	}
 
-    &.plain {
-        background-color: transparent;
-        color: var(--fg);
+	&.plain {
+		background-color: transparent;
+		color: var(--fg);
 
-        &:hover {
-            background-color: var(--surface1);
-        }
-    }
+		&:hover {
+			background-color: var(--surface1);
+		}
+	}
 }
 
 h1,
@@ -253,26 +259,27 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-display);
+	font-family: var(--font-display);
 }
 
 h1 {
-    font-weight: 680;
+	font-weight: 680;
 }
 
 h2 {
-    font-weight: 600;
+	font-weight: 600;
 }
 
 h3 {
-    font-weight: 500;
+	font-weight: 500;
 }
 
 a {
-    color: var(--accent);
-    text-decoration: none;
-    transition: color 0.15s;
-    &:hover {
-        color: color-mix(in srgb, var(--accent) 80%, white);
-    }
+	color: var(--accent);
+	text-decoration: none;
+	transition: color 0.15s;
+
+	&:hover {
+		color: color-mix(in srgb, var(--accent) 80%, white);
+	}
 }

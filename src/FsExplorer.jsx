@@ -33,6 +33,7 @@ export function FSExplorer() {
 
 		button {
 			float: right;
+			bottom: 0;
 		}
 
 		#path {

@@ -7,7 +7,7 @@ export function SaveManager() {
 		justify-content: center;
 		align-items: center;
 		gap: 0.75rem;
-		#dropzone {
+		& > div {
 			display: flex;
 
 			flex-direction: column;
@@ -32,7 +32,7 @@ export function SaveManager() {
 			}
 		}
 
-		#dl {
+		& > button {
 			width: calc(min(100%, 40rem) - 6rem);
 		}
 	`
