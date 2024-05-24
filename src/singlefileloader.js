@@ -38,6 +38,7 @@ window.unpak_wasm = async function() {
 	} else {
 		await new Promise((resolve) => {
 			document.querySelector("h1").innerText = "Please upload wasm.pak";
+			document.querySelector("#interstitial").style.height = "10vh";
 			let input = document.createElement("input");
 			input.type = "file";
 			document.body.appendChild(input);
