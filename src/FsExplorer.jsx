@@ -66,11 +66,16 @@ export function FSExplorer() {
 			padding-inline: 0.5rem;
 			background: var(--bg);
 			transition: background 0.15s ease;
-		}
 
-		.item:hover {
-		  background: var(--surface0);
-			transition: background 0.15s ease;
+			&:hover {
+			  background: var(--surface0);
+				transition: background 0.15s ease;
+			}
+
+			&.selected {
+			  background: var(--surface1);
+				transition: background 0.15s ease;
+			}
 		}
 
 		#path {
@@ -136,7 +141,7 @@ export function FSExplorer() {
 					)
 				} else {
 					return (
-						<div class="item flex vcenter space-between" role="button" on:click={() => {
+						<div class={["item", "flex", "vcenter", "space-between", use(this.filePath, p => this.path + r == p && "selected")]} role="button" on:click={() => {
 							this.displayingFile = true;
 							this.filePath = this.path + r;
 							try {
