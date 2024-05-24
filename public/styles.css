@@ -126,6 +126,14 @@ input {
 	align-items: center;
 }
 
+.gap-xl {
+    gap: 3em;
+}
+
+.gap-lg {
+    gap: 2em;
+}
+
 .gap {
 	gap: 1.5em;
 }
@@ -136,6 +144,10 @@ input {
 
 .gap-sm {
 	gap: 0.5em;
+}
+
+.gap-xs {
+    gap: 0.25em;
 }
 
 .space-between {
