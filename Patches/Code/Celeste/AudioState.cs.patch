@@ -1,0 +1,20 @@
+--- ../decomp/Celeste/AudioState.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/AudioState.cs	2024-05-21 12:02:13.705069892 -0400
+@@ -47,7 +47,7 @@
+ 				}
+ 				if (changed)
+ 				{
+-					Audio.CurrentMusicEventInstance.start();
++					Audio.CurrentMusicEventInstance.Value.start();
+ 				}
+ 			}
+ 			changed = Audio.SetAmbience(Ambience.Event, startPlaying: false);
+@@ -61,7 +61,7 @@
+ 			}
+ 			if (changed)
+ 			{
+-				Audio.CurrentAmbienceEventInstance.start();
++				Audio.CurrentAmbienceEventInstance.Value.start();
+ 			}
+ 		}
+ 

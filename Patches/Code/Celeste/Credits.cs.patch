@@ -1,0 +1,18 @@
+--- ../decomp/Celeste/Credits.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/Credits.cs	2024-05-23 20:15:44.697869651 -0400
+@@ -433,10 +433,11 @@
+ 		private static List<CreditNode> CreateCredits(bool title, bool polaroids)
+ 		{
+ 			List<CreditNode> list = new List<CreditNode>();
+-			if (title)
+-			{
+-				list.Add(new Image("title", 320f));
+-			}
++
++			list.Add(new Thanks("Guides and Help", "0x0ade","RedMike", "TheSpydog"));
++			list.Add(new Team("Mercury Workshop", new string[3] { "r58playz", "velzie.d", "bomberfish" }, "port creator"));
++
++			list.Add(new Image("title", 320f));
+ 			list.AddRange(new List<CreditNode>
+ 			{
+ 				new Role("Maddy Thorson", "Director", "Designer", "Writer", "Gameplay Coder"),

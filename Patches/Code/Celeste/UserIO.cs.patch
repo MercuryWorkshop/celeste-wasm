@@ -1,0 +1,12 @@
+--- ../decomp/Celeste/UserIO.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/UserIO.cs	2024-05-21 12:02:13.769071840 -0400
+@@ -227,7 +227,8 @@
+ 				}
+ 				savingInternal = true;
+ 				SavingResult = false;
+-				RunThread.Start(SaveThread, "USER_IO");
++                SaveThread();
++				//RunThread.Start(SaveThread, "USER_IO");
+ 				SaveLoadIcon.Show(Engine.Scene);
+ 				while (savingInternal)
+ 				{

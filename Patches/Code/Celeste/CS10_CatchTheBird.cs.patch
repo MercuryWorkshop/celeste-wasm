@@ -1,0 +1,11 @@
+--- ../decomp/Celeste/CS10_CatchTheBird.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/CS10_CatchTheBird.cs	2024-05-21 12:02:13.722070410 -0400
+@@ -18,7 +18,7 @@
+ 
+ 		private Vector2 birdWaitPosition;
+ 
+-		private EventInstance snapshot;
++		private EventInstance? snapshot;
+ 
+ 		public CS10_CatchTheBird(Player player, FlingBirdIntro flingBird)
+ 		{

@@ -1,0 +1,10 @@
+--- ../decomp/Celeste/SaveLoadIcon.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/SaveLoadIcon.cs	2024-05-21 12:02:13.762071627 -0400
+@@ -73,6 +73,7 @@
+ 			yield return null;
+ 			Instance = null;
+ 			RemoveSelf();
++            Program.SyncFS();
+ 		}
+ 
+ 		public override void Render()

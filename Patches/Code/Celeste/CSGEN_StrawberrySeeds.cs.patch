@@ -1,0 +1,14 @@
+--- ../decomp/Celeste/CSGEN_StrawberrySeeds.cs	2024-05-17 02:12:37.000000000 -0400
++++ celeste/Celeste/CSGEN_StrawberrySeeds.cs	2024-05-21 12:02:13.723070440 -0400
+@@ -14,9 +14,9 @@
+ 
+ 		private ParticleSystem system;
+ 
+-		private EventInstance snapshot;
++		private EventInstance? snapshot;
+ 
+-		private EventInstance sfx;
++		private EventInstance? sfx;
+ 
+ 		public CSGEN_StrawberrySeeds(Strawberry strawberry)
+ 		{

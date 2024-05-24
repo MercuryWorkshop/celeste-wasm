@@ -1,0 +1,10 @@
+--- ../decomp/Celeste/OuiMainMenu.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/OuiMainMenu.cs	2024-05-21 12:02:13.757071475 -0400
+@@ -301,6 +301,7 @@
+ 			{
+ 				Engine.Scene = new Scene();
+ 				Engine.Instance.Exit();
++                Program.exitGame = true;
+ 			});
+ 		}
+ 	}

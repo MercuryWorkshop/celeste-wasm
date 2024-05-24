@@ -1,0 +1,11 @@
+--- ../decomp/Celeste/CS01_Ending.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/CS01_Ending.cs	2024-05-21 12:02:13.716070227 -0400
+@@ -66,7 +66,7 @@
+ 			yield return 4f;
+ 			BirdNPC bird = new BirdNPC(player.Position + new Vector2(88f, -200f), BirdNPC.Modes.None);
+ 			base.Scene.Add(bird);
+-			EventInstance instance = Audio.Play("event:/game/general/bird_in", bird.Position);
++			EventInstance? instance = Audio.Play("event:/game/general/bird_in", bird.Position);
+ 			bird.Facing = Facings.Left;
+ 			bird.Sprite.Play("fall");
+ 			Vector2 from = bird.Position;

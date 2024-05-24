@@ -1,0 +1,11 @@
+--- ../decomp/Celeste/CS03_Ending.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/CS03_Ending.cs	2024-05-21 12:02:13.716070227 -0400
+@@ -36,7 +36,7 @@
+ 
+ 		private Sprite oshiroSprite;
+ 
+-		private EventInstance smashSfx;
++		private EventInstance? smashSfx;
+ 
+ 		private bool smashRumble;
+ 

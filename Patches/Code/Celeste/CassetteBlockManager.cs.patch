@@ -1,0 +1,30 @@
+--- ../decomp/Celeste/CassetteBlockManager.cs	2024-05-17 02:12:37.000000000 -0400
++++ celeste/Celeste/CassetteBlockManager.cs	2024-05-21 12:02:13.723070440 -0400
+@@ -22,9 +22,9 @@
+ 
+ 		private int beatIndexOffset;
+ 
+-		private EventInstance sfx;
++		private EventInstance? sfx;
+ 
+-		private EventInstance snapshot;
++		private EventInstance? snapshot;
+ 
+ 		public CassetteBlockManager()
+ 		{
+@@ -142,13 +142,13 @@
+ 					beatIndex = 0;
+ 					if (!isLevelMusic)
+ 					{
+-						sfx.start();
++						sfx.Value.start();
+ 					}
+ 				}
+ 			}
+ 			if (leadBeats <= 0)
+ 			{
+-				sfx.setParameterValue("sixteenth_note", GetSixteenthNote());
++				sfx.Value.setParameterByName("sixteenth_note", GetSixteenthNote());
+ 			}
+ 		}
+ 
