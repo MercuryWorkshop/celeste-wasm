@@ -82,10 +82,17 @@ function IntroSplash() {
 		button,
 		#bar {
 			animation: fadein 0.15s ease 0s 1;
+			width: 100%;
+			height: 0.5em;
+			background-color: var(--bg);
+			border-radius: 0.5em;
 		}
 
 		#progress {
 			transition: width 0.2s ease;
+			height: 0.5em;
+			background-color: var(--accent);
+			border-radius: 0.5em;
 		}
 
 		.inner {
@@ -191,8 +198,11 @@ function IntroSplash() {
 	};
 
 	let finish = async () => {
-
 		window.assetblob = URL.createObjectURL(new Blob([encbuf]));
+
+		await new Promise(r => loadData(dotnet.instance.Module, r));
+		console.info("Cached and loaded assets into VFS");
+		localStorage["vfs_populated"] = true
 
 		await loadfrontend();
 		this.root.remove();
@@ -224,12 +234,9 @@ function IntroSplash() {
 						$if(use(this.showprogress), (
 							<div>
 								<p>Downloading... ({use(this.progress, Math.floor)}% done)</p>
-								<div id="bar" style="width: 100%; height: 0.5em; background-color: var(--bg); border-radius: 0.5em;">
+								<div id="bar">
 									<div id="progress" style={{
 										width: use`${this.progress}%`,
-										height: "0.5em",
-										backgroundColor: "var(--accent)",
-										borderRadius: "0.5em"
 									}}></div>
 								</div>
 							</div>
@@ -255,7 +262,7 @@ function IntroSplash() {
 									<p>
 										Downloaded assets.
 										Now you need to decrypt them.
-										Find the game files directory for your copy of Celeste and upload <kbd>Content/Dialog/english.txt</kbd>.
+										Find the game files directory for your copy of Celeste and upload <code>Content/Dialog/english.txt</code>.
 									</p>
 
 									<button class="important" on:click={decrypt}>
