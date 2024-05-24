@@ -202,7 +202,7 @@ export function FSExplorer() {
 				</div>
 			))}
 			<div class="flex vcenter" id="uploadcontainer">
-			<button class="large" title="Upload to this directory" on:click={() => {
+			<button class="large important" title="Upload to this directory" on:click={() => {
 				let input = h("input", { type: "file" });
 
 				input.addEventListener("change", () => {
