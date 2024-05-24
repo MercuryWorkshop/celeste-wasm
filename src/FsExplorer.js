@@ -86,6 +86,7 @@ export function FSExplorer() {
                             <button on:click=${(e) => {
                     this.fs.unlink(this.path + r);
                     this.mount();
+                    this.fs.syncfs(false, ()=>{});
                     e.stopPropagation();
                 }}>delete</button>
                         </div>
@@ -100,6 +101,8 @@ export function FSExplorer() {
             this.filePath = "";
             this.fileData = "";
             this.displayingFile = false;
+
+            this.fs.syncfs(false, () => { })
         }}>saveandclose</button>
                     <textarea bind:value=${use(this.fileData)}></textarea>
                 <div>
@@ -121,6 +124,8 @@ export function FSExplorer() {
             document.body.appendChild(input);
             input.click();
             input.remove();
+
+            this.fs.syncfs(false, () => { });
         }}>
               <span class="material-symbols-rounded">upload</span>
               </button>

@@ -1,5 +1,6 @@
 import { downloadsave, uploadsave } from "./game.js";
 import { zip, unzip } from "fflate";
+import { app } from "./main.js";
 
 export function SaveManager() {
   this.css = `
@@ -110,6 +111,7 @@ export function SaveManager() {
           <div>
             <button id="upload" on:click=${async () => {
                   await uploadsave();
+                  app.savesmenu.close();
                 }}>
                 <span class="material-symbols-rounded">upload</span><span class="label">Upload from computer</span>
             </button>
@@ -118,6 +120,7 @@ export function SaveManager() {
 
         <button id="dl" on:click=${async () => {
           await downloadsave();
+          app.savesmenu.close();
         }}>
            <span class="material-symbols-rounded">cloud_download</span><span class="label">Download current save</span>
         </button>

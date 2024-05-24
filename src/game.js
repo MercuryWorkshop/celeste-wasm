@@ -101,6 +101,8 @@ export async function uploadsave() {
             for (let [name, data] of files) {
                 dotnet.instance.Module.FS.writeFile(`/libsdl/Celeste/Saves/${name}`, data);
             }
+
+            console.log("synced!");
             await new Promise(r => dotnet.instance.Module.FS.syncfs(false, r));
             r();
         };
