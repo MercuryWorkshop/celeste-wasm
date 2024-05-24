@@ -42,6 +42,7 @@ ifneq ($(SPLIT),0)
 	mkdir -p $(WWWROOT)/_framework/data
 	split -b$(SPLIT)M --additional-suffix .data $(VFSFILE) $(WWWROOT)/_framework/data/data
 endif
+	echo "const CHUNKSIZE = $$(( $(SPLIT) * 1024 * 1024 ));" >> $(WWWROOT)/cfg.js
 	echo -n "const splits = [" >> "$(WWWROOT)/cfg.js"
 	ls -1 $(WWWROOT)/_framework/data/ | sed 's/^/"/' | sed 's/$$/",/' | tr -d '\n' >> "$(WWWROOT)/cfg.js"
 	echo "];" >> "$(WWWROOT)/cfg.js"
