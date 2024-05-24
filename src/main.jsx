@@ -90,7 +90,7 @@ function IntroSplash() {
 
 			padding: 2em;
 
-			animation: fadeandmove 1s ease 0s 1;
+			animation: fadeinandmove 1s ease 0s 1;
 
 			div {
 				margin-block: 1em;
@@ -99,7 +99,7 @@ function IntroSplash() {
 
 		button,
 		#bar {
-			animation: fadein 0.15s ease 0s 1;
+			animation: fadeinandmove 0.15s ease 0s 1;
 			width: 100%;
 			height: 0.5em;
 			background-color: var(--bg);
@@ -119,11 +119,6 @@ function IntroSplash() {
 
 		.action {
 			padding: 1em;
-		}
-
-		@keyframes fadeandmove {
-			from { opacity: 0; transform: translateY(1em); }
-			to { opacity: 1; transform: translateY(0); }
 		}
 
 		@keyframes fadeout {

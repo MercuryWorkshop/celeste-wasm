@@ -212,7 +212,7 @@ export function App() {
 					)}
 				</span>
 				<span class="expand" />
-				<span class="flex gap-md right vcenter">
+				<span class="flex right vcenter" style="gap: 0.85em;">
 					<button on:click={() => {
 						this.savesmenu.showModal();
 					}} title="Manage save data">

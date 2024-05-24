@@ -83,6 +83,10 @@ pre {
 	transition: background-color 0.3s, color 0.3s;
 }
 
+pre {
+    font-family: var(--font-mono);
+}
+
 html,
 body {
 	margin: 0;
@@ -306,4 +310,14 @@ a {
 
 *:focus-visible {
     outline: var(--accent) auto 2px;
+}
+
+@keyframes fadeinandmove {
+    from { opacity: 0; transform: translateY(1em); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeoutandmove {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-1em); }
 }

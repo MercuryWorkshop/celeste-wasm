@@ -6,6 +6,8 @@ export function FSExplorer() {
 	this.filePath = "";
 	this.fileData = "";
 
+	this.fileHiddenButNotRemoved = false;
+
 	this.mount = async () => {
 		await window.initPromise;
 		this.fs = window.FS;
@@ -14,6 +16,7 @@ export function FSExplorer() {
 
 	this.css = `
 		width: 100%;
+		height: calc(100% - 6rem);
 
 		.item {
 			margin-block: 0.15rem;
@@ -29,10 +32,20 @@ export function FSExplorer() {
 			display: inline;
 		}
 
-		button.large {
-      position: absolute;
-      bottom: 1rem;
-      right: 1rem;
+		#uploadcontainer {
+      position: sticky;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      justify-content: flex-end;
+      // padding: 1rem;
+      pointer-events: none;
+      width: 100%;
+
+      button {
+        pointer-events: all;
+      }
 		}
 
 		.actions {
@@ -71,6 +84,27 @@ export function FSExplorer() {
 		  width: 100%;
 			height: 100%;
 			overflow-y: auto;
+		}
+
+		.fileview {
+		  animation: fadeinandmove 0.15s ease 0s 1;
+
+			&.hidden {
+			 animation: fadeoutandmove 0.15s ease 0s 1;
+			}
+
+			textarea {
+			  width: 100%;
+				min-height: 10rem;
+				background: var(--surface0);
+				border: none;
+				border-radius: 0.5rem;
+				resize: vertical;
+				padding: 0.5rem;
+				font-family: var(--font-mono);
+				color: var(--fg);
+				font-size: 1rem;
+			}
 		}
     `
 
@@ -137,19 +171,37 @@ export function FSExplorer() {
 			}))}
 			</div>
 			{$if(use(this.displayingFile), (
-				<div>
-					<div>file: <pre>{use(this.filePath)}</pre></div>
+				<div class={["fileview", use(this.fileHiddenButNotRemoved, h => h && "hidden")]}>
+					<div class="flex space-between vcenter" style="margin-block: 1rem;">
+					<span>File: <pre>{use(this.filePath)}</pre></span>
+					<span class="flex vcenter gap-sm">
 					<button on:click={() => {
 						this.fs.writeFile(this.filePath, (new TextEncoder()).encode(this.fileData));
-						this.filePath = "";
-						this.fileData = "";
-						this.displayingFile = false;
+						// this.filePath = "";
+						// this.fileData = "";
+						// this.displayingFile = false;
 
 						this.fs.syncfs(false, () => { })
-					}}>saveandclose</button>
+					}}>
+					<span class="material-symbols-rounded">save</span> <span class="label">Save</span>
+					</button>
+					<button on:click={() => {
+						this.fileHiddenButNotRemoved = true;
+						setTimeout(() => {
+    				  this.filePath = "";
+     					this.fileData = "";
+  						this.displayingFile = false;
+  						this.fileHiddenButNotRemoved = false;
+						}, 150);
+					}}>
+					<span class="material-symbols-rounded">close</span> <span class="label">Close</span>
+					</button>
+					</span>
+					</div>
 					<textarea bind:value={use(this.fileData)}></textarea>
 				</div>
 			))}
+			<div class="flex vcenter" id="uploadcontainer">
 			<button class="large" title="Upload to this directory" on:click={() => {
 				let input = h("input", { type: "file" });
 
@@ -172,6 +224,7 @@ export function FSExplorer() {
 			}}>
 				<span class="material-symbols-rounded">upload</span>
 			</button>
+			</div>
 		</div>
 	)
 }
