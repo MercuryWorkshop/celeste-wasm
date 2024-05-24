@@ -1,6 +1,8 @@
 import "dreamland/dev";
 
 import { App, Logo } from "./App.jsx";
+import { init } from "./game.js";
+import { files } from "jszip";
 
 export let store = $store(
 	{
@@ -13,8 +15,24 @@ if (window.SINGLEFILE) {
 	document.body.querySelector("#interstitial").remove();
 }
 
+const chunkify = function*(itr, size) {
+	let chunk = [];
+	for (const v of itr) {
+		chunk.push(v);
+		if (chunk.length === size) {
+			yield chunk;
+			chunk = [];
+		}
+	}
+	if (chunk.length) yield chunk;
+};
+
 function IntroSplash() {
 	this.css = `
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 9999999;
 		width: 100vw;
 		height: 100vh;
 		display: flex;
@@ -99,6 +117,14 @@ function IntroSplash() {
 			margin-inline: 0.8rem;
 		}
 
+		.action {
+			padding: 1em;
+		}
+
+		&.fadeout {
+			animation: fadeout 0.5s ease;
+		}
+
 		@keyframes fadeandmove {
 			from { opacity: 0; transform: translateY(1em); }
 			to { opacity: 1; transform: translateY(0); }
@@ -138,22 +164,25 @@ function IntroSplash() {
 		if (SPLIT) {
 			encbuf = new Uint8Array(SIZE);
 
-			let cur = 0;
-			for (let split of splits) {
-				let data = await fetch(`_framework/data/${split}`);
-				let buf = new Uint8Array(await data.arrayBuffer());
+			await Promise.all([...chunkify(splits.entries(), Math.ceil(splits.length / 5))].map(async (chunk) => {
+				for (let [idx, file] of chunk) {
+					let data = await fetch(`_framework/data/${file}`);
+					let buf = new Uint8Array(await data.arrayBuffer());
+					encbuf.set(buf, idx * CHUNKSIZE);
 
-				encbuf.set(buf, cur);
-				cur += buf.length;
-
-				this.progress += 100 / splits.length;
-			}
+					this.progress += (CHUNKSIZE / SIZE) * 100;
+					console.log("File finished");
+				}
+			}));
 		} else {
+			encbuf = new Uint8Array(SIZE);
 			let data = await fetch("_framework/data.data");
-			this.progress = 20;
-			let buf = await data.arrayBuffer();
-			this.progress = 100;
-			encbuf = new Uint8Array(buf);
+			let cur = 0;
+			for await (const chunk of data.body) {
+				encbuf.set(chunk, cur);
+				cur += chunk.length;
+				this.progress = (cur / SIZE) * 100;
+			}
 		}
 
 		this.downloaded = true;
@@ -184,7 +213,7 @@ function IntroSplash() {
 
 					if (i % (4096 * 200) == 0) {
 						this.progress = i / encbuf.length * 100;
-						await new Promise(r => setTimeout(r, 0));
+						await new Promise(r => requestAnimationFrame(r));
 					}
 				}
 				this.decrypted = true;
@@ -198,14 +227,19 @@ function IntroSplash() {
 	};
 
 	let finish = async () => {
+		this.playlabel.innerText = "Initializing...";
 		window.assetblob = URL.createObjectURL(new Blob([encbuf]));
+
+		await init();
 
 		await new Promise(r => loadData(dotnet.instance.Module, r));
 		console.info("Cached and loaded assets into VFS");
 		localStorage["vfs_populated"] = true
 
 		await loadfrontend();
-		this.root.remove();
+
+		this.root.addEventListener("animationend", this.root.remove);
+		this.root.classList.add("fadeout");
 	};
 
 	return (
@@ -217,15 +251,15 @@ function IntroSplash() {
 				<Logo />
 				<div class="inner">
 					<p>
-						This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a>
-						to the browser using dotnet's <code>wasmbrowser</code> template and
-						<a href="https://github.com/RedMike/FNA.WASM.Sample">FNA.WASM.Sample</a>.
+						This is a mostly-complete port of <a href="https://store.steampowered.com/app/504230/Celeste/">Celeste</a> to
+						the browser using dotnet's <code>wasmbrowser</code> template
+						and <a href="https://github.com/RedMike/FNA.WASM.Sample">FNA.WASM.Sample</a>.
 					</p>
 					<p>
 						It needs around 1.6GB of memory and will probably not work on mobile devices.
 					</p>
 					<p>
-						{DRM && "You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer." || ""}
+						{DRM && "You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer. " || ""}
 						The game will autosave your progress, but the browser may wipe it after a while. Remember to periodically use the save icon at the top.
 						{!window.SINGLEFILE && "This will download around ~700MB of assets to your browser's local storage." || ""}
 					</p>
@@ -242,19 +276,21 @@ function IntroSplash() {
 							</div>
 						)),
 						(
-							<button class="important" on:click={download}>
-								<span class="material-symbols-rounded">download</span>
-								<span class="label">Download Assets</span>
-							</button>
+							<div>
+								<button class="action important" on:click={download}>
+									<span class="material-symbols-rounded">download</span>
+									<span class="label">Download Assets</span>
+								</button>
+							</div>
 						),
 					)}
 
 					{$if(use(this.downloaded),
 						$if(use(this.decrypted),
 							(
-								<button class="important" on:click={finish}>
+								<button class="action important" on:click={finish}>
 									<span class="material-symbols-rounded">stadia_controller</span>
-									<span class="label">Play</span>
+									<span bind:this={use(this.playlabel)} class="label">Play</span>
 								</button>
 							),
 							(
@@ -265,7 +301,7 @@ function IntroSplash() {
 										Find the game files directory for your copy of Celeste and upload <code>Content/Dialog/english.txt</code>.
 									</p>
 
-									<button class="important" on:click={decrypt}>
+									<button class="action important" on:click={decrypt}>
 										<span class="material-symbols-rounded">encrypted</span>
 										<span class="label">Decrypt</span>
 									</button>

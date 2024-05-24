@@ -2,7 +2,10 @@ import { zip, unzip } from "fflate";
 
 export const version = "1.4.0.0";
 let setModuleImports, getAssemblyExports, getConfig;
+let initted = false;
+
 export async function init() {
+	if (initted) return;
 	({ setModuleImports, getAssemblyExports, getConfig } = await dotnet
 		.withModuleConfig({
 			onConfigLoaded: (config) => {
@@ -29,6 +32,7 @@ export async function init() {
 		setMainLoop: MainLoop,
 		syncFs: (cb) => dotnet.instance.Module.FS.syncfs(false, cb),
 	});
+	initted = true;
 }
 
 let ts = performance.now();
