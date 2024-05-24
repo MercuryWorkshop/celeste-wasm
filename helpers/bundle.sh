@@ -27,5 +27,5 @@ else
 fi
 
 cat "$WWWROOT/bundle.js.tmp" >> "$TARGET"
-
+rm "$WWWROOT/bundle.js.tmp"
 
