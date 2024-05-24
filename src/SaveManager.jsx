@@ -39,10 +39,20 @@ export function SaveManager() {
 		& > button {
 			width: 95%;
 		}
+
+		#head {
+      font-size: 1.5rem;
+			font-weight: 650;
+			font-family: var(--font-display);
+			margin-block: 0.5rem;
+			align-self: flex-start;
+      margin-left: 2.5%;
+		}
 	`
 
 	return (
 		<div class="flex">
+		  <span id="head">Save Manager</span>
 			<div class="gap" id="dragarea" bind:this={use(this.zone)}
 				on:dragover={(ev) => {
 					ev.preventDefault();
