@@ -121,10 +121,6 @@ function IntroSplash() {
 			padding: 1em;
 		}
 
-		&.fadeout {
-			animation: fadeout 0.5s ease;
-		}
-
 		@keyframes fadeandmove {
 			from { opacity: 0; transform: translateY(1em); }
 			to { opacity: 1; transform: translateY(0); }
@@ -171,7 +167,6 @@ function IntroSplash() {
 					encbuf.set(buf, idx * CHUNKSIZE);
 
 					this.progress += (CHUNKSIZE / SIZE) * 100;
-					console.log("File finished");
 				}
 			}));
 		} else {
@@ -227,6 +222,8 @@ function IntroSplash() {
 	};
 
 	let finish = async () => {
+		$el.classList.remove("important");
+		$el.classList.add("disabled");
 		this.playlabel.innerText = "Initializing...";
 		window.assetblob = URL.createObjectURL(new Blob([encbuf]));
 
@@ -238,8 +235,10 @@ function IntroSplash() {
 
 		await loadfrontend();
 
+
 		this.root.addEventListener("animationend", this.root.remove);
-		this.root.classList.add("fadeout");
+
+		this.root.style.animation = "fadeout 0.5s ease"
 	};
 
 	return (
@@ -260,7 +259,7 @@ function IntroSplash() {
 					</p>
 					<p>
 						{DRM && "You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer. " || ""}
-						The game will autosave your progress, but the browser may wipe it after a while. Remember to periodically use the save icon at the top.
+						The game will autosave your progress, but the browser may wipe it after a while. Remember to periodically use the save icon at the top. <br /><br />
 						{!window.SINGLEFILE && " This will download around ~700MB of assets to your browser's local storage." || ""}
 					</p>
 
