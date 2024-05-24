@@ -15,7 +15,7 @@ A mostly-complete port of Celeste (2018) to WebAssembly using dotnet's `wasmbrow
 - You may encounter issues on firefox.
 
 # I want to play this
-First, you need to own the game. There is a standalone html file [here](https://github.com/MercuryWorkshop/celeste-wasm/releases/download/latest/celeste.html) that can be played completely offline. There is also a public build [here](https://celeste.r58playz.dev).
+there is a public build [here](https://celeste.r58playz.dev),a standalone html file [here](https://github.com/MercuryWorkshop/celeste-wasm/releases/download/latest/celeste.html) that can be played completely offline, and a [tarball](https://github.com/MercuryWorkshop/celeste-wasm/releases/download/latest/celeste.tar.zst) if you want to embed this or host it on your own server.
 
 # I want to build this
 if you can't reproduce this (it's really finnicky) feel free to ask us, the instructions can definitely be improved
