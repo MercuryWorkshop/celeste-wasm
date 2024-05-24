@@ -1,7 +1,7 @@
 WWWROOT=$1
 
 cd src || exit
-npx esbuild --bundle "../src/main.js" --format=esm --outfile="../$WWWROOT/bundle.js.tmp"
+npx esbuild --jsx-factory=h --bundle "../src/main.jsx" --format=esm --outfile="../$WWWROOT/bundle.js.tmp"
 cd ..
 
 

@@ -4,14 +4,19 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
-        <WasmNativeStrip>false</WasmNativeStrip>
+        <Nullable>disable</Nullable>
+
         <RunAOTCompilation>true</RunAOTCompilation>
         <RunAOTCompilationAfterBuild>true</RunAOTCompilationAfterBuild>
-        <Nullable>disable</Nullable>
+
         <EmccLinkOptimizationFlag>-O3</EmccLinkOptimizationFlag>
+        <EmccCompileOptimizationFlag>-O3</EmccCompileOptimizationFlag>
+        <WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
+
+        <EmccEnvironment>web</EmccEnvironment>
         <EmccExtraLDFlags>--js-library $(MSBuildProjectDirectory.Replace('\', '/'))/js/library-fixemscripten.js -sFULL_ES3 -lidbfs.js -sLZ4</EmccExtraLDFlags>
-        <WasmEmitSymbolMap>true</WasmEmitSymbolMap>
         <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
+        <WasmNativeStrip>false</WasmNativeStrip>
     </PropertyGroup>
 
     <ItemGroup>
