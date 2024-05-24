@@ -175,7 +175,7 @@ export function FSExplorer() {
 					<div class="flex space-between vcenter" style="margin-block: 1rem;">
 					<span>File: <pre>{use(this.filePath)}</pre></span>
 					<span class="flex vcenter gap-sm">
-					<button on:click={() => {
+					<button class="primary" on:click={() => {
 						this.fs.writeFile(this.filePath, (new TextEncoder()).encode(this.fileData));
 						// this.filePath = "";
 						// this.fileData = "";
@@ -202,7 +202,7 @@ export function FSExplorer() {
 				</div>
 			))}
 			<div class="flex vcenter" id="uploadcontainer">
-			<button class="large important" title="Upload to this directory" on:click={() => {
+			<button class="large primary" title="Upload to this directory" on:click={() => {
 				let input = h("input", { type: "file" });
 
 				input.addEventListener("change", () => {
