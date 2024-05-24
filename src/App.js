@@ -143,7 +143,7 @@ export function App() {
     this.started = false;
     this.allowPlay = false;
 
-    let updatePlay = () => { this.allowPlay = this.loaded || this.started };
+    let updatePlay = () => { this.allowPlay = this.loaded || !this.started };
     handle(use(this.loaded), updatePlay);
     handle(use(this.started), updatePlay);
 
@@ -167,6 +167,7 @@ export function App() {
         this.started = true;
 
         start(this.canvas);
+        this.allowPlay = false;
     };
 
     return html`
