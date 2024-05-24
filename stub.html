@@ -17,27 +17,43 @@ To correctly download this file on google drive, press the download button at th
 
 <body>
   <style>
+    body {
+        color: #fff;
+        background-color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     #interstitial {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
+      gap: 0.5em;
       height: 100vh;
-      font-family: 'Inter', sans-serif;
+      width: 40vw;
+      font-family: 'Inter Tight', 'Inter', system-ui, sans-serif;
       font-size: 1.2rem;
-      color: #fff;
-      background-color: #000;
-      padding: 2em;
+      padding: 3em;
+      color: var(--fg);
+      background-color: var(--bg);
+    }
+
+    img {
+      image-rendering: pixelated;
+      width: 100px;
+      height: 100px;
     }
   </style>
 
   <!-- put temporary body before any large files load -->
   <div id="interstitial">
-    <h1>
-      celeste-wasm is loading.....<br><br>
+    <h1 style="display: flex; align-items: center;">
+      <img src="BASE64LOAD:image/x-icon:assets/app.ico:" alt="Celeste Logo"> Loading...
     </h1>
     <script>
       if (!localStorage["vfs_populated"]) {
-        document.querySelector("h1").append("This may take a very long time (>5 minutes) for the first load. Subsequent loads will be faster");
+        document.querySelector("h3").append("This may take a very long time (>5 minutes) for the first load. Subsequent loads will be faster.");
       }
     </script>
   </div>
