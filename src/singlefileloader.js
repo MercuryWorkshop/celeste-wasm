@@ -61,6 +61,10 @@ async function unpak(zbuf) {
 	let buf = zdecoder.decode(zbuf, WASM_PACK_SIZE);
 	let decoder = new TextDecoder();
 
+	if (buf.length == 0) {
+		alert("bad wasm.pak!! redownload it and reload");
+		window.location.reload();
+	}
 	console.log("loaded wasm.pak: ", buf.length);
 
 	let dv = new DataView(buf.buffer);
