@@ -37,17 +37,15 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
 ## i want to build this as an html file
 1. run `make singlefile`
 
-## i want to port this to a newer version of celeste
+## i want to port this to a newer version of celeste (once it exists)
 we couldn't get the output of ilspy to be stable enough for a patch system to work. look in Patches/Code/Celeste for all the changes we made and you will have to rebase them yourself with your own decompiler output. we used ilspy 7.2-rc.
 
 
 **main improvements that need to be done:**
-1. ~~persistent fs~~
-2. ~~fix release build, currently crashes at [generic contentreader type limitation](<https://gist.github.com/TheSpydog/e94c8c23c01615a5a3b2cc1a0857415c#qa>)~~
-3. ~~enable optimizations~~
-4. threading so it no longer freezes (waiting for .net 9)
-5. don't load all assets into memory, fetch on demand
-6. ~~fix b-side cassete blocks~~
+1. threading so it no longer freezes (waiting for .net 9)
+2. make a true patching system so that we can easily update to newer versions of celeste
+3. fix gamepads (currently crashes at emscripten type signature error)
+4. port over everest (if possible)
 
 ## (bonus) simple fna game porting guide
 1. decompile it
