@@ -11,7 +11,7 @@ export function SaveManager() {
 		height: calc(100% - 3rem);
 		#dragarea {
 			display: flex;
-
+			gap: 0.25rem;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
@@ -33,6 +33,7 @@ export function SaveManager() {
 
 			h1 {
 				margin: 0;
+				margin-bottom: 1.25rem;
 			}
 		}
 
@@ -53,7 +54,7 @@ export function SaveManager() {
 	return (
 		<div class="flex">
 		  <span id="head">Save Manager</span>
-			<div class="gap" id="dragarea" bind:this={use(this.zone)}
+			<div id="dragarea" bind:this={use(this.zone)}
 				on:dragover={(ev) => {
 					ev.preventDefault();
 				}}
