@@ -104,16 +104,19 @@ export function App() {
       color: var(--fg);
       border: 0.1em solid var(--surface3);
       border-radius: 0.6em;
-      opacity: 0;
-      scale: 0.8;
+      opacity: 1;
+      scale: 1;
       max-width: 60vw;
 
-      transition: opacity 0.2s ease, scale 0.2s ease;
+      transition: opacity 0.25s, transform 0.25s;
+      transition-timing-function: ease;
 
-      &[open] {
-        opacity: 1;
-        scale: 1;
-        transition: opacity 0.2s ease, scale 0.2s ease;
+      &:not([open]) {
+        display: block;
+        pointer-events: none;
+        transform: scale(0.8);
+        opacity: 0;
+        scale: 0.9;
       }
 
       button {
