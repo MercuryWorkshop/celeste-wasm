@@ -61,9 +61,11 @@ export function SaveManager() {
 						file = files[0].getAsFile();
 					}
 
-					document.getElementById("dropzone").classList.remove("dragover");
+					this.zone.classList.remove("dragover");
 
-					unzipsave(file);
+
+					await unzipsave(file);
+					app.savesmenu.close();
 				}}
 			>
 				<div class="material-symbols-rounded" style="font-size: 5rem;">cloud_upload</div>
