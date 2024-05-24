@@ -131,8 +131,8 @@ function IntroSplash() {
 		}
 
 		@keyframes fadeout {
-			from { opacity: 1; }
-			to { opacity: 0; }
+			from { opacity: 1; scale: 1; }
+			to { opacity: 0; scale: 1.2; }
 		}
     `
 
