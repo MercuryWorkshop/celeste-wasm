@@ -5,8 +5,6 @@ using Celeste;
 
 public static partial class Program
 {
-
-
     internal static void Main()
     {
         Console.WriteLine("Main()");
@@ -42,6 +40,7 @@ public static partial class Program
     private static void MainLoop()
     {
         if (exited) return;
+
         if (exitGame)
         {
             // RunThread.WaitAll();
@@ -49,8 +48,9 @@ public static partial class Program
             Audio.Unload();
             exitGame = false;
             exited = true;
-            SetMainLoop(null);
+            StopMainLoop();
         }
+
         try
         {
             game.RunOneFrame();
@@ -64,6 +64,9 @@ public static partial class Program
 
     [JSImport("setMainLoop", "main.js")]
     internal static partial void SetMainLoop([JSMarshalAs<JSType.Function>] Action cb);
+
+    [JSImport("stopMainLoop", "main.js")]
+    internal static partial void StopMainLoop();
 
     [JSImport("syncFs", "main.js")]
     internal static partial void Sync([JSMarshalAs<JSType.Function>] Action cb);

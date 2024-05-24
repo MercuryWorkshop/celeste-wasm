@@ -261,7 +261,7 @@ function IntroSplash() {
 					<p>
 						{DRM && "You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer. " || ""}
 						The game will autosave your progress, but the browser may wipe it after a while. Remember to periodically use the save icon at the top.
-						{!window.SINGLEFILE && "This will download around ~700MB of assets to your browser's local storage." || ""}
+						{!window.SINGLEFILE && " This will download around ~700MB of assets to your browser's local storage." || ""}
 					</p>
 
 					{$if(use(this.downloading),
@@ -296,9 +296,7 @@ function IntroSplash() {
 							(
 								<div>
 									<p>
-										Downloaded assets.
-										Now you need to decrypt them.
-										Find the game files directory for your copy of Celeste and upload <code>Content/Dialog/english.txt</code>.
+										Downloaded assets. Now you need to decrypt them. Find the game files directory for your copy of Celeste and upload <code>Content/Dialog/english.txt</code>.
 									</p>
 
 									<button class="action important" on:click={decrypt}>

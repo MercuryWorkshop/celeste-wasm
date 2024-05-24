@@ -30,6 +30,7 @@ export async function init() {
 	window.FS = dotnet.instance.Module.FS;
 	setModuleImports("main.js", {
 		setMainLoop: MainLoop,
+		stopMainLoop: () => dotnet.instance.Module.pauseMainLoop(),
 		syncFs: (cb) => dotnet.instance.Module.FS.syncfs(false, cb),
 	});
 	initted = true;
