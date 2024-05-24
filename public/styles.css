@@ -155,18 +155,26 @@ input {
 }
 
 *::-webkit-scrollbar {
-	width: 0.7em;
-	height: 0.7em;
+	width: 0.5em;
+	height: 0.5em;
 	background-color: transparent;
 }
 
+/* *::-webkit-scrollbar:hover,
+*::-webkit-scrollbar:has(*::-webkit-scrollbar-thumb:hover) {
+    width: 0.5em;
+	height: 0.5em;
+} */
+
 *::-webkit-scrollbar-thumb {
 	background-color: var(--surface4);
-	border-radius: 0.7em;
+	transition: background-color 0.2s;
+	border-radius: 1em;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-	background-color: var(--accent)
+	background-color: var(--accent);
+	transition: background-color 0.2s;
 }
 
 *::-webkit-scrollbar-track {
@@ -294,4 +302,8 @@ a {
 	&:hover {
 		color: color-mix(in srgb, var(--accent) 80%, white);
 	}
+}
+
+*:focus-visible {
+    outline: var(--accent) auto 2px;
 }
