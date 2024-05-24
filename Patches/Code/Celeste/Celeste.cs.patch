@@ -1,0 +1,44 @@
+--- ../decomp/Celeste/Celeste.cs	2024-05-17 02:12:40.000000000 -0400
++++ celeste/Celeste/Celeste.cs	2024-05-21 12:02:13.723070440 -0400
+@@ -53,7 +53,7 @@
+ 
+ 		public static Stopwatch LoadTimer;
+ 
+-		private static int _mainThreadId;
++		public static int _mainThreadId;
+ 
+ 		public static Vector2 TargetCenter => new Vector2(1920f, 1080f) / 2f;
+ 
+@@ -161,6 +161,7 @@
+ 			}
+ 		}
+ 
++        /*
+ 		private static void Main(string[] args)
+ 		{
+ 			Celeste game;
+@@ -222,6 +223,7 @@
+ 			game.Dispose();
+ 			Audio.Unload();
+ 		}
++        */
+ 
+ 		public static void ReloadAssets(bool levels, bool graphics, bool hires, AreaKey? area = null)
+ 		{
+@@ -253,6 +255,8 @@
+ 
+ 		private static void CallProcess(string path, string args = "", bool createWindow = false)
+ 		{
++            Console.WriteLine($"CelesteWasm: Attempted to start process (createWindow {createWindow}): {path} {args}");
++            /*
+ 			Process process = new Process();
+ 			process.StartInfo = new ProcessStartInfo
+ 			{
+@@ -265,6 +269,7 @@
+ 			};
+ 			process.Start();
+ 			process.WaitForExit();
++            */
+ 		}
+ 
+ 		public static bool PauseAnywhere()

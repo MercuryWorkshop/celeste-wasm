@@ -1,0 +1,96 @@
+--- ../decomp/Celeste/SoundSource.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/SoundSource.cs	2024-05-21 12:02:13.764071688 -0400
+@@ -15,7 +15,7 @@
+ 
+ 		public bool RemoveOnOneshotEnd;
+ 
+-		private EventInstance instance;
++		private EventInstance? instance;
+ 
+ 		private bool is3D;
+ 
+@@ -33,7 +33,7 @@
+ 			{
+ 				if (instance != null)
+ 				{
+-					instance.getPlaybackState(out var state);
++					instance.Value.getPlaybackState(out var state);
+ 					if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING || state == PLAYBACK_STATE.SUSTAINING)
+ 					{
+ 						return true;
+@@ -71,12 +71,14 @@
+ 		{
+ 			Stop();
+ 			EventName = path;
+-			EventDescription desc = Audio.GetEventDescription(path);
+-			if (desc != null)
++			EventDescription? desc = Audio.GetEventDescription(path);
++			if (desc.HasValue)
+ 			{
+-				desc.createInstance(out instance);
+-				desc.is3D(out is3D);
+-				desc.isOneshot(out isOneshot);
++                EventInstance instanceNonNull;
++				Audio.CheckFmod(desc.Value.createInstance(out instanceNonNull));
++                instance = instanceNonNull;
++				desc.Value.is3D(out is3D);
++				desc.Value.isOneshot(out isOneshot);
+ 			}
+ 			if (instance != null)
+ 			{
+@@ -91,9 +93,9 @@
+ 				}
+ 				if (param != null)
+ 				{
+-					instance.setParameterValue(param, value);
++					instance.Value.setParameterByName(param, value);
+ 				}
+-				instance.start();
++				instance.Value.start();
+ 				Playing = true;
+ 			}
+ 			return this;
+@@ -103,7 +105,7 @@
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.setParameterValue(param, value);
++				instance.Value.setParameterByName(param, value);
+ 			}
+ 			return this;
+ 		}
+@@ -112,7 +114,7 @@
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.setPaused(paused: true);
++				instance.Value.setPaused(paused: true);
+ 			}
+ 			Playing = false;
+ 			return this;
+@@ -122,10 +124,10 @@
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.getPaused(out var paused);
++				instance.Value.getPaused(out var paused);
+ 				if (paused)
+ 				{
+-					instance.setPaused(paused: false);
++					instance.Value.setPaused(paused: false);
+ 					Playing = true;
+ 				}
+ 			}
+@@ -160,10 +162,10 @@
+ 			{
+ 				return;
+ 			}
+-			instance.getPlaybackState(out var state);
++			instance.Value.getPlaybackState(out var state);
+ 			if (state == PLAYBACK_STATE.STOPPED)
+ 			{
+-				instance.release();
++				instance.Value.release();
+ 				instance = null;
+ 				Playing = false;
+ 				if (RemoveOnOneshotEnd)

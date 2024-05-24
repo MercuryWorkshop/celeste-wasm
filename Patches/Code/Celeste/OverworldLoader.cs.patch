@@ -1,0 +1,23 @@
+--- ../decomp/Celeste/OverworldLoader.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/OverworldLoader.cs	2024-05-21 12:02:13.757071475 -0400
+@@ -52,8 +52,9 @@
+ 			e.Add(new Coroutine(Routine(session)));
+ 			Add(e);
+ 			activeThread = Thread.CurrentThread;
+-			activeThread.Priority = ThreadPriority.Lowest;
+-			RunThread.Start(LoadThread, "OVERWORLD_LOADER", highPriority: true);
++			// activeThread.Priority = ThreadPriority.Lowest;
++			// RunThread.Start(LoadThread, "OVERWORLD_LOADER", highPriority: true);
++            LoadThread();
+ 		}
+ 
+ 		private void LoadThread()
+@@ -70,7 +71,7 @@
+ 			overworld = new Overworld(this);
+ 			overworld.Entities.UpdateLists();
+ 			loaded = true;
+-			activeThread.Priority = ThreadPriority.Normal;
++			//activeThread.Priority = ThreadPriority.Normal;
+ 		}
+ 
+ 		private IEnumerator Routine(Session session)

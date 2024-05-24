@@ -1,0 +1,13 @@
+--- ../decomp/Celeste/CS10_FinalLaunch.cs	2024-05-17 02:12:37.000000000 -0400
++++ celeste/Celeste/CS10_FinalLaunch.cs	2024-05-21 12:02:13.722070410 -0400
+@@ -123,8 +123,8 @@
+ 		{
+ 			if (WasSkipped && boost != null && boost.Ch9FinalBoostSfx != null)
+ 			{
+-				boost.Ch9FinalBoostSfx.stop(STOP_MODE.ALLOWFADEOUT);
+-				boost.Ch9FinalBoostSfx.release();
++				boost.Ch9FinalBoostSfx.Value.stop(STOP_MODE.ALLOWFADEOUT);
++				boost.Ch9FinalBoostSfx.Value.release();
+ 			}
+ 			string nextLevelName = "end-granny";
+ 			Player.IntroTypes nextLevelIntro = Player.IntroTypes.Transition;

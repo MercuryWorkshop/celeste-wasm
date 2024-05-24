@@ -1,0 +1,11 @@
+--- ../decomp/Celeste/Settings.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/Settings.cs	2024-05-21 12:02:13.763071657 -0400
+@@ -132,7 +132,7 @@
+ 		{
+ 			if (Celeste.PlayMode != Celeste.PlayModes.Debug)
+ 			{
+-				Fullscreen = true;
++				//Fullscreen = true;
+ 			}
+ 			if (Celeste.IsGGP)
+ 			{

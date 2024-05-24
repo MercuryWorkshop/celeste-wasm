@@ -1,0 +1,551 @@
+--- ../decomp/Celeste/Audio.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/Audio.cs	2024-05-21 12:02:13.705069892 -0400
+@@ -6,7 +6,7 @@
+ using FMOD.Studio;
+ using Microsoft.Xna.Framework;
+ using Monocle;
+-using SDL2;
++// using SDL2;
+ 
+ namespace Celeste
+ {
+@@ -29,19 +29,19 @@
+ 			public static Bank Load(string name, bool loadStrings)
+ 			{
+ 				string path = Path.Combine(Engine.ContentDirectory, "FMOD", "Desktop", name);
+-				CheckFmod(system.loadBankFile(path + ".bank", LOAD_BANK_FLAGS.NORMAL, out var bank));
++				CheckFmod(system.Value.loadBankFile(path + ".bank", LOAD_BANK_FLAGS.NORMAL, out var bank));
+ 				bank.loadSampleData();
+ 				if (loadStrings)
+ 				{
+-					CheckFmod(system.loadBankFile(path + ".strings.bank", LOAD_BANK_FLAGS.NORMAL, out var _));
++					CheckFmod(system.Value.loadBankFile(path + ".strings.bank", LOAD_BANK_FLAGS.NORMAL, out var _));
+ 				}
+ 				return bank;
+ 			}
+ 		}
+ 
+-		private static FMOD.Studio.System system;
++		private static FMOD.Studio.System? system;
+ 
+-		private static FMOD.Studio._3D_ATTRIBUTES attributes3d = default(FMOD.Studio._3D_ATTRIBUTES);
++		private static FMOD.ATTRIBUTES_3D attributes3d = default(FMOD.ATTRIBUTES_3D);
+ 
+ 		public static Dictionary<string, EventDescription> cachedEventDescriptions = new Dictionary<string, EventDescription>();
+ 
+@@ -49,23 +49,23 @@
+ 
+ 		private static bool ready;
+ 
+-		private static EventInstance currentMusicEvent = null;
++		private static EventInstance? currentMusicEvent = null;
+ 
+-		private static EventInstance currentAltMusicEvent = null;
++		private static EventInstance? currentAltMusicEvent = null;
+ 
+-		private static EventInstance currentAmbientEvent = null;
++		private static EventInstance? currentAmbientEvent = null;
+ 
+-		private static EventInstance mainDownSnapshot = null;
++		private static EventInstance? mainDownSnapshot = null;
+ 
+ 		public static string CurrentMusic = "";
+ 
+ 		private static bool musicUnderwater;
+ 
+-		private static EventInstance musicUnderwaterSnapshot;
++		private static EventInstance? musicUnderwaterSnapshot;
+ 
+-		public static EventInstance CurrentMusicEventInstance => currentMusicEvent;
++		public static EventInstance? CurrentMusicEventInstance => currentMusicEvent;
+ 
+-		public static EventInstance CurrentAmbienceEventInstance => currentAmbientEvent;
++		public static EventInstance? CurrentAmbienceEventInstance => currentAmbientEvent;
+ 
+ 		public static float MusicVolume
+ 		{
+@@ -170,13 +170,20 @@
+ 			{
+ 				flags = FMOD.Studio.INITFLAGS.LIVEUPDATE;
+ 			}
+-			CheckFmod(FMOD.Studio.System.create(out system));
+-			system.getLowLevelSystem(out var lowLevelSystem);
++            // .NET 8 Nullable + FMOD changing everything to structs...
++            FMOD.Studio.System systemNotNull;
++			CheckFmod(FMOD.Studio.System.create(out systemNotNull));
++            system = systemNotNull;
++			system.Value.getCoreSystem(out var lowLevelSystem);
++            lowLevelSystem.setDSPBufferSize(2048, 4);
++            // Not needed on WASM, doesn't work anyway
++            /*
+ 			if (SDL.SDL_GetPlatform().Equals("Linux"))
+ 			{
+ 				FMOD_SDL_Register(lowLevelSystem.getRaw());
+ 			}
+-			CheckFmod(system.initialize(1024, flags, FMOD.INITFLAGS.NORMAL, IntPtr.Zero));
++            */
++			CheckFmod(system.Value.initialize(1024, flags, FMOD.INITFLAGS.NORMAL, IntPtr.Zero));
+ 			attributes3d.forward = new VECTOR
+ 			{
+ 				x = 0f,
+@@ -195,25 +202,25 @@
+ 
+ 		public static void Update()
+ 		{
+-			if (system != null && ready)
++			if (system.HasValue && ready)
+ 			{
+-				CheckFmod(system.update());
++				CheckFmod(system.Value.update());
+ 			}
+ 		}
+ 
+ 		public static void Unload()
+ 		{
+-			if (system != null)
++			if (system.HasValue)
+ 			{
+-				CheckFmod(system.unloadAll());
+-				CheckFmod(system.release());
++				CheckFmod(system.Value.unloadAll());
++				CheckFmod(system.Value.release());
+ 				system = null;
+ 			}
+ 		}
+ 
+ 		public static void SetListenerPosition(Vector3 forward, Vector3 up, Vector3 position)
+ 		{
+-			FMOD.Studio._3D_ATTRIBUTES attr = default(FMOD.Studio._3D_ATTRIBUTES);
++			FMOD.ATTRIBUTES_3D attr = default(FMOD.ATTRIBUTES_3D);
+ 			attr.forward.x = forward.X;
+ 			attr.forward.z = forward.Y;
+ 			attr.forward.z = forward.Z;
+@@ -223,7 +230,7 @@
+ 			attr.position.x = position.X;
+ 			attr.position.y = position.Y;
+ 			attr.position.z = position.Z;
+-			system.setListenerAttributes(0, attr);
++			system.Value.setListenerAttributes(0, attr);
+ 		}
+ 
+ 		public static void SetCamera(Camera camera)
+@@ -239,133 +246,133 @@
+ 			}
+ 		}
+ 
+-		public static EventInstance Play(string path)
++		public static EventInstance? Play(string path)
+ 		{
+-			EventInstance instance = CreateInstance(path);
++			EventInstance? instance = CreateInstance(path);
+ 			if (instance != null)
+ 			{
+-				instance.start();
+-				instance.release();
++				instance.Value.start();
++				instance.Value.release();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static EventInstance Play(string path, string param, float value)
++		public static EventInstance? Play(string path, string param, float value)
+ 		{
+-			EventInstance instance = CreateInstance(path);
++			EventInstance? instance = CreateInstance(path);
+ 			if (instance != null)
+ 			{
+ 				SetParameter(instance, param, value);
+-				instance.start();
+-				instance.release();
++				instance.Value.start();
++				instance.Value.release();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static EventInstance Play(string path, Vector2 position)
++		public static EventInstance? Play(string path, Vector2 position)
+ 		{
+-			EventInstance instance = CreateInstance(path, position);
++			EventInstance? instance = CreateInstance(path, position);
+ 			if (instance != null)
+ 			{
+-				instance.start();
+-				instance.release();
++				instance.Value.start();
++				instance.Value.release();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static EventInstance Play(string path, Vector2 position, string param, float value)
++		public static EventInstance? Play(string path, Vector2 position, string param, float value)
+ 		{
+-			EventInstance instance = CreateInstance(path, position);
++			EventInstance? instance = CreateInstance(path, position);
+ 			if (instance != null)
+ 			{
+ 				if (param != null)
+ 				{
+-					instance.setParameterValue(param, value);
++					instance.Value.setParameterByName(param, value);
+ 				}
+-				instance.start();
+-				instance.release();
++				instance.Value.start();
++				instance.Value.release();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static EventInstance Play(string path, Vector2 position, string param, float value, string param2, float value2)
++		public static EventInstance? Play(string path, Vector2 position, string param, float value, string param2, float value2)
+ 		{
+-			EventInstance instance = CreateInstance(path, position);
++			EventInstance? instance = CreateInstance(path, position);
+ 			if (instance != null)
+ 			{
+ 				if (param != null)
+ 				{
+-					instance.setParameterValue(param, value);
++					instance.Value.setParameterByName(param, value);
+ 				}
+ 				if (param2 != null)
+ 				{
+-					instance.setParameterValue(param2, value2);
++					instance.Value.setParameterByName(param2, value2);
+ 				}
+-				instance.start();
+-				instance.release();
++				instance.Value.start();
++			    instance.Value.release();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static EventInstance Loop(string path)
++		public static EventInstance? Loop(string path)
+ 		{
+-			EventInstance instance = CreateInstance(path);
++			EventInstance? instance = CreateInstance(path);
+ 			if (instance != null)
+ 			{
+-				instance.start();
++				instance.Value.start();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static EventInstance Loop(string path, string param, float value)
++		public static EventInstance? Loop(string path, string param, float value)
+ 		{
+-			EventInstance instance = CreateInstance(path);
++			EventInstance? instance = CreateInstance(path);
+ 			if (instance != null)
+ 			{
+-				instance.setParameterValue(param, value);
+-				instance.start();
++				instance.Value.setParameterByName(param, value);
++				instance.Value.start();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static EventInstance Loop(string path, Vector2 position)
++		public static EventInstance? Loop(string path, Vector2 position)
+ 		{
+-			EventInstance instance = CreateInstance(path, position);
++			EventInstance? instance = CreateInstance(path, position);
+ 			if (instance != null)
+ 			{
+-				instance.start();
++				instance.Value.start();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static EventInstance Loop(string path, Vector2 position, string param, float value)
++		public static EventInstance? Loop(string path, Vector2 position, string param, float value)
+ 		{
+-			EventInstance instance = CreateInstance(path, position);
++			EventInstance? instance = CreateInstance(path, position);
+ 			if (instance != null)
+ 			{
+-				instance.setParameterValue(param, value);
+-				instance.start();
++				instance.Value.setParameterByName(param, value);
++				instance.Value.start();
+ 			}
+ 			return instance;
+ 		}
+ 
+-		public static void Pause(EventInstance instance)
++		public static void Pause(EventInstance? instance)
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.setPaused(paused: true);
++				instance.Value.setPaused(paused: true);
+ 			}
+ 		}
+ 
+-		public static void Resume(EventInstance instance)
++		public static void Resume(EventInstance? instance)
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.setPaused(paused: false);
++				instance.Value.setPaused(paused: false);
+ 			}
+ 		}
+ 
+-		public static void Position(EventInstance instance, Vector2 position)
++		public static void Position(EventInstance? instance, Vector2 position)
+ 		{
+ 			if (instance != null)
+ 			{
+@@ -382,34 +389,34 @@
+ 				attributes3d.position.x = px;
+ 				attributes3d.position.y = position.Y - cam.Y;
+ 				attributes3d.position.z = 0f;
+-				instance.set3DAttributes(attributes3d);
++				instance.Value.set3DAttributes(attributes3d);
+ 			}
+ 		}
+ 
+-		public static void SetParameter(EventInstance instance, string param, float value)
++		public static void SetParameter(EventInstance? instance, string param, float value)
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.setParameterValue(param, value);
++				instance.Value.setParameterByName(param, value);
+ 			}
+ 		}
+ 
+-		public static void Stop(EventInstance instance, bool allowFadeOut = true)
++		public static void Stop(EventInstance? instance, bool allowFadeOut = true)
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.stop((!allowFadeOut) ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
+-				instance.release();
++				instance.Value.stop((!allowFadeOut) ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
++				instance.Value.release();
+ 			}
+ 		}
+ 
+-		public static EventInstance CreateInstance(string path, Vector2? position = null)
++		public static EventInstance? CreateInstance(string path, Vector2? position = null)
+ 		{
+-			EventDescription desc = GetEventDescription(path);
++			EventDescription? desc = GetEventDescription(path);
+ 			if (desc != null)
+ 			{
+-				desc.createInstance(out var instance);
+-				desc.is3D(out var is3D);
++				desc.Value.createInstance(out var instance);
++				desc.Value.is3D(out var is3D);
+ 				if (is3D && position.HasValue)
+ 				{
+ 					Position(instance, position.Value);
+@@ -419,12 +426,13 @@
+ 			return null;
+ 		}
+ 
+-		public static EventDescription GetEventDescription(string path)
++		public static EventDescription? GetEventDescription(string path)
+ 		{
+-			EventDescription desc = null;
+-			if (path != null && !cachedEventDescriptions.TryGetValue(path, out desc))
++			EventDescription desc;
++            bool ret = cachedEventDescriptions.TryGetValue(path, out desc);
++			if (path != null && !ret)
+ 			{
+-				RESULT result = system.getEvent(path, out desc);
++				RESULT result = system.Value.getEvent(path, out desc);
+ 				switch (result)
+ 				{
+ 				case RESULT.OK:
+@@ -436,8 +444,9 @@
+ 				case RESULT.ERR_EVENT_NOTFOUND:
+ 					break;
+ 				}
++                return desc;
+ 			}
+-			return desc;
++            return desc;
+ 		}
+ 
+ 		public static void ReleaseUnusedDescriptions()
+@@ -458,26 +467,23 @@
+ 			}
+ 		}
+ 
+-		public static string GetEventName(EventInstance instance)
++		public static string GetEventName(EventInstance? instance)
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.getDescription(out var desc);
+-				if (desc != null)
+-				{
+-					string path = "";
+-					desc.getPath(out path);
+-					return path;
+-				}
++				instance.Value.getDescription(out var desc);
++                string path = "";
++                desc.getPath(out path);
++                return path;
+ 			}
+ 			return "";
+ 		}
+ 
+-		public static bool IsPlaying(EventInstance instance)
++		public static bool IsPlaying(EventInstance? instance)
+ 		{
+ 			if (instance != null)
+ 			{
+-				instance.getPlaybackState(out var state);
++				instance.Value.getPlaybackState(out var state);
+ 				if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING)
+ 				{
+ 					return true;
+@@ -489,7 +495,7 @@
+ 		public static bool BusPaused(string path, bool? pause = null)
+ 		{
+ 			bool isPaused = false;
+-			if (system != null && system.getBus(path, out var bus) == RESULT.OK)
++			if (system != null && system.Value.getBus(path, out var bus) == RESULT.OK)
+ 			{
+ 				if (pause.HasValue)
+ 				{
+@@ -503,7 +509,7 @@
+ 		public static bool BusMuted(string path, bool? mute)
+ 		{
+ 			bool isMuted = false;
+-			if (system.getBus(path, out var bus) == RESULT.OK)
++			if (system.Value.getBus(path, out var bus) == RESULT.OK)
+ 			{
+ 				if (mute.HasValue)
+ 				{
+@@ -516,7 +522,7 @@
+ 
+ 		public static void BusStopAll(string path, bool immediate = false)
+ 		{
+-			if (system != null && system.getBus(path, out var bus) == RESULT.OK)
++			if (system != null && system.Value.getBus(path, out var bus) == RESULT.OK)
+ 			{
+ 				bus.stopAllEvents(immediate ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
+ 			}
+@@ -525,7 +531,7 @@
+ 		public static float VCAVolume(string path, float? volume = null)
+ 		{
+ 			VCA vca;
+-			RESULT vCA = system.getVCA(path, out vca);
++			RESULT vCA = system.Value.getVCA(path, out vca);
+ 			float output = 1f;
+ 			float finalvolume = 1f;
+ 			if (vCA == RESULT.OK)
+@@ -541,11 +547,13 @@
+ 
+ 		public static EventInstance CreateSnapshot(string name, bool start = true)
+ 		{
+-			system.getEvent(name, out var ev);
++			CheckFmod(system.Value.getEvent(name, out var ev));
++            /*
+ 			if (ev == null)
+ 			{
+ 				throw new Exception("Snapshot " + name + " doesn't exist");
+ 			}
++            */
+ 			ev.createInstance(out var snapshot);
+ 			if (start)
+ 			{
+@@ -554,19 +562,19 @@
+ 			return snapshot;
+ 		}
+ 
+-		public static void ResumeSnapshot(EventInstance snapshot)
++		public static void ResumeSnapshot(EventInstance? snapshot)
+ 		{
+ 			if (snapshot != null)
+ 			{
+-				snapshot.start();
++				snapshot.Value.start();
+ 			}
+ 		}
+ 
+-		public static bool IsSnapshotRunning(EventInstance snapshot)
++		public static bool IsSnapshotRunning(EventInstance? snapshot)
+ 		{
+ 			if (snapshot != null)
+ 			{
+-				snapshot.getPlaybackState(out var state);
++				snapshot.Value.getPlaybackState(out var state);
+ 				if (state != 0 && state != PLAYBACK_STATE.STARTING)
+ 				{
+ 					return state == PLAYBACK_STATE.SUSTAINING;
+@@ -576,20 +584,20 @@
+ 			return false;
+ 		}
+ 
+-		public static void EndSnapshot(EventInstance snapshot)
++		public static void EndSnapshot(EventInstance? snapshot)
+ 		{
+ 			if (snapshot != null)
+ 			{
+-				snapshot.stop(STOP_MODE.ALLOWFADEOUT);
++				snapshot.Value.stop(STOP_MODE.ALLOWFADEOUT);
+ 			}
+ 		}
+ 
+-		public static void ReleaseSnapshot(EventInstance snapshot)
++		public static void ReleaseSnapshot(EventInstance? snapshot)
+ 		{
+ 			if (snapshot != null)
+ 			{
+-				snapshot.stop(STOP_MODE.ALLOWFADEOUT);
+-				snapshot.release();
++				snapshot.Value.stop(STOP_MODE.ALLOWFADEOUT);
++				snapshot.Value.release();
+ 			}
+ 		}
+ 
+@@ -604,10 +612,10 @@
+ 			else if (!CurrentMusic.Equals(path, StringComparison.OrdinalIgnoreCase))
+ 			{
+ 				Stop(currentMusicEvent, allowFadeOut);
+-				EventInstance instance = CreateInstance(path);
++				EventInstance? instance = CreateInstance(path);
+ 				if (instance != null && startPlaying)
+ 				{
+-					instance.start();
++					instance.Value.start();
+ 				}
+ 				currentMusicEvent = instance;
+ 				CurrentMusic = GetEventName(instance);
+@@ -626,10 +634,10 @@
+ 			else if (!GetEventName(currentAmbientEvent).Equals(path, StringComparison.OrdinalIgnoreCase))
+ 			{
+ 				Stop(currentAmbientEvent);
+-				EventInstance instance = CreateInstance(path);
++				EventInstance? instance = CreateInstance(path);
+ 				if (instance != null && startPlaying)
+ 				{
+-					instance.start();
++					instance.Value.start();
+ 				}
+ 				currentAmbientEvent = instance;
+ 				return true;
+@@ -641,7 +649,7 @@
+ 		{
+ 			if (currentMusicEvent != null)
+ 			{
+-				currentMusicEvent.setParameterValue(path, value);
++				currentMusicEvent.Value.setParameterByName(path, value);
+ 			}
+ 		}
+ 

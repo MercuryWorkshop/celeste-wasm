@@ -1,0 +1,14 @@
+--- ../decomp/Celeste/SwapBlock.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/SwapBlock.cs	2024-05-21 12:02:13.766071749 -0400
+@@ -99,9 +99,9 @@
+ 
+ 		private PathRenderer path;
+ 
+-		private EventInstance moveSfx;
++		private EventInstance? moveSfx;
+ 
+-		private EventInstance returnSfx;
++		private EventInstance? returnSfx;
+ 
+ 		private DisplacementRenderer.Burst burst;
+ 

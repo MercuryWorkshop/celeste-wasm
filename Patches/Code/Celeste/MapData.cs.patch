@@ -1,0 +1,17 @@
+--- ../decomp/Celeste/MapData.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/MapData.cs	2024-05-21 12:02:13.752071323 -0400
+@@ -112,10 +112,10 @@
+ 			}
+ 			Strawberries = new List<EntityData>();
+ 			BinaryPacker.Element element = BinaryPacker.FromBinary(Filepath);
+-			if (!element.Package.Equals(ModeData.Path))
+-			{
+-				throw new Exception("Corrupted Level Data");
+-			}
++			// if (!element.Package.Equals(ModeData.Path))
++			// {
++			// 	throw new Exception("Corrupted Level Data");
++			// }
+ 			foreach (BinaryPacker.Element child in element.Children)
+ 			{
+ 				if (child.Name == "levels")

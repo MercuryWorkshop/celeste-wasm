@@ -1,0 +1,12 @@
+--- ../decomp/Celeste/OuiFileSelect.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/OuiFileSelect.cs	2024-05-21 12:02:13.756071444 -0400
+@@ -35,7 +35,8 @@
+ 						base.Scene.Remove(Slots[l]);
+ 					}
+ 				}
+-				RunThread.Start(LoadThread, "FILE_LOADING");
++                LoadThread();
++				//RunThread.Start(LoadThread, "FILE_LOADING");
+ 				float elapsed = 0f;
+ 				while (!Loaded || elapsed < 0.5f)
+ 				{

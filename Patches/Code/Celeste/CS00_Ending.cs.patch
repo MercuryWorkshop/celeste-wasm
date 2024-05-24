@@ -1,0 +1,29 @@
+--- ../decomp/Celeste/CS00_Ending.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/CS00_Ending.cs	2024-05-21 12:02:13.711070075 -0400
+@@ -62,7 +62,7 @@
+ 			player.StateMachine.State = 11;
+ 			player.Facing = Facings.Right;
+ 			yield return WaitFor(1f);
+-			EventInstance instance = Audio.Play("event:/game/general/bird_in", bird.Position);
++			EventInstance? instance = Audio.Play("event:/game/general/bird_in", bird.Position);
+ 			bird.Facing = Facings.Left;
+ 			bird.Sprite.Play("fall");
+ 			float percent = 0f;
+@@ -101,7 +101,7 @@
+ 			level.Session.Inventory.Dashes = 1;
+ 			Engine.TimeRate = 1f;
+ 			keyOffed = true;
+-			Audio.CurrentMusicEventInstance.triggerCue();
++			Audio.CurrentMusicEventInstance.Value.keyOff();
+ 			bird.Add(new Coroutine(bird.HideTutorial()));
+ 			yield return 0.25f;
+ 			bird.Add(new Coroutine(bird.StartleAndFlyAway()));
+@@ -165,7 +165,7 @@
+ 				}
+ 				if (!keyOffed)
+ 				{
+-					Audio.CurrentMusicEventInstance.triggerCue();
++					Audio.CurrentMusicEventInstance.Value.keyOff();
+ 				}
+ 				if (level.HiresSnow == null)
+ 				{

@@ -1,0 +1,16 @@
+--- ../decomp/Celeste/RunThread.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/RunThread.cs	2024-05-21 12:02:13.762071627 -0400
+@@ -21,10 +21,13 @@
+ 			}
+ 			thread.Name = name;
+ 			thread.IsBackground = true;
++            // Not supported in WASM.
++            /*
+ 			if (highPriority)
+ 			{
+ 				thread.Priority = ThreadPriority.Highest;
+ 			}
++            */
+ 			thread.Start();
+ 		}
+ 

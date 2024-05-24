@@ -58,4 +58,19 @@ extract() {
   ilspycmd $1 -p -o Decompiled
 }
 
+genpatches() {
+  decompdir=../decomp/Celeste/
+  find "$decompdir" -type f -name "*.cs" | while read file; do
+    echo $file
+    local file=${file#$decompdir}
+    local patchfile=Patches/Code/Celeste/$file.patch
+
+    mkdir -p $(dirname $patchfile)
+    diff=$(diff -u ../decomp/Celeste/$file celeste/Celeste/$file)
+    if [ -n "$diff" ]; then
+      echo -n "$diff" > $patchfile
+    fi
+  done
+}
+
 $@

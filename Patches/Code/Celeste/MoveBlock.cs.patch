@@ -1,0 +1,15 @@
+--- ../decomp/Celeste/MoveBlock.cs	2024-05-17 02:12:39.000000000 -0400
++++ celeste/Celeste/MoveBlock.cs	2024-05-21 12:02:13.754071383 -0400
+@@ -531,10 +531,10 @@
+ 					yield return null;
+ 				}
+ 				Collidable = true;
+-				EventInstance sound = Audio.Play("event:/game/04_cliffside/arrowblock_reform_begin", debris[0].Position);
++				EventInstance? sound = Audio.Play("event:/game/04_cliffside/arrowblock_reform_begin", debris[0].Position);
+ 				MoveBlock moveBlock = this;
+ 				Coroutine component;
+-				Coroutine routine = (component = new Coroutine(SoundFollowsDebrisCenter(sound, debris)));
++				Coroutine routine = (component = new Coroutine(SoundFollowsDebrisCenter(sound.Value, debris)));
+ 				moveBlock.Add(component);
+ 				foreach (Debris item2 in debris)
+ 				{

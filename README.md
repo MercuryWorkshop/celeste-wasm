@@ -35,9 +35,10 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
 13. run `make serve`
 
 ## i want to build this as an html file
-1. cd into `jslibs/` and run `p/npm install`
-2. run `npx esbuild --minify --bundle ./pack.js --outfile=../wwwroot/zstd.js`
-3. run `make singlefile`
+1. run `make singlefile`
+
+## i want to port this to a newer version of celeste
+we couldn't get the output of ilspy to be stable enough for a patch system to work. look in Patches/Code/Celeste for all the changes we made and you will have to rebase them yourself with your own decompiler output. we used ilspy 7.2-rc.
 
 
 **main improvements that need to be done:**

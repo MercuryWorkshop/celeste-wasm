@@ -1,0 +1,20 @@
+--- ../decomp/Celeste/OuiAssistMode.cs	2024-05-17 02:12:38.000000000 -0400
++++ celeste/Celeste/OuiAssistMode.cs	2024-05-21 12:02:13.755071414 -0400
+@@ -42,7 +42,7 @@
+ 
+ 		private float rightArrowEase;
+ 
+-		private EventInstance mainSfx;
++		private EventInstance? mainSfx;
+ 
+ 		private const float textScale = 0.8f;
+ 
+@@ -96,7 +96,7 @@
+ 			}
+ 			if (mainSfx != null)
+ 			{
+-				mainSfx.release();
++				mainSfx.Value.release();
+ 			}
+ 			pages.Clear();
+ 			Visible = false;
