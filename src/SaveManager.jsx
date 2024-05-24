@@ -9,7 +9,7 @@ export function SaveManager() {
 		gap: 0.75rem;
 		width: 100%;
 		height: calc(100% - 3rem);
-		& > div {
+		#dragarea {
 			display: flex;
 
 			flex-direction: column;
@@ -43,7 +43,7 @@ export function SaveManager() {
 
 	return (
 		<div class="flex">
-			<div class="gap" bind:this={use(this.zone)}
+			<div class="gap" id="dragarea" bind:this={use(this.zone)}
 				on:dragover={(ev) => {
 					ev.preventDefault();
 				}}
