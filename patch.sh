@@ -70,12 +70,18 @@ genpatches() {
     local file=${file#$decompdir}
     local patchfile=Patches/Code/Celeste/$file.patch
 
-    mkdir -p $(dirname $patchfile)
+    mkdir -p "$(dirname $patchfile)"
     diff=$(diff -u ../decomp/Celeste/$file celeste/Celeste/$file)
     if [ -n "$diff" ]; then
       echo -n "$diff" > $patchfile
     fi
   done
+}
+
+genzip() {
+  zip -r celeste.patched.zip celeste/Celeste/*
+  python3 helpers/xor.py celeste.patched.zip ~/.config/itch/apps/celeste/Content/Dialog/english.txt > celeste.patched.zip.xor
+  rm celeste.patched.zip
 }
 
 $@

@@ -6,6 +6,7 @@ SPLIT ?= 0
 WWWROOT = bin/${Profile}/net8.0/wwwroot
 
 VFSFILE=$(WWWROOT)/_framework/data.data
+VFSTARGET=$(WWWROOT)/_framework/data.dummy
 
 WEBASSETS = $(shell find public -type f | sed 's/ /\\ /g')
 
@@ -25,7 +26,7 @@ $(WASMOUT): $(wildcard celeste/**/*.*) Program.cs fna-wasm.csproj
 	rm -rvf $(WWWROOT)/**/*.gz
 
 
-$(VFSFILE): $(ASSETS)
+$(VFSTARGET) $(VFSFILE): $(ASSETS)
 	@echo "Building VFS bundle..."
 	sh helpers/buildvfs.sh "$(WWWROOT)"
 	echo -n "const SIZE = " > "$(WWWROOT)/cfg.js"
@@ -41,11 +42,13 @@ ifneq ($(SPLIT),0)
 	@echo "Splitting VFS bundle..."
 	mkdir -p $(WWWROOT)/_framework/data
 	split -b$(SPLIT)M --additional-suffix .data $(VFSFILE) $(WWWROOT)/_framework/data/data
+	rm $(WWWROOT)/_framework/data.data
 endif
 	echo "const CHUNKSIZE = $$(( $(SPLIT) * 1024 * 1024 ));" >> $(WWWROOT)/cfg.js
 	echo -n "const splits = [" >> "$(WWWROOT)/cfg.js"
 	ls -1 $(WWWROOT)/_framework/data/ | sed 's/^/"/' | sed 's/$$/",/' | tr -d '\n' >> "$(WWWROOT)/cfg.js"
 	echo "];" >> "$(WWWROOT)/cfg.js"
+	:> "$(VFSTARGET)"
 
 $(STATICS):
 	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FAudio.a
@@ -82,17 +85,17 @@ singlefile: wasm.pak $(VFSFILE) $(WWWROOT)/bundlesingle.js $(WWWROOT)/singlefile
 
 build: $(WASMOUT)
 
-serve: $(WASMOUT) $(VFSFILE) $(WWWROOT)/bundle.js
+serve: $(WASMOUT) $(VFSTARGET) $(WWWROOT)/bundle.js
 	@echo "Serving..."
 	cp -r public/* $(WWWROOT)
 	sh helpers/server.sh "$(WWWROOT)"
 
-compress: $(WASMOUT) $(VFSFILE) $(WWWROOT)/bundle.js
+compress: $(WASMOUT) $(VFSTARGET) $(WWWROOT)/bundle.js
 	@echo "Compressing..."
 	cp -r public/* $(WWWROOT)
 	tar cavf celeste-wasm.tar.zst -C $(WWWROOT) .
 
-all: $(WASMOUT) $(VFSFILE) $(WWWROOT)/bundle.js singlefile
+all: $(WASMOUT) $(VFSTARGET) $(WWWROOT)/bundle.js singlefile
 	cp -r public/* $(WWWROOT)
 
 .PHONY: clean singlefile build serve copyweb compress all
