@@ -13,14 +13,17 @@ export async function init() {
 		.withApplicationArgumentsFromQuery()
 		.create());
 
-	dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
-	dotnet.instance.Module.FS.mount(
-		dotnet.instance.Module.FS.filesystems.IDBFS,
-		{},
-		"/libsdl",
-	);
+	if (!dotnet.instance.Module.FS.analyzePath("/libsdl").path) {
+		dotnet.instance.Module.FS.mkdir("/libsdl", 0o755);
+		dotnet.instance.Module.FS.mount(
+			dotnet.instance.Module.FS.filesystems.IDBFS,
+			{},
+			"/libsdl",
+		);
+	}
 	await new Promise((r) => dotnet.instance.Module.FS.syncfs(true, r));
 	console.log("synced; exposing dotnet FS");
+
 	window.FS = dotnet.instance.Module.FS;
 	setModuleImports("main.js", {
 		setMainLoop: MainLoop,
@@ -44,9 +47,11 @@ const MainLoop = (cb) => {
 export async function start(canvas) {
 	console.info("Starting...");
 
-	await new Promise(r => loadData(dotnet.instance.Module, r));
-	console.info("Loaded assets into VFS");
-	localStorage["vfs_populated"] = true
+	if (!dotnet.instance.Module.FS.analyzePath("/Content").path) {
+		await new Promise(r => loadData(dotnet.instance.Module, r));
+		console.info("Loaded assets into VFS");
+	}
+
 	if (window.assetblob) {
 		URL.revokeObjectURL(window.assetblob);
 	}
