@@ -27,6 +27,8 @@ const chunkify = function*(itr, size) {
 	if (chunk.length) yield chunk;
 };
 
+const clamp = (l, v, h) => { return v < l ? l : (v > h ? h : v) };
+
 function IntroSplash() {
 	this.css = `
 		position: absolute;
@@ -261,7 +263,7 @@ function IntroSplash() {
 					{$if(use(this.downloading),
 						$if(use(this.showprogress), (
 							<div>
-								<p>Downloading... ({use(this.progress, Math.floor)}% done)</p>
+								<p>Downloading... ({use(this.progress, (e)=>{return clamp(0, Math.round(e), 100)})}% done)</p>
 								<div id="bar">
 									<div id="progress" style={{
 										width: use`${this.progress}%`,
