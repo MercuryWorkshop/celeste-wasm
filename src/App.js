@@ -182,12 +182,12 @@ export function App() {
         <span class="flex gap-md right vcenter">
         <button on:click=${() => {
             this.savesmenu.showModal();
-        }}>
+        }} title="Manage save data">
               <span class="material-symbols-rounded">save</span>
           </button>
           <button on:click=${() => {
             this.fs.showModal();
-        }}>
+        }}  title="File Manager">
               <span class="material-symbols-rounded">folder_open</span>
           </button>
 
@@ -197,7 +197,7 @@ export function App() {
             } else {
                 store.theme = "light";
             }
-        }}>
+        }} title="Toggle Theme">
             <span class="material-symbols-rounded">${use(store.theme, (theme) => (theme === "light" ? "dark_mode" : "light_mode"))
         }</span>
           </button>
@@ -207,6 +207,7 @@ export function App() {
                 this.fullscreen = true;
             }
         }}
+         title="Enter Fullscreen"
             >
               <span class="material-symbols-rounded">fullscreen</span>
             </button>
@@ -215,6 +216,7 @@ export function App() {
             use(this.allowPlay, (allowed) => (!allowed ? "disabled" : "important")),
         ]}
               on:click=${startgame}
+               title="Start Game"
             >
               <span class="material-symbols-rounded">play_arrow</span>
             </button>
