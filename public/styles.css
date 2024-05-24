@@ -220,6 +220,9 @@ button {
 
     &.disabled {
         pointer-events: none;
+        cursor: not-allowed;
+        color: var(--fg6);
+        background-color: var(--surface4);
     }
 
     &.important {
