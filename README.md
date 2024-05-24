@@ -31,9 +31,12 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
 8. Copy the `Content` folder from your celeste install and put it in the root of this project
 9. copy in the exported fmod v2 banks to `Content/FMOD/Desktop/`
 11. go to the releases tab, download celeste.patched.zip.xor, and then run `python3 helpers/xor.py celeste.patched.zip.xor /path/to/your/celeste/install/Content/Dialog/english.txt > celeste.patched.zip` and then extract it into `celeste/Celeste`
-12. run `make statics serve`
+12. run `./patch.sh apply`
+13. run `make statics serve`
 
 ## i want to build this as an html file
+1. `./patch.sh restore`
+2. `STRIPFMOD=1 ./patch.sh apply`
 1. run `make singlefile`
 
 ## i want to port this to a newer version of celeste (once it exists)
