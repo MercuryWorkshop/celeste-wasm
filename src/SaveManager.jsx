@@ -15,9 +15,9 @@ export function SaveManager() {
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			width: calc(min(100%, 40rem) - 6rem);
+			width: 95%;
 			height: auto;
-			aspect-ratio: 1 / 1;
+			aspect-ratio: 1.25 / 1;
 			border: 2px dashed var(--fg6);
 			border-radius: 0.6rem;
 			color: var(--fg6);
@@ -37,7 +37,7 @@ export function SaveManager() {
 		}
 
 		& > button {
-			width: calc(min(100%, 40rem) - 6rem);
+			width: 95%;
 		}
 	`
 
