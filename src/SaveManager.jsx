@@ -4,7 +4,7 @@ import { app } from "./main.jsx";
 export function SaveManager() {
 	this.css = `
 		flex-direction: column;
-		justify-content: center;
+		// justify-content: center;
 		align-items: center;
 		gap: 0.75rem;
 		width: 100%;
