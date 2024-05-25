@@ -49,8 +49,33 @@ const MainLoop = (cb) => {
 	});
 };
 
+function hookfmod() {
+	let contexts = [];
+
+	let ctx = AudioContext;
+	AudioContext = function() {
+		let context = new ctx();
+
+		contexts.push(context);
+		return context;
+	};
+
+	window.addEventListener("focus", () => {
+		for (let context of contexts) {
+			context.resume();
+		}
+	});
+	window.addEventListener("blur", () => {
+		for (let context of contexts) {
+			context.suspend();
+		}
+	});
+}
+
 export async function start(canvas) {
 	console.info("Starting...");
+
+	hookfmod();
 
 	if (!dotnet.instance.Module.FS.analyzePath("/Content").path) {
 		await new Promise(r => loadData(dotnet.instance.Module, r));
