@@ -7,7 +7,7 @@
 
 A mostly-complete port of Celeste (2018) to WebAssembly using dotnet's `wasmbrowser` template, [FNA WASM libraries](https://github.com/RedMike/FNA-WASM-Build) and [FNA.WASM.Sample guide](https://github.com/RedMike/FNA.WASM.Sample/wiki/Manually-setting-up-FNA-Project-for-WASM).
 
-![image](https://github.com/MercuryWorkshop/celeste-wasm/assets/58010778/ba547bea-1763-48ad-b6b5-bbf8682d8d15)
+![image](https://github.com/MercuryWorkshop/celeste-wasm/assets/45221816/76846fff-bf21-41c1-b275-28867f15a64c)
 
 # Limitations
 - Loading the game consumes too much memory for mobile and lower end devices (standalone html uses even more and is slower to start)
