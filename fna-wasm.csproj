@@ -13,8 +13,8 @@
         <EmccCompileOptimizationFlag>-O3</EmccCompileOptimizationFlag>
         <WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
 
-        <EmccEnvironment>web</EmccEnvironment>
-        <EmccExtraLDFlags>--js-library $(MSBuildProjectDirectory.Replace('\', '/'))/js/library-fixemscripten.js -sFULL_ES3 -lidbfs.js -sLZ4</EmccExtraLDFlags>
+        <EmccEnvironment>web,worker</EmccEnvironment>
+        <EmccExtraLDFlags>-sFULL_ES3 -lidbfs.js -sLZ4</EmccExtraLDFlags>
 
 		<HybridGlobalization>true</HybridGlobalization>
 
@@ -22,7 +22,13 @@
 		<WasmNativeStrip>false</WasmNativeStrip>
 		<WasmNativeDebugSymbols>false</WasmNativeDebugSymbols>
 		<WasmEnableSIMD>true</WasmEnableSIMD>
+		<WasmEnableThreads>true</WasmEnableThreads>
     </PropertyGroup>
+
+	<Target Name="HijackDotNetToInjectArgs" BeforeTargets="_WasmLinkDotNet" AfterTargets="_WasmWriteRspFilesForLinking">
+		<WriteLinesToFile File="$(_EmccLinkRsp)" Lines="-Wl,--no-check-features" Overwrite="false" />
+		<WriteLinesToFile File="$(_EmccLinkRsp)" Lines="-sOFFSCREENCANVAS_SUPPORT=1" Overwrite="false" />
+	</Target>
 
     <ItemGroup>
         <NativeFileReference Include="SDL2.a">
@@ -52,7 +58,6 @@
         <EmccExportedRuntimeMethod Include="setMainLoop">
             <Visible>false</Visible>
         </EmccExportedRuntimeMethod>
-        <WasmShellAdditionalPInvokeLibrary Include="__Native" />
     </ItemGroup>
 
     <ItemGroup>

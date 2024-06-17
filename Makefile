@@ -51,10 +51,10 @@ endif
 	:> "$(VFSTARGET)"
 
 $(STATICS):
-	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FAudio.a
-	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/FNA3D.a
-	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/libmojoshader.a
-	wget https://github.com/RedMike/FNA-WASM-Build/releases/latest/download/SDL2.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/FAudio.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/FNA3D_Wrapped.a -O FNA3D.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/libmojoshader.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/latest/download/SDL2.a
 
 src/node_modules: src/package.json
 	cd src && pnpm install

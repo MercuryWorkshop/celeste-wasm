@@ -48,7 +48,6 @@ public static partial class Program
             Audio.Unload();
             exitGame = false;
             exited = true;
-            StopMainLoop();
         }
 
         try
@@ -64,9 +63,6 @@ public static partial class Program
 
     [JSImport("setMainLoop", "main.js")]
     internal static partial void SetMainLoop([JSMarshalAs<JSType.Function>] Action cb);
-
-    [JSImport("stopMainLoop", "main.js")]
-    internal static partial void StopMainLoop();
 
     [JSImport("syncFs", "main.js")]
     internal static partial void Sync([JSMarshalAs<JSType.Function>] Action cb);
