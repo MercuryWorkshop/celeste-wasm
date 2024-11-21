@@ -1,0 +1,20 @@
+--- ../decomp/Celeste/NPC06_Badeline_Crying.cs	2024-05-17 02:12:37.000000000 -0400
++++ celeste/Celeste/NPC06_Badeline_Crying.cs	2024-11-20 20:56:26.930729466 -0500
+@@ -109,7 +109,7 @@
+ 
+ 		private VertexLight light;
+ 
+-		public SoundSource LoopingSfx;
++		// public SoundSource LoopingSfx;
+ 
+ 		private List<Orb> orbs = new List<Orb>();
+ 
+@@ -124,7 +124,7 @@
+ 			white.Position = Sprite.Position;
+ 			Add(bloom = new BloomPoint(new Vector2(0f, -6f), 0f, 16f));
+ 			Add(light = new VertexLight(new Vector2(0f, -6f), Color.White, 1f, 24, 64));
+-			Add(LoopingSfx = new SoundSource("event:/char/badeline/boss_idle_ground"));
++			// Add(LoopingSfx = new SoundSource("event:/char/badeline/boss_idle_ground"));
+ 		}
+ 
+ 		public override void Awake(Scene scene)

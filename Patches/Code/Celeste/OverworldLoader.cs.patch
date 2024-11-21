@@ -1,5 +1,5 @@
 --- ../decomp/Celeste/OverworldLoader.cs	2024-05-17 02:12:38.000000000 -0400
-+++ celeste/Celeste/OverworldLoader.cs	2024-05-21 12:02:13.757071475 -0400
++++ celeste/Celeste/OverworldLoader.cs	2024-11-20 20:58:54.096741276 -0500
 @@ -52,8 +52,9 @@
  			e.Add(new Coroutine(Routine(session)));
  			Add(e);

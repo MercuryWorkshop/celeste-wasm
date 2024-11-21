@@ -1,5 +1,5 @@
 --- ../decomp/Celeste/GameLoader.cs	2024-05-17 02:12:38.000000000 -0400
-+++ celeste/Celeste/GameLoader.cs	2024-05-21 12:02:13.746071140 -0400
++++ celeste/Celeste/GameLoader.cs	2024-11-20 20:58:54.095741276 -0500
 @@ -54,8 +54,10 @@
  			handler.Tag = Tags.HUD;
  			handler.Add(new Coroutine(IntroRoutine()));

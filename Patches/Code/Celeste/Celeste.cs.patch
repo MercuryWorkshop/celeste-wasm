@@ -1,5 +1,5 @@
 --- ../decomp/Celeste/Celeste.cs	2024-05-17 02:12:40.000000000 -0400
-+++ celeste/Celeste/Celeste.cs	2024-05-21 12:02:13.723070440 -0400
++++ celeste/Celeste/Celeste.cs	2024-11-20 20:58:54.094741276 -0500
 @@ -53,7 +53,7 @@
  
  		public static Stopwatch LoadTimer;
