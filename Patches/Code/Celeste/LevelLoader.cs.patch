@@ -1,5 +1,5 @@
 --- ../decomp/Celeste/LevelLoader.cs	2024-05-17 02:12:39.000000000 -0400
-+++ celeste/Celeste/LevelLoader.cs	2024-05-21 12:02:13.752071323 -0400
++++ celeste/Celeste/LevelLoader.cs	2024-11-20 20:58:54.095741276 -0500
 @@ -30,7 +30,8 @@
  				this.startPosition = startPosition;
  			}

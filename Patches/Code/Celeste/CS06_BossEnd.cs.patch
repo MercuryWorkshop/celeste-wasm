@@ -1,5 +1,5 @@
 --- ../decomp/Celeste/CS06_BossEnd.cs	2024-05-17 02:12:37.000000000 -0400
-+++ celeste/Celeste/CS06_BossEnd.cs	2024-05-21 12:02:13.717070257 -0400
++++ celeste/Celeste/CS06_BossEnd.cs	2024-11-20 20:56:26.926729465 -0500
 @@ -26,7 +26,7 @@
  
  		private float timer;
@@ -9,3 +9,12 @@
  
  		public CS06_BossEnd(Player player, NPC06_Badeline_Crying badeline)
  		{
+@@ -123,7 +123,7 @@
+ 		private IEnumerator BadelineCalmDown()
+ 		{
+ 			Audio.SetParameter(Audio.CurrentAmbienceEventInstance, "postboss", 0f);
+-			badeline.LoopingSfx.Param("end", 1f);
++			// badeline.LoopingSfx.Param("end", 1f);
+ 			yield return 0.5f;
+ 			badeline.Sprite.Play("scaredTransition");
+ 			Input.Rumble(RumbleStrength.Light, RumbleLength.Long);

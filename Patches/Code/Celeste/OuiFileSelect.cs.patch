@@ -1,5 +1,5 @@
 --- ../decomp/Celeste/OuiFileSelect.cs	2024-05-17 02:12:39.000000000 -0400
-+++ celeste/Celeste/OuiFileSelect.cs	2024-05-21 12:02:13.756071444 -0400
++++ celeste/Celeste/OuiFileSelect.cs	2024-11-20 20:58:54.096741276 -0500
 @@ -35,7 +35,8 @@
  						base.Scene.Remove(Slots[l]);
  					}
