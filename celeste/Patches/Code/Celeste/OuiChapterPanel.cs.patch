@@ -1,0 +1,11 @@
+--- celeste/Decompiled//Celeste/OuiChapterPanel.cs	2024-12-26 18:09:01.234532187 -0800
++++ celeste/Celeste/OuiChapterPanel.cs	2024-12-26 19:46:12.787492239 -0800
+@@ -167,7 +167,7 @@
+ 
+ 	private List<Option> checkpoints = new List<Option>();
+ 
+-	private EventInstance bSideUnlockSfx;
++	private EventInstance? bSideUnlockSfx;
+ 
+ 	public Vector2 OpenPosition => new Vector2(1070f, 100f);
+ 

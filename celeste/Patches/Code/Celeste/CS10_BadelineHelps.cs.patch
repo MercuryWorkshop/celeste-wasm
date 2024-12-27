@@ -1,0 +1,11 @@
+--- celeste/Decompiled//Celeste/CS10_BadelineHelps.cs	2024-12-26 18:08:57.614471188 -0800
++++ celeste/Celeste/CS10_BadelineHelps.cs	2024-12-26 19:39:48.038270204 -0800
+@@ -13,7 +13,7 @@
+ 
+ 	private BadelineDummy badeline;
+ 
+-	private EventInstance entrySfx;
++	private EventInstance? entrySfx;
+ 
+ 	public CS10_BadelineHelps(Player player)
+ 	{

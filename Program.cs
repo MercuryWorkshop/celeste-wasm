@@ -1,104 +1,71 @@
 using System;
+using System.Threading;
 using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
+using Celeste;
+using Steamworks;
 
-Console.WriteLine("Hello, Browser!");
-
-public class FNAGame : Game
+partial class Program
 {
-    public FNAGame()
-    {
-        GraphicsDeviceManager gdm = new GraphicsDeviceManager(this);
+    static Game game;
 
-        // Typically you would load a config here...
-        gdm.PreferredBackBufferWidth = 512;
-        gdm.PreferredBackBufferHeight = 512;
-        gdm.IsFullScreen = false;
-        gdm.SynchronizeWithVerticalRetrace = true;
+    private static void Main()
+    {
+        Thread thread = new Thread(() =>
+        {
+            Console.WriteLine("calling mount_opfs");
+            int ret = mount_opfs();
+            Console.WriteLine($"called mount_opfs: {ret}");
+        });
+        thread.Start();
+        thread.Join();
     }
 
-	byte r = 0;
-	byte g = 0;
-	byte b = 0;
-	DateTime lastUpdate = DateTime.UnixEpoch;
-	int updateCount = 0;
+    [DllImport("Emscripten")]
+    public extern static int mount_opfs();
 
-    protected override void Initialize()
+    internal static void Init()
     {
-        /* This is a nice place to start up the engine, after
-		 * loading configuration stuff in the constructor
-		 */
-        base.Initialize();
+        Celeste.Celeste._mainThreadId = Thread.CurrentThread.ManagedThreadId;
+
+        Settings.Initialize();
+        if (!Settings.Existed)
+        {
+            Settings.Instance.Language = SteamApps.GetCurrentGameLanguage();
+        }
+        _ = Settings.Existed;
+
+        game = new Celeste.Celeste();
     }
 
-    protected override void LoadContent()
-    {
-        // Load textures, sounds, and so on in here...
-        base.LoadContent();
-    }
 
-    protected override void UnloadContent()
+    [JSExport]
+    internal static void MainLoop()
     {
-        // Clean up after yourself!
-        base.UnloadContent();
-    }
+        if (game == null)
+        {
+            try
+            {
+                Init();
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("Error in Init()!");
+                Console.Error.WriteLine(e);
+                throw;
+            }
+        }
 
-    protected override void Update(GameTime gameTime)
-    {
-        // Run game logic in here. Do NOT render anything here!
-        base.Update(gameTime);
-		updateCount++;
-		DateTime now = DateTime.UtcNow;
-		if ((now - lastUpdate).TotalSeconds > 1.0)
-		{
-			Console.WriteLine($"Main loop still running at: {now}; {Math.Round(updateCount / (now - lastUpdate).TotalSeconds, MidpointRounding.AwayFromZero)} UPS");
-			lastUpdate = now;
-			updateCount = 0;
-		}
-		if (r != 255) {
-			r++;
-			return;
-		}
-		if (g != 255) {
-			g++;
-			return;
-		}
-		if (b != 255) {
-			b++;
-			return;
-		}
-		r = 0;
-		g = 0;
-		b = 0;
-    }
-
-    protected override void Draw(GameTime gameTime)
-    {
-        // Render stuff in here. Do NOT run game logic in here!
-        GraphicsDevice.Clear(new Color(r, g, b));
-        base.Draw(gameTime);
+        try
+        {
+            game.RunOneFrame();
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine("Error in MainLoop()!");
+            Console.Error.WriteLine(e);
+            throw;
+        }
     }
 }
-
-#nullable enable
-partial class Main
-{
-	static Game? game;
-
-	static void InitFmodTest() {
-		FMOD.Studio.System system;
-		FMOD.RESULT result = FMOD.Studio.System.create(out system);
-		Console.WriteLine($"FMOD System: {result} isValid: {system.isValid()}");
-	}
-
-	[JSExport]
-	internal static void MainLoop() {
-		if (game == null) {
-			InitFmodTest();
-			game = new FNAGame();
-		}
-
-		game.RunOneFrame();
-	}
-}
-#nullable disable

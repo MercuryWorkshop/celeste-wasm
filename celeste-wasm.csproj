@@ -2,34 +2,29 @@
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+		<Nullable>disable</Nullable>
 
-		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sFULL_ES3 -sALLOW_BLOCKING_ON_MAIN_THREAD=1 -Wl,--no-check-features</EmccExtraLDFlags>
-
-		<WasmEnableThreads>true</WasmEnableThreads>
-        <WasmBuildNative>true</WasmBuildNative>
-        <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
 		<DisableBuildCompression>true</DisableBuildCompression>
+		<NoWarn>8981,649,169,SYSLIB0011,0219,7022</NoWarn>
+		<TrimMode>partial</TrimMode>
+		<PublishTrimmed>false</PublishTrimmed>
+
+        <WasmBuildNative>true</WasmBuildNative>
+		<WasmEnableThreads>true</WasmEnableThreads>
+        <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
+		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sWASMFS -sOFFSCREENCANVAS_SUPPORT -Wl,--no-check-features</EmccExtraLDFlags>
     </PropertyGroup>
 
     <ItemGroup>
-        <NativeFileReference Include="statics\SDL2.a">
-            <Visible>false</Visible>
-        </NativeFileReference>
-        <NativeFileReference Include="statics\FNA3D.a">
-            <Visible>false</Visible>
-        </NativeFileReference>
-        <NativeFileReference Include="statics\libmojoshader.a">
-            <Visible>false</Visible>
-        </NativeFileReference>
-        <NativeFileReference Include="statics\FAudio.a">
-            <Visible>false</Visible>
-        </NativeFileReference>
-		<NativeFileReference Include="fmod\fmodstudio.a">
-            <Visible>false</Visible>
-        </NativeFileReference>
-		<NativeFileReference Include="fmod\fmod.a">
-            <Visible>false</Visible>
-        </NativeFileReference>
+		<NativeFileReference Include="statics\SDL2.a" />
+		<NativeFileReference Include="statics\FNA3D.a" />
+		<NativeFileReference Include="statics\libmojoshader.a" />
+		<NativeFileReference Include="statics\FAudio.a" />
+		<NativeFileReference Include="fmod\fmodstudio.a" />
+		<NativeFileReference Include="fmod\fmod.a" />
+		<NativeFileReference Include="Emscripten.c" />
+
         <EmccExportedRuntimeMethod Include="SDL">
             <Visible>false</Visible>
         </EmccExportedRuntimeMethod>
@@ -40,5 +35,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\FNA\FNA.Core.csproj" />
+		<Compile Remove="celeste\Decompiled\**\*" />
     </ItemGroup>
 </Project>

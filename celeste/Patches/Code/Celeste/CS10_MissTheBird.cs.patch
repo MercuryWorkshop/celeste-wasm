@@ -1,0 +1,11 @@
+--- celeste/Decompiled//Celeste/CS10_MissTheBird.cs	2024-12-26 18:08:58.167813847 -0800
++++ celeste/Celeste/CS10_MissTheBird.cs	2024-12-26 19:39:27.527956766 -0800
+@@ -18,7 +18,7 @@
+ 
+ 	private Coroutine zoomRoutine;
+ 
+-	private EventInstance crashMusicSfx;
++	private EventInstance? crashMusicSfx;
+ 
+ 	public CS10_MissTheBird(Player player, FlingBirdIntro flingBird)
+ 	{

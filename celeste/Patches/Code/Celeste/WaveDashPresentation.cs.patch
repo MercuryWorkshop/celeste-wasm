@@ -1,0 +1,29 @@
+--- celeste/Decompiled//Celeste/WaveDashPresentation.cs	2024-12-26 18:08:58.571153978 -0800
++++ celeste/Celeste/WaveDashPresentation.cs	2024-12-26 18:57:26.583777344 -0800
+@@ -44,7 +44,7 @@
+ 
+ 	private VertexPositionColorTexture[] verts = new VertexPositionColorTexture[6];
+ 
+-	private EventInstance usingSfx;
++	private EventInstance? usingSfx;
+ 
+ 	public bool Viewing { get; private set; }
+ 
+@@ -90,7 +90,7 @@
+ 		}
+ 	}
+ 
+-	public WaveDashPresentation(EventInstance usingSfx = null)
++	public WaveDashPresentation(EventInstance? usingSfx = null)
+ 	{
+ 		base.Tag = Tags.HUD;
+ 		Viewing = true;
+@@ -165,7 +165,7 @@
+ 		if (usingSfx != null)
+ 		{
+ 			Audio.SetParameter(usingSfx, "end", 1f);
+-			usingSfx.release();
++			usingSfx.Value.release();
+ 		}
+ 		Audio.Play("event:/new_content/game/10_farewell/cafe_computer_off");
+ 		while (ease > 0f)

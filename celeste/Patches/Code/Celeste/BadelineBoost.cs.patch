@@ -1,0 +1,11 @@
+--- celeste/Decompiled//Celeste/BadelineBoost.cs	2024-12-26 18:08:57.991144203 -0800
++++ celeste/Celeste/BadelineBoost.cs	2024-12-26 19:00:29.056364841 -0800
+@@ -43,7 +43,7 @@
+ 
+ 	private SoundSource relocateSfx;
+ 
+-	public FMOD.Studio.EventInstance Ch9FinalBoostSfx;
++	public FMOD.Studio.EventInstance? Ch9FinalBoostSfx;
+ 
+ 	public BadelineBoost(Vector2[] nodes, bool lockCamera, bool canSkip = false, bool finalCh9Boost = false, bool finalCh9GoldenBoost = false, bool finalCh9Dialog = false)
+ 		: base(nodes[0])

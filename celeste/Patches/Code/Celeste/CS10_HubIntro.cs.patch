@@ -1,0 +1,20 @@
+--- celeste/Decompiled//Celeste/CS10_HubIntro.cs	2024-12-26 18:08:57.514469503 -0800
++++ celeste/Celeste/CS10_HubIntro.cs	2024-12-26 19:39:16.637790368 -0800
+@@ -12,7 +12,7 @@
+ 	{
+ 		private Sprite sprite;
+ 
+-		public EventInstance sfx;
++		public EventInstance? sfx;
+ 
+ 		public Bird(Vector2 position)
+ 		{
+@@ -122,7 +122,7 @@
+ 			{
+ 				if (!@lock.Visible && level.Camera.Y + 90f > @lock.Y - 20f)
+ 				{
+-					sfxs.Add(Audio.Play(sfx + doorIndex, @lock.Center));
++					sfxs.Add(Audio.Play(sfx + doorIndex, @lock.Center).Value);
+ 					@lock.Appear();
+ 					Input.Rumble(RumbleStrength.Strong, RumbleLength.Medium);
+ 					doorIndex++;

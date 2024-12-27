@@ -1,0 +1,14 @@
+--- celeste/Decompiled//Celeste/MenuOptions.cs	2024-12-26 18:09:01.264532692 -0800
++++ celeste/Celeste/MenuOptions.cs	2024-12-26 18:48:20.169501255 -0800
+@@ -15,9 +15,9 @@
+ 
+ 	private static TextMenu.Item viewport;
+ 
+-	private static EventInstance snapshot;
++	private static EventInstance? snapshot;
+ 
+-	public static TextMenu Create(bool inGame = false, EventInstance snapshot = null)
++	public static TextMenu Create(bool inGame = false, EventInstance? snapshot = null)
+ 	{
+ 		MenuOptions.inGame = inGame;
+ 		MenuOptions.snapshot = snapshot;

@@ -1,0 +1,11 @@
+--- celeste/Decompiled//Celeste/PlayerDashAssist.cs	2024-12-26 18:08:57.677805589 -0800
++++ celeste/Celeste/PlayerDashAssist.cs	2024-12-26 19:46:32.181122740 -0800
+@@ -17,7 +17,7 @@
+ 
+ 	private List<MTexture> images;
+ 
+-	private EventInstance snapshot;
++	private EventInstance? snapshot;
+ 
+ 	private float timer;
+ 

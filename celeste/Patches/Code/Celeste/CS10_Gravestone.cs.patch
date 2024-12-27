@@ -1,0 +1,11 @@
+--- celeste/Decompiled//Celeste/CS10_Gravestone.cs	2024-12-26 18:08:57.517802892 -0800
++++ celeste/Celeste/CS10_Gravestone.cs	2024-12-26 19:41:02.812746735 -0800
+@@ -90,7 +90,7 @@
+ 		bird = new BirdNPC(player.Position + new Vector2(88f, -200f), BirdNPC.Modes.None);
+ 		bird.DisableFlapSfx = true;
+ 		base.Scene.Add(bird);
+-		EventInstance instance = Audio.Play("event:/game/general/bird_in", bird.Position);
++		EventInstance? instance = Audio.Play("event:/game/general/bird_in", bird.Position);
+ 		bird.Facing = Facings.Left;
+ 		bird.Sprite.Play("fall");
+ 		Vector2 from = bird.Position;

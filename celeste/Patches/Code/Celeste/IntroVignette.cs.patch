@@ -1,0 +1,11 @@
+--- celeste/Decompiled//Celeste/IntroVignette.cs	2024-12-26 18:08:59.664505735 -0800
++++ celeste/Celeste/IntroVignette.cs	2024-12-26 19:44:58.869693175 -0800
+@@ -21,7 +21,7 @@
+ 
+ 	private float fade;
+ 
+-	private EventInstance sfx;
++	private EventInstance? sfx;
+ 
+ 	private TextMenu menu;
+ 

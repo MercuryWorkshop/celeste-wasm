@@ -1,0 +1,20 @@
+--- celeste/Decompiled//Celeste.Pico8/Emulator.cs	2024-12-26 18:09:01.904543474 -0800
++++ celeste/Celeste.Pico8/Emulator.cs	2024-12-26 18:56:39.186452280 -0800
+@@ -29,7 +29,7 @@
+ 
+ 	private bool skipFrame = true;
+ 
+-	private EventInstance bgSfx;
++	private EventInstance? bgSfx;
+ 
+ 	private VirtualRenderTarget buffer;
+ 
+@@ -41,7 +41,7 @@
+ 
+ 	private float pauseFade;
+ 
+-	private EventInstance snapshot;
++	private EventInstance? snapshot;
+ 
+ 	private MTexture picoBootLogo;
+ 

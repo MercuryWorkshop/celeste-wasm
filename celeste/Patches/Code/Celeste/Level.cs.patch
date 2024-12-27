@@ -1,0 +1,17 @@
+--- celeste/Decompiled//Celeste/Level.cs	2024-12-26 18:09:01.817875347 -0800
++++ celeste/Celeste/Level.cs	2024-12-26 19:02:03.807735230 -0800
+@@ -182,11 +182,11 @@
+ 
+ 	private bool endingChapterAfterCutscene;
+ 
+-	public static EventInstance DialogSnapshot;
++	public static EventInstance? DialogSnapshot;
+ 
+-	private static EventInstance PauseSnapshot;
++	private static EventInstance? PauseSnapshot;
+ 
+-	private static EventInstance AssistSpeedSnapshot;
++	private static EventInstance? AssistSpeedSnapshot;
+ 
+ 	private static int AssistSpeedSnapshotValue = -1;
+ 
