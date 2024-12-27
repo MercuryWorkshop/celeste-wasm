@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sFULL_ES3 -sALLOW_BLOCKING_ON_MAIN_THREAD=1 -Wl,--no-check-features</EmccExtraLDFlags>
+
+		<WasmEnableThreads>true</WasmEnableThreads>
+        <WasmBuildNative>true</WasmBuildNative>
+        <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
+		<DisableBuildCompression>true</DisableBuildCompression>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <NativeFileReference Include="statics\SDL2.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <NativeFileReference Include="statics\FNA3D.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <NativeFileReference Include="statics\libmojoshader.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <NativeFileReference Include="statics\FAudio.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+		<NativeFileReference Include="fmod\fmodstudio.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+		<NativeFileReference Include="fmod\fmod.a">
+            <Visible>false</Visible>
+        </NativeFileReference>
+        <EmccExportedRuntimeMethod Include="SDL">
+            <Visible>false</Visible>
+        </EmccExportedRuntimeMethod>
+        <EmccExportedRuntimeMethod Include="GL">
+            <Visible>false</Visible>
+        </EmccExportedRuntimeMethod>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\FNA\FNA.Core.csproj" />
+    </ItemGroup>
+</Project>
