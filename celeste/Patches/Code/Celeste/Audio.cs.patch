@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/Audio.cs	2024-12-27 20:20:55.514631167 -0800
-+++ celeste/Celeste/Audio.cs	2024-12-27 20:28:31.476441899 -0800
+--- celeste/Decompiled/Celeste/Audio.cs
++++ celeste/Celeste/Audio.cs
 @@ -6,7 +6,6 @@
  using FMOD.Studio;
  using Microsoft.Xna.Framework;

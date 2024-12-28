@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS10_BadelineHelps.cs	2024-12-27 20:20:54.491222487 -0800
-+++ celeste/Celeste/CS10_BadelineHelps.cs	2024-12-27 20:20:57.161419134 -0800
+--- celeste/Decompiled/Celeste/CS10_BadelineHelps.cs
++++ celeste/Celeste/CS10_BadelineHelps.cs
 @@ -13,7 +13,7 @@
  
  	private BadelineDummy badeline;

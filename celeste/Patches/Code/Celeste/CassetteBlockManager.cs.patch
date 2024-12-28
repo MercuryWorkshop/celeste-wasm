@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CassetteBlockManager.cs	2024-12-27 20:20:54.441218807 -0800
-+++ celeste/Celeste/CassetteBlockManager.cs	2024-12-27 20:20:57.161419134 -0800
+--- celeste/Decompiled/Celeste/CassetteBlockManager.cs
++++ celeste/Celeste/CassetteBlockManager.cs
 @@ -22,9 +22,9 @@
  
  	private int beatIndexOffset;

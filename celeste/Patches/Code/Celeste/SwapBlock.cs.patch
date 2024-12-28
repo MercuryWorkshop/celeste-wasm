@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/SwapBlock.cs	2024-12-27 20:20:55.474628221 -0800
-+++ celeste/Celeste/SwapBlock.cs	2024-12-27 20:20:57.188087765 -0800
+--- celeste/Decompiled/Celeste/SwapBlock.cs
++++ celeste/Celeste/SwapBlock.cs
 @@ -99,9 +99,9 @@
  
  	private PathRenderer path;

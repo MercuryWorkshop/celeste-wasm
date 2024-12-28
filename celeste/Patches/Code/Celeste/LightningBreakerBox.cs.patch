@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/LightningBreakerBox.cs	2024-12-27 20:20:54.714572261 -0800
-+++ celeste/Celeste/LightningBreakerBox.cs	2024-12-27 20:20:57.158085555 -0800
+--- celeste/Decompiled/Celeste/LightningBreakerBox.cs
++++ celeste/Celeste/LightningBreakerBox.cs
 @@ -291,7 +291,7 @@
  			}
  			if (!string.IsNullOrEmpty(music) && Audio.CurrentMusicEventInstance != null)

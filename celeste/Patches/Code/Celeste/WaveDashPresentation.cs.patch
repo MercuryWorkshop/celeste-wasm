@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/WaveDashPresentation.cs	2024-12-27 20:20:54.757908784 -0800
-+++ celeste/Celeste/WaveDashPresentation.cs	2024-12-27 20:20:57.171419871 -0800
+--- celeste/Decompiled/Celeste/WaveDashPresentation.cs
++++ celeste/Celeste/WaveDashPresentation.cs
 @@ -44,7 +44,7 @@
  
  	private VertexPositionColorTexture[] verts = new VertexPositionColorTexture[6];

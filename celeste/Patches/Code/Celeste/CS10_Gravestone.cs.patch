@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS10_Gravestone.cs	2024-12-27 20:20:54.424550913 -0800
-+++ celeste/Celeste/CS10_Gravestone.cs	2024-12-27 20:20:57.158085555 -0800
+--- celeste/Decompiled/Celeste/CS10_Gravestone.cs
++++ celeste/Celeste/CS10_Gravestone.cs
 @@ -90,7 +90,7 @@
  		bird = new BirdNPC(player.Position + new Vector2(88f, -200f), BirdNPC.Modes.None);
  		bird.DisableFlapSfx = true;

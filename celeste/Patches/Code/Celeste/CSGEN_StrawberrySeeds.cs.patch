@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CSGEN_StrawberrySeeds.cs	2024-12-27 20:20:54.594563428 -0800
-+++ celeste/Celeste/CSGEN_StrawberrySeeds.cs	2024-12-27 20:20:57.164752712 -0800
+--- celeste/Decompiled/Celeste/CSGEN_StrawberrySeeds.cs
++++ celeste/Celeste/CSGEN_StrawberrySeeds.cs
 @@ -14,9 +14,9 @@
  
  	private ParticleSystem system;

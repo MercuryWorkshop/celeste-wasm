@@ -8,7 +8,13 @@
 		<DisableBuildCompression>true</DisableBuildCompression>
 		<NoWarn>8981,649,169,SYSLIB0011,0219,7022</NoWarn>
 		<TrimMode>partial</TrimMode>
-		<PublishTrimmed>false</PublishTrimmed>
+
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<RunAOTCompilationAfterBuild>true</RunAOTCompilationAfterBuild>
+
+		<EmccLinkOptimizationFlag>-O3</EmccLinkOptimizationFlag>
+		<EmccCompileOptimizationFlag>-O3</EmccCompileOptimizationFlag>
+		<WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
 
 		<WasmBuildNative>true</WasmBuildNative>
 		<WasmEnableThreads>true</WasmEnableThreads>

@@ -1,0 +1,19 @@
+--- celeste/Decompiled/Celeste/GameplayBuffers.cs
++++ celeste/Celeste/GameplayBuffers.cs
+@@ -25,6 +25,8 @@
+ 
+ 	public static VirtualRenderTarget Lightning;
+ 
++	public static VirtualRenderTarget Bloom;
++
+ 	public static VirtualRenderTarget TempA;
+ 
+ 	public static VirtualRenderTarget TempB;
+@@ -44,6 +46,7 @@
+ 		MirrorMasks = Create(384, 244);
+ 		SpeedRings = Create(512, 512);
+ 		Lightning = Create(160, 160);
++		Bloom = Create(320, 180);
+ 		TempA = Create(320, 180);
+ 		TempB = Create(320, 180);
+ 	}

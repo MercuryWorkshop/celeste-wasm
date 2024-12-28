@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/OuiChapterPanel.cs	2024-12-27 20:20:55.554634113 -0800
-+++ celeste/Celeste/OuiChapterPanel.cs	2024-12-27 20:20:57.188087765 -0800
+--- celeste/Decompiled/Celeste/OuiChapterPanel.cs
++++ celeste/Celeste/OuiChapterPanel.cs
 @@ -167,7 +167,7 @@
  
  	private List<Option> checkpoints = new List<Option>();

@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/BadelineBoost.cs	2024-12-27 20:20:54.607897742 -0800
-+++ celeste/Celeste/BadelineBoost.cs	2024-12-27 20:20:57.168086292 -0800
+--- celeste/Decompiled/Celeste/BadelineBoost.cs
++++ celeste/Celeste/BadelineBoost.cs
 @@ -43,7 +43,7 @@
  
  	private SoundSource relocateSfx;

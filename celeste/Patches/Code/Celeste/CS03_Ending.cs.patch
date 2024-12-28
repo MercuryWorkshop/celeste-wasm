@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS03_Ending.cs	2024-12-27 20:20:54.924587720 -0800
-+++ celeste/Celeste/CS03_Ending.cs	2024-12-27 20:20:57.174753450 -0800
+--- celeste/Decompiled/Celeste/CS03_Ending.cs
++++ celeste/Celeste/CS03_Ending.cs
 @@ -36,7 +36,7 @@
  
  	private Sprite oshiroSprite;

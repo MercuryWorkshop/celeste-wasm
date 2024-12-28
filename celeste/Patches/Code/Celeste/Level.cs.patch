@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/Level.cs	2024-12-27 20:20:55.867990521 -0800
-+++ celeste/Celeste/Level.cs	2024-12-27 20:20:57.184754187 -0800
+--- celeste/Decompiled/Celeste/Level.cs
++++ celeste/Celeste/Level.cs
 @@ -182,11 +182,11 @@
  
  	private bool endingChapterAfterCutscene;

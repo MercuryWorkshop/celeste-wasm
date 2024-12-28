@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS06_BossEnd.cs	2024-12-27 20:20:54.584562691 -0800
-+++ celeste/Celeste/CS06_BossEnd.cs	2024-12-27 20:20:57.171419871 -0800
+--- celeste/Decompiled/Celeste/CS06_BossEnd.cs
++++ celeste/Celeste/CS06_BossEnd.cs
 @@ -26,7 +26,7 @@
  
  	private float timer;

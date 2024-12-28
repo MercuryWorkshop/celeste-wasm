@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/OuiAssistMode.cs	2024-12-27 20:20:54.877917618 -0800
-+++ celeste/Celeste/OuiAssistMode.cs	2024-12-27 20:20:57.174753450 -0800
+--- celeste/Decompiled/Celeste/OuiAssistMode.cs
++++ celeste/Celeste/OuiAssistMode.cs
 @@ -42,7 +42,7 @@
  
  	private float rightArrowEase;

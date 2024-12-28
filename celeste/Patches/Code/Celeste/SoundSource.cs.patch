@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/SoundSource.cs	2024-12-27 20:20:55.044596555 -0800
-+++ celeste/Celeste/SoundSource.cs	2024-12-27 20:20:57.178087028 -0800
+--- celeste/Decompiled/Celeste/SoundSource.cs
++++ celeste/Celeste/SoundSource.cs
 @@ -15,7 +15,7 @@
  
  	public bool RemoveOnOneshotEnd;

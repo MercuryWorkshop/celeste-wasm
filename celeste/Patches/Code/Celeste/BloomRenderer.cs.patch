@@ -1,0 +1,11 @@
+--- celeste/Decompiled/Celeste/BloomRenderer.cs
++++ celeste/Celeste/BloomRenderer.cs
+@@ -54,7 +54,7 @@
+ 		{
+ 			return;
+ 		}
+-		VirtualRenderTarget tempA = GameplayBuffers.TempA;
++		VirtualRenderTarget tempA = GameplayBuffers.Bloom;
+ 		Texture2D texture = GaussianBlur.Blur((RenderTarget2D)target, GameplayBuffers.TempA, GameplayBuffers.TempB);
+ 		List<Component> components = scene.Tracker.GetComponents<BloomPoint>();
+ 		List<Component> components2 = scene.Tracker.GetComponents<EffectCutout>();

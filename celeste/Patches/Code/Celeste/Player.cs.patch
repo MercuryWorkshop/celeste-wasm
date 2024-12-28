@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/Player.cs	2024-12-27 20:20:56.024668726 -0800
-+++ celeste/Celeste/Player.cs	2024-12-27 20:20:57.184754187 -0800
+--- celeste/Decompiled/Celeste/Player.cs
++++ celeste/Celeste/Player.cs
 @@ -590,7 +590,7 @@
  
  	private List<ChaserStateSound> activeSounds = new List<ChaserStateSound>();

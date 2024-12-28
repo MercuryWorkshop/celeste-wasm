@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/PlayerDashAssist.cs	2024-12-27 20:20:54.537892589 -0800
-+++ celeste/Celeste/PlayerDashAssist.cs	2024-12-27 20:20:57.168086292 -0800
+--- celeste/Decompiled/Celeste/PlayerDashAssist.cs
++++ celeste/Celeste/PlayerDashAssist.cs
 @@ -17,7 +17,7 @@
  
  	private List<MTexture> images;

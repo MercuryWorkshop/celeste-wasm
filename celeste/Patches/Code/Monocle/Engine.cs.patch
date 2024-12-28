@@ -1,5 +1,5 @@
---- celeste/Decompiled//Monocle/Engine.cs	2024-12-27 20:20:54.407883019 -0800
-+++ celeste/Monocle/Engine.cs	2024-12-27 20:20:57.194754924 -0800
+--- celeste/Decompiled/Monocle/Engine.cs
++++ celeste/Monocle/Engine.cs
 @@ -37,7 +37,7 @@
  
  	private int fpsCounter;

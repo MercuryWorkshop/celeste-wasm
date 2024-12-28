@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS10_FinalLaunch.cs	2024-12-27 20:20:54.414550177 -0800
-+++ celeste/Celeste/CS10_FinalLaunch.cs	2024-12-27 20:20:57.164752712 -0800
+--- celeste/Decompiled/Celeste/CS10_FinalLaunch.cs
++++ celeste/Celeste/CS10_FinalLaunch.cs
 @@ -123,8 +123,8 @@
  	{
  		if (WasSkipped && boost != null && boost.Ch9FinalBoostSfx != null)

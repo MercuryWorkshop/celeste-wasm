@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/SpotlightWipe.cs	2024-12-27 20:20:55.157938234 -0800
-+++ celeste/Celeste/SpotlightWipe.cs	2024-12-27 20:20:57.181420608 -0800
+--- celeste/Decompiled/Celeste/SpotlightWipe.cs
++++ celeste/Celeste/SpotlightWipe.cs
 @@ -24,7 +24,7 @@
  
  	private static VertexPositionColor[] vertexBuffer = new VertexPositionColor[768];

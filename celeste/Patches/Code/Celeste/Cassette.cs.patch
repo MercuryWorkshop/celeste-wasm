@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/Cassette.cs	2024-12-27 20:20:54.767909520 -0800
-+++ celeste/Celeste/Cassette.cs	2024-12-27 20:20:57.154751976 -0800
+--- celeste/Decompiled/Celeste/Cassette.cs
++++ celeste/Celeste/Cassette.cs
 @@ -89,7 +89,7 @@
  
  	private Vector2[] nodes;

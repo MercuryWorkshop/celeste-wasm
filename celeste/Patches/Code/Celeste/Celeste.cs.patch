@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/Celeste.cs	2024-12-27 20:20:56.038003041 -0800
-+++ celeste/Celeste/Celeste.cs	2024-12-27 20:20:57.191421345 -0800
+--- celeste/Decompiled/Celeste/Celeste.cs
++++ celeste/Celeste/Celeste.cs
 @@ -56,7 +56,7 @@
  
  	public static readonly AppId_t SteamID = new AppId_t(504230u);

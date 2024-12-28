@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS10_MissTheBird.cs	2024-12-27 20:20:54.624565636 -0800
-+++ celeste/Celeste/CS10_MissTheBird.cs	2024-12-27 20:20:57.168086292 -0800
+--- celeste/Decompiled/Celeste/CS10_MissTheBird.cs
++++ celeste/Celeste/CS10_MissTheBird.cs
 @@ -18,7 +18,7 @@
  
  	private Coroutine zoomRoutine;

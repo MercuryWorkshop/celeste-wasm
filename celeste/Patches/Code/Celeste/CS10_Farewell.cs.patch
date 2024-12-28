@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS10_Farewell.cs	2024-12-27 20:20:54.591229849 -0800
-+++ celeste/Celeste/CS10_Farewell.cs	2024-12-27 20:20:57.158085555 -0800
+--- celeste/Decompiled/Celeste/CS10_Farewell.cs
++++ celeste/Celeste/CS10_Farewell.cs
 @@ -15,9 +15,9 @@
  
  	private Coroutine grannyWalk;
