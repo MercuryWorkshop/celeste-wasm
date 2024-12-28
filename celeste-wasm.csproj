@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.WebAssembly">
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 		<Nullable>disable</Nullable>
 
@@ -10,13 +10,13 @@
 		<TrimMode>partial</TrimMode>
 		<PublishTrimmed>false</PublishTrimmed>
 
-        <WasmBuildNative>true</WasmBuildNative>
+		<WasmBuildNative>true</WasmBuildNative>
 		<WasmEnableThreads>true</WasmEnableThreads>
-        <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
-		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sWASMFS -sOFFSCREENCANVAS_SUPPORT -Wl,--no-check-features</EmccExtraLDFlags>
-    </PropertyGroup>
+		<WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
+		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sWASMFS -Wl,--no-check-features</EmccExtraLDFlags>
+	</PropertyGroup>
 
-    <ItemGroup>
+	<ItemGroup>
 		<NativeFileReference Include="statics\SDL2.a" />
 		<NativeFileReference Include="statics\FNA3D.a" />
 		<NativeFileReference Include="statics\libmojoshader.a" />
@@ -24,17 +24,10 @@
 		<NativeFileReference Include="fmod\fmodstudio.a" />
 		<NativeFileReference Include="fmod\fmod.a" />
 		<NativeFileReference Include="Emscripten.c" />
+	</ItemGroup>
 
-        <EmccExportedRuntimeMethod Include="SDL">
-            <Visible>false</Visible>
-        </EmccExportedRuntimeMethod>
-        <EmccExportedRuntimeMethod Include="GL">
-            <Visible>false</Visible>
-        </EmccExportedRuntimeMethod>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\FNA\FNA.Core.csproj" />
+	<ItemGroup>
+		<ProjectReference Include="..\FNA\FNA.Core.csproj" />
 		<Compile Remove="celeste\Decompiled\**\*" />
-    </ItemGroup>
+	</ItemGroup>
 </Project>
