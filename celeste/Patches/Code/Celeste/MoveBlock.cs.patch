@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/MoveBlock.cs	2024-12-26 18:09:01.294533198 -0800
-+++ celeste/Celeste/MoveBlock.cs	2024-12-26 19:45:34.976912944 -0800
+--- celeste/Decompiled//Celeste/MoveBlock.cs	2024-12-27 20:20:55.341285069 -0800
++++ celeste/Celeste/MoveBlock.cs	2024-12-27 20:20:57.191421345 -0800
 @@ -535,7 +535,7 @@
  				yield return null;
  			}

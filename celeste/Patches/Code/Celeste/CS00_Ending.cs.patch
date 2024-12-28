@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS00_Ending.cs	2024-12-26 18:08:59.594504555 -0800
-+++ celeste/Celeste/CS00_Ending.cs	2024-12-26 19:36:13.698331492 -0800
+--- celeste/Decompiled//Celeste/CS00_Ending.cs	2024-12-27 20:20:54.941255614 -0800
++++ celeste/Celeste/CS00_Ending.cs	2024-12-27 20:20:57.178087028 -0800
 @@ -62,7 +62,7 @@
  		player.StateMachine.State = 11;
  		player.Facing = Facings.Right;

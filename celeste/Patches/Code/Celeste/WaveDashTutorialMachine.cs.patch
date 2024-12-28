@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/WaveDashTutorialMachine.cs	2024-12-26 18:08:58.711156337 -0800
-+++ celeste/Celeste/WaveDashTutorialMachine.cs	2024-12-26 18:57:13.673597374 -0800
+--- celeste/Decompiled//Celeste/WaveDashTutorialMachine.cs	2024-12-27 20:20:54.831247516 -0800
++++ celeste/Celeste/WaveDashTutorialMachine.cs	2024-12-27 20:20:57.171419871 -0800
 @@ -35,9 +35,9 @@
  
  	private float interactStartZoom;

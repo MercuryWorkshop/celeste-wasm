@@ -22,10 +22,8 @@ find "$DECOMPDIR"{Celeste,Celeste.Editor,Celeste.Pico8,Monocle} -type f -name "*
 	mkdir -p "$(dirname "$patch")"
 	diff=$(diff -u "$DECOMPDIR/$file" "celeste/$file" || true)
 
-	echo -e "$diff"
-
 	if [ -n "$diff" ]; then
 		echo "writing diff for $file"
-		echo -n "$diff" > "$patch"
+		echo "$diff" > "$patch"
 	fi
 done

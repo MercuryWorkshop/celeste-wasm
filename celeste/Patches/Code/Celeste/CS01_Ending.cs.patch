@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS01_Ending.cs	2024-12-26 18:08:59.664505735 -0800
-+++ celeste/Celeste/CS01_Ending.cs	2024-12-26 19:34:54.250454350 -0800
+--- celeste/Decompiled//Celeste/CS01_Ending.cs	2024-12-27 20:20:54.961257086 -0800
++++ celeste/Celeste/CS01_Ending.cs	2024-12-27 20:20:57.181420608 -0800
 @@ -66,7 +66,7 @@
  		yield return 4f;
  		BirdNPC bird = new BirdNPC(player.Position + new Vector2(88f, -200f), BirdNPC.Modes.None);

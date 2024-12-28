@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste.Pico8/Emulator.cs	2024-12-26 18:09:01.904543474 -0800
-+++ celeste/Celeste.Pico8/Emulator.cs	2024-12-26 18:56:39.186452280 -0800
+--- celeste/Decompiled//Celeste.Pico8/Emulator.cs	2024-12-27 20:20:55.847989048 -0800
++++ celeste/Celeste.Pico8/Emulator.cs	2024-12-27 20:20:57.194754924 -0800
 @@ -29,7 +29,7 @@
  
  	private bool skipFrame = true;

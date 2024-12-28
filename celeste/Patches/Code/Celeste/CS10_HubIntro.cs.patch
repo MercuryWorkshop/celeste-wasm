@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS10_HubIntro.cs	2024-12-26 18:08:57.514469503 -0800
-+++ celeste/Celeste/CS10_HubIntro.cs	2024-12-26 19:39:16.637790368 -0800
+--- celeste/Decompiled//Celeste/CS10_HubIntro.cs	2024-12-27 20:20:54.447885964 -0800
++++ celeste/Celeste/CS10_HubIntro.cs	2024-12-27 20:20:57.161419134 -0800
 @@ -12,7 +12,7 @@
  	{
  		private Sprite sprite;

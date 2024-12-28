@@ -1,5 +1,5 @@
---- celeste/Decompiled//Celeste/CS10_Ending.cs	2024-12-26 18:08:57.967810477 -0800
-+++ celeste/Celeste/CS10_Ending.cs	2024-12-26 19:40:02.461823995 -0800
+--- celeste/Decompiled//Celeste/CS10_Ending.cs	2024-12-27 20:20:54.544559746 -0800
++++ celeste/Celeste/CS10_Ending.cs	2024-12-27 20:20:57.164752712 -0800
 @@ -57,9 +57,9 @@
  
  	private bool showTimer;
