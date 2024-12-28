@@ -15,6 +15,5 @@ find "celeste/Patches/Code" -type f -name "*.patch" | while read -r patch; do
 	file=${patch#celeste/Patches/Code/}
 	file=${file%.patch}
 
-	echo "$patch | $file"
 	patch --version-control=none --no-backup-if-mismatch -p1 -i "$patch" "celeste/$file"
 done
