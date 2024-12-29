@@ -1,0 +1,20 @@
+{
+	"name": "celeste-wasm",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "tsc && vite build",
+		"dev": "vite"
+	},
+	"dependencies": {
+		"@ktibow/iconset-material-symbols": "^0.0.1733470085",
+		"dreamland": "^0.0.25"
+	},
+	"devDependencies": {
+		"@iconify/types": "^2.0.0",
+		"typescript": "^5.7.2",
+		"vite": "^6.0.6",
+		"vite-plugin-dreamland": "^1.2.1"
+	}
+}

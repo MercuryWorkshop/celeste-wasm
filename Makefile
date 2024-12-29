@@ -1,4 +1,3 @@
-
 STATICS_RELEASE=9c3dd72e-5785-49f6-b648-cdcbb036fb7d
 
 statics:
@@ -9,14 +8,17 @@ statics:
 	wget https://github.com/r58Playz/FNA-WASM-Build/releases/download/$(STATICS_RELEASE)/SDL2.a -O statics/SDL2.a
 
 clean:
-	rm -rv statics obj bin || true
+	rm -rv statics obj bin public/_framework node_modules || true
 
 build: statics
-#	dotnet publish -v d -c Debug
+	pnpm i
 	dotnet publish -v d -c Release
 	# microsoft messed up
 	sed -i 's/FS_createPath("\/","usr\/share",!0,!0)/FS_createPath("\/usr","share",!0,!0)/' bin/Release/net9.0/publish/wwwroot/_framework/dotnet.runtime.*.js
+	cp -r bin/Release/net9.0/publish/wwwroot/_framework public/
 
 serve: build
-#	python3 tools/serve.py bin/Debug/net9.0/publish/wwwroot/_framework
-	python3 tools/serve.py bin/Release/net9.0/publish/wwwroot/_framework
+	pnpm dev
+
+publish: build
+	pnpm build

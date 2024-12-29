@@ -1,0 +1,62 @@
+body, html {
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+#app {
+	width: 100%;
+	height: 100%;
+
+	--font-body: 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+		Roboto, "Helvetica Neue", Arial, sans-serif;
+	--font-display: 'Inter Tight', 'Inter', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+		Roboto, "Helvetica Neue", Arial, sans-serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+	font-family: var(--font-body);
+}
+#app.dark {
+	--bg-sub: #131313;
+	--bg: #171717;
+	--surface0: #1e1e1e;
+	--surface1: #2b2b2b;
+	--surface2: #333333;
+	--surface3: #3b3b3b;
+	--surface4: #444444;
+	--surface5: #4c4c4c;
+	--surface6: #555555;
+	--accent: #f02424;
+	--error: #f02424;
+	--success: #84f084;
+	--warning: #f0f084;
+	--info: #7c98f6;
+	--fg: #f0f0f0;
+	--fg2: #e0e0e0;
+	--fg3: #d0d0d0;
+	--fg4: #c0c0c0;
+	--fg5: #b0b0b0;
+	--fg6: #a0a0a0;
+}
+#app.light {
+	--bg-sub: #fafafa;
+	--bg: #f0f0f0;
+	--surface0: #e0e0e0;
+	--surface1: #d0d0d0;
+	--surface2: #c0c0c0;
+	--surface3: #b0b0b0;
+	--surface4: #a0a0a0;
+	--surface5: #909090;
+	--surface6: #808080;
+	--accent: #f06060;
+	--error: #e43e3e;
+	--success: #14b614;
+	--warning: #e0e060;
+	--info: #6097f0;
+	--fg: #171717;
+	--fg2: #2b2b2b;
+	--fg3: #3b3b3b;
+	--fg4: #4c4c4c;
+	--fg5: #555555;
+	--fg6: #5f5f5f;
+}

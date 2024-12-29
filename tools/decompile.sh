@@ -22,3 +22,4 @@ rm -r celeste/Decompiled celeste/{Celeste,Celeste.Editor,Celeste.Pico8,Monocle} 
 ilspycmd -lv CSharp11_0 -p -o celeste/Decompiled "$1"
 cp -r celeste/Decompiled/{Celeste,Celeste.Editor,Celeste.Pico8,Monocle} celeste/
 rm celeste/Decompiled/Celeste.csproj
+cp celeste/Decompiled/app.ico public/

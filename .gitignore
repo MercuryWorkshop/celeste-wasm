@@ -7,3 +7,7 @@ celeste/Celeste
 celeste/Celeste.Editor
 celeste/Celeste.Pico8
 celeste/Monocle
+
+node_modules
+public/app.ico
+public/_framework
