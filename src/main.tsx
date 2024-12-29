@@ -169,7 +169,6 @@ export const Main: Component<{}, {}> = function() {
 				<div class="game">
 					<GameView />
 				</div>
-				<h2>Log</h2>
 				<LogView />
 			</div>
 		</div>

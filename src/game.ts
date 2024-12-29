@@ -88,3 +88,33 @@ export async function play() {
 	}
 	requestAnimationFrame(main);
 }
+
+
+(self as any).copyContent = async () => {
+	const opfsRoot = await navigator.storage.getDirectory();
+	// @ts-ignore
+	const sourceDirEntry = await window.showDirectoryPicker();
+	const sourceDirName = sourceDirEntry.name;
+	const targetRootDir = await opfsRoot.getDirectoryHandle(sourceDirName, { create: true });
+	async function copyDirectoryContents(sourceDirEntry: FileSystemDirectoryHandle, targetDir: FileSystemDirectoryHandle) {
+		// @ts-expect-error ts sucks
+		const entriesIterator = sourceDirEntry.entries();
+		for await (const [entryName, entry] of entriesIterator) {
+			if (entry.kind === 'file') {
+				const file = await entry.getFile(); // Get the actual file from FileSystemFileHandle
+				const fileHandle = await targetDir.getFileHandle(entryName, { create: true });
+				const writableStream = await fileHandle.createWritable();
+				await writableStream.write(file);  // Write the file Blob directly
+				await writableStream.close();
+				console.log(`Successfully copied file: ${entryName}`);
+			} else if (entry.kind === 'directory') {
+				const subDirHandle = await targetDir.getDirectoryHandle(entryName, { create: true });
+				console.log(`Created directory: ${entryName}`);
+				await copyDirectoryContents(entry, subDirHandle);
+			}
+		}
+	}
+
+	// Start copying from the source directory to the new root directory in OPFS
+	await copyDirectoryContents(sourceDirEntry, targetRootDir);
+}
