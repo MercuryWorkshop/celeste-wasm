@@ -45,4 +45,3 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
 - remove the janky `WRAP_FNA` stuff and replace it with a SDL that doesn't use EGL emulation
 - check (and fix) controller support
 - port over everest (if possible)
-- add back a OPFS explorer
