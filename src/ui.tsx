@@ -56,8 +56,8 @@ export const Button: Component<{
 		}
 
 		&:disabled {
-			background: var(--surface1);
-			cursor: default;
+			background: var(--surface0);
+			cursor: not-allowed;
 		}
 	`;
 	return (

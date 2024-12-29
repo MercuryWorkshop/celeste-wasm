@@ -72,17 +72,9 @@ export async function play() {
 	console.debug("Init...");
 	exports.Program.Init();
 
-	let avgTop = 0;
-	let avgBottom = 0;
-
 	console.debug("MainLoop...");
 	const main = () => {
-		const before = performance.now();
 		exports.Program.MainLoop();
-		const after = performance.now();
-
-		avgTop += after - before;
-		avgBottom++;
 
 		requestAnimationFrame(main);
 	}

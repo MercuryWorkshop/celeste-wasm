@@ -1,4 +1,4 @@
-import { gameCanvas, gameState, play } from "./game";
+import { gameState, play } from "./game";
 import { Button, Icon } from "./ui";
 import iconPlayArrow from "@ktibow/iconset-material-symbols/play-arrow";
 import iconFullscreen from "@ktibow/iconset-material-symbols/fullscreen";
@@ -12,14 +12,26 @@ export const Logo: Component<{}, {}> = function() {
 		font-family: Renogare;
 
 		img {
+			image-rendering: pixelated;
+			-ms-interpolation-mode: nearest-neighbor;
 			width: 3rem;
 			height: 3rem;
+		}
+
+
+		.superscript {
+			align-self: start;
+			padding-top: 0.25rem;
+
+			font-size: 1rem;
+			color: var(--fg6);
 		}
 	`;
 	return (
 		<div>
 			<img src="/app.ico" />
-			celeste-wasm
+			<span>celeste-wasm</span>
+			<subt class="superscript">v1.4.0.0</subt>
 		</div>
 	)
 }
