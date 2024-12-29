@@ -1,11 +1,7 @@
 import { Logo } from "./main";
-import { Button, Icon } from "./ui";
+import { Button, Icon, Link } from "./ui";
 
 import iconFolderOpen from "@ktibow/iconset-material-symbols/folder-open-outline";
-
-const Link: Component<{ href: string }, { children: any[] }> = function() {
-	return <a href={this.href} target="_blank">{this.children}</a>
-}
 
 export const Splash: Component<{
 	"on:next": () => void,

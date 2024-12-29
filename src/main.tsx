@@ -1,7 +1,11 @@
 import { gameState, play } from "./game";
-import { Button, Icon } from "./ui";
+import { Button, Icon, Link } from "./ui";
+import { store } from "./store";
+
 import iconPlayArrow from "@ktibow/iconset-material-symbols/play-arrow";
 import iconFullscreen from "@ktibow/iconset-material-symbols/fullscreen";
+import iconLightMode from "@ktibow/iconset-material-symbols/light-mode";
+import iconDarkMode from "@ktibow/iconset-material-symbols/dark-mode";
 
 export const Logo: Component<{}, {}> = function() {
 	this.css = `
@@ -44,6 +48,7 @@ const TopBar: Component<{ canvas: HTMLCanvasElement }, { allowPlay: boolean, }> 
 		gap: 1em;
 		padding: 1em;
 		height: 3rem;
+		border-bottom: 2px solid var(--surface1);
 
 		.expand { flex: 1; }
 	`;
@@ -57,10 +62,13 @@ const TopBar: Component<{ canvas: HTMLCanvasElement }, { allowPlay: boolean, }> 
 			<Logo />
 			<div class="expand" />
 			<Button on:click={() => {
-				play();
-			}} icon="left" type="primary" disabled={use(this.allowPlay, x => !x)}>
-				<Icon icon={iconPlayArrow} />
-				Play
+				if (store.theme === "light") {
+					store.theme = "dark";
+				} else {
+					store.theme = "light";
+				}
+			}} icon="full" type="normal" disabled={false}>
+				<Icon icon={use(store.theme, x => x === "light" ? iconDarkMode : iconLightMode)} />
 			</Button>
 			<Button on:click={async () => {
 				try {
@@ -69,6 +77,33 @@ const TopBar: Component<{ canvas: HTMLCanvasElement }, { allowPlay: boolean, }> 
 			}} icon="full" type="normal" disabled={use(gameState.playing, x => !x)}>
 				<Icon icon={iconFullscreen} />
 			</Button>
+			<Button on:click={() => {
+				play();
+			}} icon="left" type="primary" disabled={use(this.allowPlay, x => !x)}>
+				<Icon icon={iconPlayArrow} />
+				Play
+			</Button>
+		</div>
+	)
+}
+
+const BottomBar: Component<{}, {}> = function() {
+	this.css = `
+		background: var(--bg-sub);
+		border-top: 2px solid var(--surface1);
+		padding: 0.5rem;
+		font-size: 0.8rem;
+
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	`;
+
+	return (
+		<div>
+			<span>Ported by <Link href="https://github.com/r58playz">r58Playz</Link></span>
+			<span>All game assets and code belong to <Link href="https://exok.com/">Extremely OK Games, Ltd.</Link> All rights reserved.</span>
+			<span>Check out the project on <Link href="https://github.com/r58playz/celeste-wasm-threads">GitHub!</Link></span>
 		</div>
 	)
 }
@@ -198,6 +233,7 @@ export const Main: Component<{}, { canvas: HTMLCanvasElement }> = function() {
 				</div>
 				<LogView />
 			</div>
+			<BottomBar />
 		</div>
 	);
 }

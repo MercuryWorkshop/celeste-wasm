@@ -27,13 +27,17 @@ const App: Component<{}, {
 		}
 	`;
 
+	const next = () => {
+		this.el.addEventListener("animationend", this.el.remove);
+		this.el.style.animation = "fadeout 0.5s ease";
+	}
+
+	this.mount = next;
+
 	return (
 		<div id="app" class={use(store.theme)}>
 			<div id="splash" bind:this={use(this.el)}>
-				<Splash on:next={() => {
-					this.el.addEventListener("animationend", this.el.remove);
-					this.el.style.animation = "fadeout 0.5s ease";
-				}} />
+				<Splash on:next={next} />
 			</div>
 			<div id="main">
 				<Main />
