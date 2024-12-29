@@ -1,9 +1,11 @@
-body, html {
+body,
+html {
 	padding: 0;
 	margin: 0;
 	width: 100%;
 	height: 100%;
 }
+
 #app {
 	width: 100%;
 	height: 100%;
@@ -16,6 +18,7 @@ body, html {
 
 	font-family: var(--font-body);
 }
+
 #app.dark {
 	--bg-sub: #131313;
 	--bg: #171717;
@@ -38,6 +41,7 @@ body, html {
 	--fg5: #b0b0b0;
 	--fg6: #a0a0a0;
 }
+
 #app.light {
 	--bg-sub: #fafafa;
 	--bg: #f0f0f0;
@@ -59,4 +63,11 @@ body, html {
 	--fg4: #4c4c4c;
 	--fg5: #555555;
 	--fg6: #5f5f5f;
+}
+
+@font-face {
+	font-family: "Renogare";
+	src:
+		local("Renogare"),
+		url("Renogare.woff2") format("woff2"),
 }
