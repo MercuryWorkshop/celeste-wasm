@@ -1,6 +1,13 @@
 --- celeste/Decompiled/Celeste/Celeste.cs
 +++ celeste/Celeste/Celeste.cs
-@@ -56,7 +56,7 @@
+@@ -1,6 +1,5 @@
+ using System;
+ using System.Diagnostics;
+-using System.IO;
+ using System.Threading;
+ using Celeste.Pico8;
+ using Microsoft.Xna.Framework;
+@@ -56,7 +55,7 @@
  
  	public static readonly AppId_t SteamID = new AppId_t(504230u);
  
@@ -9,7 +16,7 @@
  
  	public static Vector2 TargetCenter => new Vector2(1920f, 1080f) / 2f;
  
-@@ -165,6 +165,7 @@
+@@ -165,6 +164,7 @@
  		}
  	}
  
@@ -17,7 +24,7 @@
  	private static void Main(string[] args)
  	{
  		Celeste celeste;
-@@ -240,6 +241,7 @@
+@@ -240,6 +240,7 @@
  		celeste.Dispose();
  		Audio.Unload();
  	}
@@ -25,3 +32,22 @@
  
  	public static void ReloadAssets(bool levels, bool graphics, bool hires, AreaKey? area = null)
  	{
+@@ -271,18 +272,6 @@
+ 
+ 	private static void CallProcess(string path, string args = "", bool createWindow = false)
+ 	{
+-		Process process = new Process();
+-		process.StartInfo = new ProcessStartInfo
+-		{
+-			FileName = path,
+-			WorkingDirectory = Path.GetDirectoryName(path),
+-			RedirectStandardOutput = false,
+-			CreateNoWindow = !createWindow,
+-			UseShellExecute = false,
+-			Arguments = args
+-		};
+-		process.Start();
+-		process.WaitForExit();
+ 	}
+ 
+ 	public static bool PauseAnywhere()

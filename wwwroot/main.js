@@ -1,25 +1,5 @@
 import { dotnet } from './_framework/dotnet.js'
 
-const div = document.getElementById("console");
-console.log = (str) => {
-	const el = document.createElement("pre");
-	el.style = "color:white;"
-	el.textContent = str;
-	div.insertBefore(el, div.firstChild);
-}
-console.warn = (str) => {
-	const el = document.createElement("pre");
-	el.style = "color:yellow;"
-	el.textContent = str;
-	div.insertBefore(el, div.firstChild);
-}
-console.error = (str) => {
-	const el = document.createElement("pre");
-	el.style = "color:red;"
-	el.textContent = str;
-	div.insertBefore(el, div.firstChild);
-}
-
 const runtime = await dotnet
 	.withConfig({
 		jsThreadBlockingMode: "DangerousAllowBlockingWait",
@@ -41,9 +21,21 @@ window.wasm = {
 	canvas
 };
 
-await runtime.runMain();
-
+console.log("3...");
 await new Promise(r => setTimeout(r, 1000));
+console.log("2...");
+await new Promise(r => setTimeout(r, 1000));
+console.log("1...");
+await new Promise(r => setTimeout(r, 1000));
+
+console.log("PreInit...");
+await runtime.runMain();
+await exports.Program.PreInit();
+
+console.log("Init...");
+await new Promise(r => setTimeout(r, 1000));
+
+exports.Program.Init();
 
 let avgTop = 0;
 let avgBtm = 0;
