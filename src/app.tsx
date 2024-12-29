@@ -3,9 +3,13 @@ import "./styles.css";
 import { Main } from "./main";
 import { Splash } from "./splash";
 import { store } from "./store";
+import { hasContent } from "./fs";
+
+const initialHasContent = await hasContent();
 
 const App: Component<{}, {
 	el: HTMLElement
+	showInstructions: boolean,
 }> = function() {
 	this.css = `
 		position: relative;
@@ -32,13 +36,13 @@ const App: Component<{}, {
 		this.el.style.animation = "fadeout 0.5s ease";
 	}
 
-	this.mount = next;
-
 	return (
 		<div id="app" class={use(store.theme)}>
-			<div id="splash" bind:this={use(this.el)}>
-				<Splash on:next={next} />
-			</div>
+			{initialHasContent ? null :
+				<div id="splash" bind:this={use(this.el)}>
+					<Splash on:next={next} />
+				</div>
+			}
 			<div id="main">
 				<Main />
 			</div>

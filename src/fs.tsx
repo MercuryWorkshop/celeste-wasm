@@ -8,6 +8,8 @@ import iconSave from "@ktibow/iconset-material-symbols/save";
 import iconUploadFile from "@ktibow/iconset-material-symbols/upload-file";
 import iconUploadFolder from "@ktibow/iconset-material-symbols/drive-folder-upload";
 
+export const rootFolder = await navigator.storage.getDirectory();
+
 export async function copyFile(file: FileSystemFileHandle, to: FileSystemDirectoryHandle) {
 	const data = await file.getFile().then(r => r.stream());
 	const handle = await to.getFileHandle(file.name, { create: true });
@@ -30,13 +32,23 @@ export async function copyFolder(folder: FileSystemDirectoryHandle, to: FileSyst
 	await upload(folder, newFolder);
 }
 
+export async function hasContent(): Promise<boolean> {
+	try {
+		await rootFolder.getDirectoryHandle("Content", { create: false })
+		return true;
+	} catch {
+		return false;
+	}
+}
+
 async function recursiveGetDirectory(dir: FileSystemDirectoryHandle, path: string[]): Promise<FileSystemDirectoryHandle> {
 	if (path.length === 0) return dir;
 	return recursiveGetDirectory(await dir.getDirectoryHandle(path[0]), path.slice(1));
 }
 
-const root = await navigator.storage.getDirectory();
-export const OpfsExplorer: Component<{}, {
+export const OpfsExplorer: Component<{
+	open: boolean,
+}, {
 	path: FileSystemDirectoryHandle,
 	components: string[],
 	entries: { name: string, entry: FileSystemHandle }[],
@@ -44,7 +56,7 @@ export const OpfsExplorer: Component<{}, {
 	editing: FileSystemFileHandle | null,
 	uploading: boolean,
 }> = function() {
-	this.path = root;
+	this.path = rootFolder;
 	this.components = [];
 	this.entries = [];
 
@@ -109,14 +121,16 @@ export const OpfsExplorer: Component<{}, {
 		.hidden { visibility: hidden }
 	`;
 
+	useChange([this.open], () => this.path = this.path);
+
 	useChange([this.path], async () => {
-		this.components = await root.resolve(this.path) || [];
+		this.components = await rootFolder.resolve(this.path) || [];
 
 		this.entries = [];
 		if (this.components.length > 0) {
 			this.entries = [...this.entries, {
 				name: "..",
-				entry: await recursiveGetDirectory(root, this.components.slice(0, this.components.length - 1)),
+				entry: await recursiveGetDirectory(rootFolder, this.components.slice(0, this.components.length - 1)),
 			}]
 		}
 		for await (const [name, entry] of this.path) {

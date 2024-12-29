@@ -245,7 +245,7 @@ export const Main: Component<{}, {
 				<LogView />
 			</div>
 			<Dialog name="File System" bind:open={use(this.fsOpen)}>
-				<OpfsExplorer />
+				<OpfsExplorer open={use(this.fsOpen)} />
 			</Dialog>
 			<BottomBar />
 		</div>

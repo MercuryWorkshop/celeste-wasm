@@ -2,10 +2,16 @@ import { Logo } from "./main";
 import { Button, Icon, Link } from "./ui";
 
 import iconFolderOpen from "@ktibow/iconset-material-symbols/folder-open-outline";
+import iconDownload from "@ktibow/iconset-material-symbols/download";
+import { copyFolder, rootFolder } from "./fs";
 
 export const Splash: Component<{
 	"on:next": () => void,
-}, {}> = function() {
+}, {
+	copyDisabled: boolean,
+	downloadDisabled: boolean,
+	status: string,
+}> = function() {
 	this.css = `
 		position: relative;
 
@@ -56,8 +62,37 @@ export const Splash: Component<{
 		}
 	`;
 
-	const opfs = () => {
-		// TODO opfs
+	this.copyDisabled = false;
+	this.downloadDisabled = true;
+	this.status = "";
+
+	const validateDirectory = async (directory: FileSystemDirectoryHandle) => {
+		if (directory.name != "Content") {
+			return "Directory name is not Content";
+		}
+		for (const child of ["Celeste", "Dialog", "Effects", "FMOD", "Graphics", "Maps", "Monocle", "Overworld", "Tutorials"]) {
+			try {
+				await directory.getDirectoryHandle(child, { create: false });
+			} catch {
+				return `Failed to find subdirectory ${child}`
+			}
+		}
+		return "";
+	};
+
+	const opfs = async () => {
+		const directory = await showDirectoryPicker();
+		const res = await validateDirectory(directory);
+		if (res) {
+			this.status = res;
+			return;
+		}
+
+		this.copyDisabled = true;
+		this.status = "Copying...";
+		await copyFolder(directory, rootFolder);
+		this.status = "Copied!";
+
 		this["on:next"]();
 	}
 
@@ -71,10 +106,7 @@ export const Splash: Component<{
 						<Logo />
 					</div>
 					<div>
-						This is a mostly-complete port of <Link href="https://www.celestegame.com/">Celeste</Link> to the browser using dotnet's WASM support. 
-					</div>
-
-					<div>
+						This is a mostly-complete port of <Link href="https://www.celestegame.com/">Celeste</Link> to the browser using dotnet's WASM support.
 						It needs around 0.8GB of memory and will probably not work on low-end devices.
 					</div>
 
@@ -86,10 +118,15 @@ export const Splash: Component<{
 						The background is from <Link href="https://www.fangamer.com/products/celeste-desk-mat-skies">fangamer merch</Link>.
 					</div>
 
-					<Button on:click={opfs} type="primary" icon="left" disabled={false}>
+					<Button on:click={opfs} type="primary" icon="left" disabled={use(this.copyDisabled)}>
 						<Icon icon={iconFolderOpen} />
 						Select Celeste Content folder
 					</Button>
+					<Button on:click={() => { }} type="primary" icon="left" disabled={use(this.downloadDisabled)}>
+						<Icon icon={iconDownload} />
+						Download/decrypt coming soon
+					</Button>
+					{$if(use(this.status, x => x.length > 0), <span>{use(this.status)}</span>)}
 				</div>
 			</div>
 		</div>
