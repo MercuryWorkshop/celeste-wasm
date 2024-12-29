@@ -25,17 +25,12 @@ export const Button: Component<{
 		font-family: var(--font-body);
 		cursor: pointer;
 
-		&.icon-full svg {
-			width: 2rem;
-			height: 2rem;
-		}
-
-		&.icon-left {
-			gap: 0.25rem;
-		}
-		&.icon-left svg {
+		&.icon-full svg, &.icon-left svg {
 			width: 1.5rem;
 			height: 1.5rem;
+		}
+		&.icon-left {
+			gap: 0.25rem;
 		}
 
 		&.type-primary {
@@ -62,7 +57,7 @@ export const Button: Component<{
 
 		&:disabled {
 			background: var(--surface1);
-			cursor: normal;
+			cursor: default;
 		}
 	`;
 	return (

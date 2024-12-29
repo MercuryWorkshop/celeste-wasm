@@ -46,7 +46,7 @@ let exports: any;
 
 	const config = runtime.getConfig();
 	exports = await runtime.getAssemblyExports(config.mainAssemblyName);
-	const canvas = document.getElementById("canvas");
+	const canvas = document.getElementById("canvas")! as HTMLCanvasElement;
 	dotnet.instance.Module.canvas = canvas;
 
 	(self as any).wasm = {
@@ -55,7 +55,7 @@ let exports: any;
 		runtime,
 		config,
 		exports,
-		canvas
+		canvas,
 	};
 
 	console.debug("PreInit...");
@@ -88,6 +88,18 @@ export async function play() {
 	}
 	requestAnimationFrame(main);
 }
+
+useChange([gameState.playing], () => {
+	try {
+		if (gameState.playing) {
+			// @ts-ignore
+			navigator.keyboard.lock()
+		} else {
+			// @ts-ignore
+			navigator.keyboard.unlock();
+		}
+	} catch { }
+});
 
 
 (self as any).copyContent = async () => {

@@ -1,6 +1,7 @@
-import { gameState, play } from "./game";
+import { gameCanvas, gameState, play } from "./game";
 import { Button, Icon } from "./ui";
 import iconPlayArrow from "@ktibow/iconset-material-symbols/play-arrow";
+import iconFullscreen from "@ktibow/iconset-material-symbols/fullscreen";
 
 export const Logo: Component<{}, {}> = function() {
 	this.css = `
@@ -23,7 +24,7 @@ export const Logo: Component<{}, {}> = function() {
 	)
 }
 
-const TopBar: Component<{}, { allowPlay: boolean, }> = function() {
+const TopBar: Component<{ canvas: HTMLCanvasElement }, { allowPlay: boolean, }> = function() {
 	this.css = `
 		background: var(--bg-sub);
 		display: flex;
@@ -49,11 +50,18 @@ const TopBar: Component<{}, { allowPlay: boolean, }> = function() {
 				<Icon icon={iconPlayArrow} />
 				Play
 			</Button>
+			<Button on:click={async () => {
+				try {
+					await this.canvas.requestFullscreen({ navigationUI: "hide" });
+				} catch { }
+			}} icon="full" type="normal" disabled={use(gameState.playing, x => !x)}>
+				<Icon icon={iconFullscreen} />
+			</Button>
 		</div>
 	)
 }
 
-const GameView: Component<{}, {}> = function() {
+const GameView: Component<{ canvas: HTMLCanvasElement }, {}> = function() {
 	this.css = `
 		position: relative;
 		aspect-ratio: 16 / 9;
@@ -86,14 +94,21 @@ const GameView: Component<{}, {}> = function() {
 			align-items: center;
 			justify-content: center;
 		}
+
+		canvas:fullscreen {
+			border: none;
+			border-radius: 0;
+			background: black;
+		}
 	`;
 	const playing = use(gameState.playing, x => x ? "started" : "stopped");
+
 	return (
 		<div>
 			<div class={playing}>
 				Game not running.
 			</div>
-			<canvas id="canvas" class={playing} />
+			<canvas id="canvas" class={playing} bind:this={use(this.canvas)} />
 		</div>
 	)
 }
@@ -135,7 +150,7 @@ const LogView: Component<{}, {}> = function() {
 	)
 }
 
-export const Main: Component<{}, {}> = function() {
+export const Main: Component<{}, { canvas: HTMLCanvasElement }> = function() {
 	this.css = `
 		width: 100%;
 		height: 100%;
@@ -164,10 +179,10 @@ export const Main: Component<{}, {}> = function() {
 
 	return (
 		<div>
-			<TopBar />
+			<TopBar canvas={use(this.canvas)} />
 			<div class="main">
 				<div class="game">
-					<GameView />
+					<GameView bind:canvas={use(this.canvas)} />
 				</div>
 				<LogView />
 			</div>
