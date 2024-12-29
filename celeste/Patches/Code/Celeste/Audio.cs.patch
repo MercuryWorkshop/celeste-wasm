@@ -63,7 +63,7 @@
  
  	public static float MusicVolume
  	{
-@@ -170,13 +169,9 @@
+@@ -170,13 +169,11 @@
  		{
  			studioFlags = FMOD.Studio.INITFLAGS.LIVEUPDATE;
  		}
@@ -75,12 +75,14 @@
 -		}
 -		CheckFmod(Audio.system.initialize(1024, studioFlags, FMOD.INITFLAGS.NORMAL, IntPtr.Zero));
 +		CheckFmod(FMOD.Studio.System.create(out var system));
++		system.getCoreSystem(out var coreSystem);
++		coreSystem.setDSPBufferSize(2048, 8);
++		CheckFmod(system.initialize(1024, studioFlags, FMOD.INITFLAGS.NORMAL, IntPtr.Zero));
 +		Audio.system = system;
-+		CheckFmod(Audio.system.Value.initialize(1024, studioFlags, FMOD.INITFLAGS.NORMAL, IntPtr.Zero));
  		attributes3d.forward = new VECTOR
  		{
  			x = 0f,
-@@ -197,7 +192,7 @@
+@@ -197,7 +194,7 @@
  	{
  		if (system != null && ready)
  		{
@@ -89,7 +91,7 @@
  		}
  	}
  
-@@ -205,15 +200,15 @@
+@@ -205,15 +202,15 @@
  	{
  		if (system != null)
  		{
@@ -108,7 +110,7 @@
  		attributes.forward.x = forward.X;
  		attributes.forward.z = forward.Y;
  		attributes.forward.z = forward.Z;
-@@ -223,7 +218,7 @@
+@@ -223,7 +220,7 @@
  		attributes.position.x = position.X;
  		attributes.position.y = position.Y;
  		attributes.position.z = position.Z;
@@ -117,7 +119,7 @@
  	}
  
  	public static void SetCamera(Camera camera)
-@@ -239,133 +234,133 @@
+@@ -239,133 +236,133 @@
  		}
  	}
  
@@ -293,7 +295,7 @@
  	{
  		if (instance != null)
  		{
-@@ -382,34 +377,34 @@
+@@ -382,34 +379,34 @@
  			attributes3d.position.x = num;
  			attributes3d.position.y = position.Y - vector.Y;
  			attributes3d.position.z = 0f;
@@ -338,7 +340,7 @@
  			if (is3D && position.HasValue)
  			{
  				Position(instance, position.Value);
-@@ -419,12 +414,13 @@
+@@ -419,12 +416,13 @@
  		return null;
  	}
  
@@ -356,7 +358,7 @@
  			switch (@event)
  			{
  			case RESULT.OK:
-@@ -458,12 +454,12 @@
+@@ -458,12 +456,12 @@
  		}
  	}
  
@@ -372,7 +374,7 @@
  			{
  				string path = "";
  				description.getPath(out path);
-@@ -473,11 +469,11 @@
+@@ -473,11 +471,11 @@
  		return "";
  	}
  
@@ -386,7 +388,7 @@
  			if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING)
  			{
  				return true;
-@@ -489,7 +485,7 @@
+@@ -489,7 +487,7 @@
  	public static bool BusPaused(string path, bool? pause = null)
  	{
  		bool paused = false;
@@ -395,7 +397,7 @@
  		{
  			if (pause.HasValue)
  			{
-@@ -503,7 +499,7 @@
+@@ -503,7 +501,7 @@
  	public static bool BusMuted(string path, bool? mute)
  	{
  		bool paused = false;
@@ -404,7 +406,7 @@
  		{
  			if (mute.HasValue)
  			{
-@@ -516,7 +512,7 @@
+@@ -516,7 +514,7 @@
  
  	public static void BusStopAll(string path, bool immediate = false)
  	{
@@ -413,7 +415,7 @@
  		{
  			bus.stopAllEvents(immediate ? STOP_MODE.IMMEDIATE : STOP_MODE.ALLOWFADEOUT);
  		}
-@@ -525,7 +521,7 @@
+@@ -525,7 +523,7 @@
  	public static float VCAVolume(string path, float? volume = null)
  	{
  		VCA vca;
@@ -422,7 +424,7 @@
  		float volume2 = 1f;
  		float finalvolume = 1f;
  		if (vCA == RESULT.OK)
-@@ -541,8 +537,8 @@
+@@ -541,8 +539,8 @@
  
  	public static EventInstance CreateSnapshot(string name, bool start = true)
  	{
@@ -433,7 +435,7 @@
  		{
  			throw new Exception("Snapshot " + name + " doesn't exist");
  		}
-@@ -554,19 +550,19 @@
+@@ -554,19 +552,19 @@
  		return instance;
  	}
  
@@ -457,7 +459,7 @@
  			if (state != 0 && state != PLAYBACK_STATE.STARTING)
  			{
  				return state == PLAYBACK_STATE.SUSTAINING;
-@@ -576,20 +572,20 @@
+@@ -576,20 +574,20 @@
  		return false;
  	}
  
@@ -483,7 +485,7 @@
  		}
  	}
  
-@@ -604,10 +600,10 @@
+@@ -604,10 +602,10 @@
  		else if (!CurrentMusic.Equals(path, StringComparison.OrdinalIgnoreCase))
  		{
  			Stop(currentMusicEvent, allowFadeOut);
@@ -496,7 +498,7 @@
  			}
  			currentMusicEvent = eventInstance;
  			CurrentMusic = GetEventName(eventInstance);
-@@ -626,10 +622,10 @@
+@@ -626,10 +624,10 @@
  		else if (!GetEventName(currentAmbientEvent).Equals(path, StringComparison.OrdinalIgnoreCase))
  		{
  			Stop(currentAmbientEvent);
@@ -509,7 +511,7 @@
  			}
  			currentAmbientEvent = eventInstance;
  			return true;
-@@ -641,7 +637,7 @@
+@@ -641,7 +639,7 @@
  	{
  		if (currentMusicEvent != null)
  		{
