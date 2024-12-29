@@ -5,31 +5,39 @@
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 		<Nullable>disable</Nullable>
 
-		<DisableBuildCompression>true</DisableBuildCompression>
-		<NoWarn>8981,649,169,SYSLIB0011,0219,7022</NoWarn>
-		<TrimMode>partial</TrimMode>
-
 		<RunAOTCompilation>true</RunAOTCompilation>
-		<RunAOTCompilationAfterBuild>true</RunAOTCompilationAfterBuild>
+		<DisableBuildCompression>true</DisableBuildCompression>
+		<TrimMode>partial</TrimMode>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<InvariantTimezone>true</InvariantTimezone>
 
-		<EmccLinkOptimizationFlag>-O3</EmccLinkOptimizationFlag>
-		<EmccCompileOptimizationFlag>-O3</EmccCompileOptimizationFlag>
-		<WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
+		<NoWarn>IL2026,IL2046,IL2057,IL2062,IL2065,IL2067,IL2070,IL2072,IL2075,IL2087,IL2090</NoWarn>
+		<NoWarn>$(NoWarn),SYSLIB0011,CS0169,CS0219,CS0649,CS8981,CA2022</NoWarn>
 
 		<WasmBuildNative>true</WasmBuildNative>
 		<WasmEnableThreads>true</WasmEnableThreads>
 		<WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
-		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sWASMFS -Wl,--no-check-features</EmccExtraLDFlags>
+		<WasmStripAOTAssemblies>true</WasmStripAOTAssemblies>
+		<WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
+
+		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sWASMFS -Wl,--no-check-features</EmccExtraLDFlags>
+		<EmccLinkOptimizationFlag>-O3</EmccLinkOptimizationFlag>
+		<EmccCompileOptimizationFlag>-O3</EmccCompileOptimizationFlag>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!-- FNA -->
 		<NativeFileReference Include="statics\SDL2.a" />
 		<NativeFileReference Include="statics\FNA3D.a" />
 		<NativeFileReference Include="statics\libmojoshader.a" />
 		<NativeFileReference Include="statics\FAudio.a" />
-		<NativeFileReference Include="fmod\fmodstudio.a" />
-		<NativeFileReference Include="fmod\fmod.a" />
-		<NativeFileReference Include="Emscripten.c" />
+
+		<!-- FMOD -->
+		<NativeFileReference Include="celeste\fmod\fmodstudio.a" />
+		<NativeFileReference Include="celeste\fmod\fmod.a" />
+
+		<!-- WASMFS -->
+		<NativeFileReference Include="celeste\Emscripten.c" />
 	</ItemGroup>
 
 	<ItemGroup>

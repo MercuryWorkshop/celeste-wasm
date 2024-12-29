@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Celeste;
 using Steamworks;
 
+[assembly:System.Runtime.Versioning.SupportedOSPlatform("browser")]
+
 partial class Program
 {
     static Game game;
@@ -17,6 +19,10 @@ partial class Program
             Console.WriteLine("calling mount_opfs");
             int ret = mount_opfs();
             Console.WriteLine($"called mount_opfs: {ret}");
+            if (ret != 0)
+            {
+                throw new Exception("Failed to mount OPFS");
+            }
         });
         thread.Start();
         thread.Join();
