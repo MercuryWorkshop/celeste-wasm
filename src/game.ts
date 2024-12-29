@@ -84,24 +84,22 @@ export async function play() {
 useChange([gameState.playing], () => {
 	try {
 		if (gameState.playing) {
-			// @ts-ignore
+			// @ts-expect-error
 			navigator.keyboard.lock()
 		} else {
-			// @ts-ignore
+			// @ts-expect-error
 			navigator.keyboard.unlock();
 		}
-	} catch { }
+	} catch(err) { console.log("keyboard lock error:", err); }
 });
 
 
 (self as any).copyContent = async () => {
 	const opfsRoot = await navigator.storage.getDirectory();
-	// @ts-ignore
-	const sourceDirEntry = await window.showDirectoryPicker();
+	const sourceDirEntry = await showDirectoryPicker();
 	const sourceDirName = sourceDirEntry.name;
 	const targetRootDir = await opfsRoot.getDirectoryHandle(sourceDirName, { create: true });
 	async function copyDirectoryContents(sourceDirEntry: FileSystemDirectoryHandle, targetDir: FileSystemDirectoryHandle) {
-		// @ts-expect-error ts sucks
 		const entriesIterator = sourceDirEntry.entries();
 		for await (const [entryName, entry] of entriesIterator) {
 			if (entry.kind === 'file') {

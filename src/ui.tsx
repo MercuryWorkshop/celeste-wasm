@@ -1,10 +1,12 @@
 import type { IconifyIcon } from "@iconify/types";
 
+import iconClose from "@ktibow/iconset-material-symbols/close";
 
 export const Button: Component<{
-	"on:click": () => void,
+	"on:click": (() => void) | ((e: PointerEvent) => void),
 
-	type: "primary" | "normal",
+	class?: string,
+	type: "primary" | "normal" | "listitem" | "listaction",
 	icon: "full" | "left" | "none",
 	disabled: boolean,
 }, {
@@ -41,6 +43,15 @@ export const Button: Component<{
 			background: var(--surface1);
 			color: var(--fg);
 		}
+		&.type-listitem {
+			background: transparent;
+			color: var(--fg);
+			border-radius: 0.5rem;
+		}
+		&.type-listaction {
+			background: var(--surface2);
+			color: var(--fg);
+		}
 
 		&.type-primary:not(:disabled):hover {
 			background: color-mix(in srgb, var(--accent) 80%, white);
@@ -54,6 +65,18 @@ export const Button: Component<{
 		&.type-normal:not(:disabled):active {
 			background: var(--surface3);
 		}
+		&.type-listitem:not(:disabled):hover {
+			background: var(--surface1);
+		}
+		&.type-listitem:not(:disabled):active {
+			background: var(--surface2);
+		}
+		&.type-listaction:not(:disabled):hover {
+			background: var(--surface3);
+		}
+		&.type-listaction:not(:disabled):active {
+			background: var(--surface4);
+		}
 
 		&:disabled {
 			background: var(--surface0);
@@ -61,9 +84,9 @@ export const Button: Component<{
 		}
 	`;
 	return (
-		<button 
+		<button
 			on:click={this["on:click"]}
-			class={`icon-${this.icon} type-${this.type}`}
+			class={`icon-${this.icon} type-${this.type} ${this.class}`}
 			disabled={use(this.disabled)}
 		>{use(this.children)}</button>
 	)
@@ -90,4 +113,69 @@ export const Icon: Component<{ icon: IconifyIcon }, {}> = function() {
 
 export const Link: Component<{ href: string }, { children: any[] }> = function() {
 	return <a href={this.href} target="_blank">{this.children}</a>
+}
+
+export const Dialog: Component<{ name: string, open: boolean }, { children: any[] }> = function() {
+	this.css = `
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		background: var(--bg-sub);
+		color: var(--fg);
+		border: none;
+		border-radius: 1rem;
+
+		width: min(32rem, 100%);
+
+		position: fixed;
+		inset: 0;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition: opacity 200ms, visibility 200ms;
+		
+		&[open] {
+			opacity: 1;
+			visibility: visible;
+			pointer-events: auto;
+		}
+
+		&::backdrop {
+			background: var(--bg-sub);
+			opacity: 40%;
+		}
+
+		.header {
+			display: flex;
+			gap: 0.5rem;
+			align-items: center;
+		}
+
+		.expand { flex: 1 }
+	`;
+	this.mount = () => {
+		const root = this.root as HTMLDialogElement;
+		useChange([this.open], () => {
+			if (this.open) {
+				root.showModal();
+			} else {
+				root.close();
+			}
+		});
+	}
+	return (
+		<dialog>
+			<div class="header">
+				<span>{this.name}</span>
+				<div class="expand" />
+				<Button on:click={() => { this.open = false }} type="normal" icon="full" disabled={false}>
+					<Icon icon={iconClose} />
+				</Button>
+			</div>
+			<div class="children">
+				{this.children}
+			</div>
+		</dialog>
+	)
 }

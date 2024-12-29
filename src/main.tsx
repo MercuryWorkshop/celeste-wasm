@@ -1,11 +1,13 @@
 import { gameState, play } from "./game";
-import { Button, Icon, Link } from "./ui";
+import { Button, Dialog, Icon, Link } from "./ui";
 import { store } from "./store";
+import { OpfsExplorer } from "./fs";
 
 import iconPlayArrow from "@ktibow/iconset-material-symbols/play-arrow";
 import iconFullscreen from "@ktibow/iconset-material-symbols/fullscreen";
 import iconLightMode from "@ktibow/iconset-material-symbols/light-mode";
 import iconDarkMode from "@ktibow/iconset-material-symbols/dark-mode";
+import iconFolderOpen from "@ktibow/iconset-material-symbols/folder-open";
 
 export const Logo: Component<{}, {}> = function() {
 	this.css = `
@@ -40,7 +42,10 @@ export const Logo: Component<{}, {}> = function() {
 	)
 }
 
-const TopBar: Component<{ canvas: HTMLCanvasElement }, { allowPlay: boolean, }> = function() {
+const TopBar: Component<{
+	canvas: HTMLCanvasElement,
+	fsOpen: boolean,
+}, { allowPlay: boolean, }> = function() {
 	this.css = `
 		background: var(--bg-sub);
 		display: flex;
@@ -61,6 +66,9 @@ const TopBar: Component<{ canvas: HTMLCanvasElement }, { allowPlay: boolean, }> 
 		<div>
 			<Logo />
 			<div class="expand" />
+			<Button on:click={() => this.fsOpen = true} icon="full" type="normal" disabled={false}>
+				<Icon icon={iconFolderOpen} />
+			</Button>
 			<Button on:click={() => {
 				if (store.theme === "light") {
 					store.theme = "dark";
@@ -197,7 +205,10 @@ const LogView: Component<{}, {}> = function() {
 	)
 }
 
-export const Main: Component<{}, { canvas: HTMLCanvasElement }> = function() {
+export const Main: Component<{}, {
+	canvas: HTMLCanvasElement,
+	fsOpen: boolean
+}> = function() {
 	this.css = `
 		width: 100%;
 		height: 100%;
@@ -226,13 +237,16 @@ export const Main: Component<{}, { canvas: HTMLCanvasElement }> = function() {
 
 	return (
 		<div>
-			<TopBar canvas={use(this.canvas)} />
+			<TopBar canvas={use(this.canvas)} bind:fsOpen={use(this.fsOpen)} />
 			<div class="main">
 				<div class="game">
 					<GameView bind:canvas={use(this.canvas)} />
 				</div>
 				<LogView />
 			</div>
+			<Dialog name="File System" bind:open={use(this.fsOpen)}>
+				<OpfsExplorer />
+			</Dialog>
 			<BottomBar />
 		</div>
 	);

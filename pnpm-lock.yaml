@@ -18,6 +18,9 @@ importers:
       '@iconify/types':
         specifier: ^2.0.0
         version: 2.0.0
+      '@types/wicg-file-system-access':
+        specifier: ^2023.10.5
+        version: 2023.10.5
       typescript:
         specifier: ^5.7.2
         version: 5.7.2
@@ -284,6 +287,9 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
+  '@types/wicg-file-system-access@2023.10.5':
+    resolution: {integrity: sha512-e9kZO9kCdLqT2h9Tw38oGv9UNzBBWaR1MzuAavxPcsV/7FJ3tWbU6RI3uB+yKIDPGLkGVbplS52ub0AcRLvrhA==}
+
   dreamland@0.0.25:
     resolution: {integrity: sha512-REhB1T/6do8R7nwa/B0+ie0tTWY97cLsfPwmmqSHOMCu2Qw+cVSWhqTDB1Boklqg9Z8qfRkmGU/rknu0R48QWw==}
 
@@ -507,6 +513,8 @@ snapshots:
     optional: true
 
   '@types/estree@1.0.6': {}
+
+  '@types/wicg-file-system-access@2023.10.5': {}
 
   dreamland@0.0.25: {}
 

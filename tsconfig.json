@@ -22,7 +22,7 @@
         "jsx": "react",
         "jsxFactory": "h",
         "jsxFragmentFactory": "Fragment",
-        "types": ["dreamland"]
+        "types": ["dreamland", "@types/wicg-file-system-access"]
     },
     "include": ["src"]
 }
