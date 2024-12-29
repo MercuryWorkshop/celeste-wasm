@@ -1,4 +1,4 @@
-<img src="public/assets/app.ico" width=100 align="left">
+<img src="public/app.ico" width=100 align="left">
 
 <h1>celeste-wasm (threads port)</h1>
 
