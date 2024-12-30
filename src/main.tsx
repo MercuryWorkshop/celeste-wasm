@@ -191,11 +191,13 @@ const LogView: Component<{}, {}> = function() {
 
 	this.mount = () => {
 		setInterval(() => {
-			for (const log of gameState.logbuf) {
-				this.root.appendChild(create(log.color, log.log));
+			if (gameState.logbuf.length > 0) {
+				for (const log of gameState.logbuf) {
+					this.root.appendChild(create(log.color, log.log));
+				}
+				this.root.scrollTop = this.root.scrollHeight;
+				gameState.logbuf = [];
 			}
-			this.root.scrollTop = this.root.scrollHeight;
-			gameState.logbuf = [];
 		}, 1000);
 	};
 

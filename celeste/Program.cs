@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework;
 using Celeste;
 using Steamworks;
 
@@ -11,8 +10,6 @@ using Steamworks;
 
 partial class Program
 {
-    static Game game;
-
     private static void Main()
     {
         Console.WriteLine("Hi!");
@@ -21,19 +18,8 @@ partial class Program
     [DllImport("Emscripten")]
     public extern static int mount_opfs();
 
-	[JSExport]
-    internal static void Init()
-    {
-        Celeste.Celeste._mainThreadId = Thread.CurrentThread.ManagedThreadId;
-        Settings.Initialize();
-        if (!Settings.Existed)
-        {
-            Settings.Instance.Language = SteamApps.GetCurrentGameLanguage();
-        }
-        _ = Settings.Existed;
-
-        game = new Celeste.Celeste();
-    }
+    static Celeste.Celeste celeste;
+    public static bool firstLaunch = true;
 
     [JSExport]
     internal static Task PreInit()
@@ -51,11 +37,34 @@ partial class Program
     }
 
     [JSExport]
-    internal static void MainLoop()
+    internal static void Init()
+    {
+        Celeste.Celeste._mainThreadId = Thread.CurrentThread.ManagedThreadId;
+        Settings.Initialize();
+        if (!Settings.Existed)
+        {
+            Settings.Instance.Language = SteamApps.GetCurrentGameLanguage();
+        }
+        _ = Settings.Existed;
+
+        celeste = new Celeste.Celeste();
+    }
+
+    [JSExport]
+    internal static void Cleanup()
+    {
+        firstLaunch = false;
+        RunThread.WaitAll();
+        celeste.Dispose();
+        Audio.Unload();
+    }
+
+    [JSExport]
+    internal static bool MainLoop()
     {
         try
         {
-            game.RunOneFrame();
+            celeste.RunOneFrame();
         }
         catch (Exception e)
         {
@@ -63,5 +72,6 @@ partial class Program
             Console.Error.WriteLine(e);
             throw;
         }
+        return celeste.RunApplication;
     }
 }

@@ -21,11 +21,3 @@
  	}
  
  	protected virtual void OnClientSizeChanged(object sender, EventArgs e)
-@@ -337,6 +336,7 @@
- 	{
- 		base.OnExiting(sender, args);
- 		MInput.Shutdown();
-+		Console.WriteLine("hook here??");
- 	}
- 
- 	public void RunWithLogging()

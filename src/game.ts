@@ -37,8 +37,7 @@ const wasm = await eval(`import("/_framework/dotnet.js")`);
 const dotnet = wasm.dotnet;
 let exports: any;
 
-// tokio::spawn()
-(async () => {
+async function preInit() {
 	console.debug("initializing dotnet");
 	const runtime = await dotnet.withConfig({
 		jsThreadBlockingMode: "DangerousAllowBlockingWait",
@@ -64,7 +63,8 @@ let exports: any;
 	console.debug("dotnet initialized");
 
 	gameState.ready = true;
-})();
+};
+preInit();
 
 export async function play() {
 	gameState.playing = true;
@@ -74,7 +74,12 @@ export async function play() {
 
 	console.debug("MainLoop...");
 	const main = () => {
-		exports.Program.MainLoop();
+		if (!exports.Program.MainLoop()) {
+			exports.Program.Cleanup();
+			gameState.playing = false;
+
+			return;
+		}
 
 		requestAnimationFrame(main);
 	}

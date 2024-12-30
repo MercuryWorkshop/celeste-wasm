@@ -16,7 +16,28 @@
  
  	public static Vector2 TargetCenter => new Vector2(1920f, 1080f) / 2f;
  
-@@ -165,6 +164,7 @@
+@@ -83,9 +82,11 @@
+ 			Engine.ViewPadding = Settings.Instance.ViewportPadding;
+ 		}
+ 		Settings.Instance.ApplyScreen();
++		if (global::Program.firstLaunch) {
+ 		SFX.Initialize();
+ 		Tags.Initialize();
+ 		Input.Initialize();
++		}
+ 		Engine.Commands.Enabled = PlayMode == PlayModes.Debug;
+ 		Engine.Scene = new GameLoader();
+ 	}
+@@ -102,7 +103,7 @@
+ 			HudTarget = VirtualContent.CreateRenderTarget("hud-target", 1922, 1082);
+ 			WipeTarget = VirtualContent.CreateRenderTarget("wipe-target", 1922, 1082);
+ 			OVR.Load();
+-			if (!IsGGP)
++			if (!IsGGP && false)
+ 			{
+ 				GFX.Load();
+ 				MTN.Load();
+@@ -165,6 +166,7 @@
  		}
  	}
  
@@ -24,7 +45,7 @@
  	private static void Main(string[] args)
  	{
  		Celeste celeste;
-@@ -240,6 +240,7 @@
+@@ -240,6 +242,7 @@
  		celeste.Dispose();
  		Audio.Unload();
  	}
@@ -32,7 +53,7 @@
  
  	public static void ReloadAssets(bool levels, bool graphics, bool hires, AreaKey? area = null)
  	{
-@@ -271,18 +272,6 @@
+@@ -271,18 +274,6 @@
  
  	private static void CallProcess(string path, string args = "", bool createWindow = false)
  	{

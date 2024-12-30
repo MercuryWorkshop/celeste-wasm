@@ -19,7 +19,7 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
 1. install arch packages `dotnet-host-bin dotnet-runtime-bin dotnet-sdk-bin dotnet-targeting-pack-bin aspnet-runtime-bin dotnet-runtime-6.0 diffutils patch wget` & emscripten sdk
     - note that the `-bin` prefix is only because arch repos haven't updated to dotnet 9, use the unprefixed packages if they are dotnet 9 
 2. run `dotnet tool install --global ilspycmd --version 8.2.0.7535`
-3. clone [FNA](https://github.com/FNA-XNA/FNA) in the parent dir (`../`)
+3. clone [FNA](https://github.com/FNA-XNA/FNA) version 24.01 in the parent dir (`../`)
 4. apply (`git apply ...`) `FNA.patch` to FNA
 5. run `sudo dotnet workload restore` in this dir
 6. run `bash tools/decompile.sh path/to/Celeste.exe`
