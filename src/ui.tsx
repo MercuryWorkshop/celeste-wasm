@@ -20,7 +20,7 @@ export const Button: Component<{
 		justify-content: center;
 
 		border: none;
-		border-radius: 4rem;
+		border-radius: 1rem;
 		padding: 0.5rem;
 
 		transition: background 0.25s;
@@ -30,6 +30,9 @@ export const Button: Component<{
 		&.icon-full svg, &.icon-left svg {
 			width: 1.5rem;
 			height: 1.5rem;
+		}
+		&.icon-full {
+			border-radius: 4rem;
 		}
 		&.icon-left {
 			gap: 0.25rem;

@@ -4,19 +4,19 @@
 
 <br>
 
-A mostly-complete port of Celeste (2018) to WebAssembly using dotnet's WASM support and [FNA WASM libraries](https://github.com/r58playz/FNA-WASM-Build).
+A mostly-complete port of Celeste (2018) to WebAssembly using dotnet 9's threaded WASM support and [FNA WASM libraries](https://github.com/r58playz/FNA-WASM-Build).
 
 This "fork" will be merged into [the original](https://github.com/mercuryWorkshop/celeste-wasm) soon.
 
 ## Limitations
-- Loading the game consumes 800M or so of memory, which is still an improvement over the original, but it is still too much for low end devices.
+- Loading the game consumes 500M or so of memory, which is still an improvement over the original, but it is still too much for low end devices.
 - MonoMod has no support for WASM, so [Everest](https://github.com/EverestAPI/Everest) was not able to be included
 - You may encounter issues on firefox.
 
 ## I want to build this
 if you can't reproduce this (it's really finnicky) feel free to ask us, the instructions can definitely be improved
 
-1. install arch packages `dotnet-host-bin dotnet-runtime-bin dotnet-sdk-bin dotnet-targeting-pack-bin aspnet-runtime-bin diffutils patch wget` & emscripten sdk
+1. install arch packages `dotnet-host-bin dotnet-runtime-bin dotnet-sdk-bin dotnet-targeting-pack-bin aspnet-runtime-bin dotnet-runtime-6.0 diffutils patch wget` & emscripten sdk
     - note that the `-bin` prefix is only because arch repos haven't updated to dotnet 9, use the unprefixed packages if they are dotnet 9 
 2. run `dotnet tool install --global ilspycmd --version 8.2.0.7535`
 3. clone [FNA](https://github.com/FNA-XNA/FNA) in the parent dir (`../`)
@@ -43,5 +43,5 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
 **main improvements that need to be done:**
 - move `Init` to another thread to remove the last of the freezing
 - remove the janky `WRAP_FNA` stuff and replace it with a SDL that doesn't use EGL emulation
-- check (and fix) controller support
+- fix freeze when removing controller while in a level
 - port over everest (if possible)

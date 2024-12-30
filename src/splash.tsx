@@ -106,8 +106,8 @@ export const Splash: Component<{
 						<Logo />
 					</div>
 					<div>
-						This is a mostly-complete port of <Link href="https://www.celestegame.com/">Celeste</Link> to the browser using dotnet's WASM support.
-						It needs around 0.8GB of memory and will probably not work on low-end devices.
+						This is a mostly-complete port of <Link href="https://www.celestegame.com/">Celeste</Link> to the browser using dotnet 9's threaded WASM support.
+						It needs around 0.5GB of memory and will probably not work on low-end devices.
 					</div>
 
 					<div>
