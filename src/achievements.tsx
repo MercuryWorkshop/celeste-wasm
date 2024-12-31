@@ -70,6 +70,9 @@ export const Achievements: Component<{
 			background: var(--surface1);
 			padding: 0.5rem;
 		}
+		.achievement.unlocked {
+			background: var(--surface2);
+		}
 
 		.achievement .inner {
 			display: flex;
@@ -79,7 +82,7 @@ export const Achievements: Component<{
 		}
 
 		.achievement > .inner > :first-child {
-			font-size: 1.5rem;
+			font-size: 1.25rem;
 			font-family: var(--font-display);
 		}
 
