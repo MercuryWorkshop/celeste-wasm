@@ -2,12 +2,14 @@ import { gameState, play } from "./game";
 import { Button, Dialog, Icon, Link } from "./ui";
 import { store } from "./store";
 import { OpfsExplorer } from "./fs";
+import { Achievements } from "./achievements";
 
 import iconPlayArrow from "@ktibow/iconset-material-symbols/play-arrow";
 import iconFullscreen from "@ktibow/iconset-material-symbols/fullscreen";
 import iconLightMode from "@ktibow/iconset-material-symbols/light-mode";
 import iconDarkMode from "@ktibow/iconset-material-symbols/dark-mode";
 import iconFolderOpen from "@ktibow/iconset-material-symbols/folder-open";
+import iconTrophy from "@ktibow/iconset-material-symbols/trophy";
 
 export const Logo: Component<{}, {}> = function() {
 	this.css = `
@@ -23,7 +25,6 @@ export const Logo: Component<{}, {}> = function() {
 			width: 3rem;
 			height: 3rem;
 		}
-
 
 		.superscript {
 			align-self: start;
@@ -45,6 +46,7 @@ export const Logo: Component<{}, {}> = function() {
 const TopBar: Component<{
 	canvas: HTMLCanvasElement,
 	fsOpen: boolean,
+	achievementsOpen: boolean,
 }, { allowPlay: boolean, }> = function() {
 	this.css = `
 		background: var(--bg-sub);
@@ -66,6 +68,9 @@ const TopBar: Component<{
 		<div>
 			<Logo />
 			<div class="expand" />
+			<Button on:click={() => this.achievementsOpen = true} icon="full" type="normal" disabled={false}>
+				<Icon icon={iconTrophy} />
+			</Button>
 			<Button on:click={() => this.fsOpen = true} icon="full" type="normal" disabled={false}>
 				<Icon icon={iconFolderOpen} />
 			</Button>
@@ -163,7 +168,12 @@ const GameView: Component<{ canvas: HTMLCanvasElement }, {}> = function() {
 			<div class={playing}>
 				Game not running.
 			</div>
-			<canvas id="canvas" class={playing} bind:this={use(this.canvas)} />
+			<canvas
+				id="canvas"
+				class={playing}
+				bind:this={use(this.canvas)}
+				on:contextmenu={(e: Event) => e.preventDefault()}
+			/>
 		</div>
 	)
 }
@@ -209,7 +219,8 @@ const LogView: Component<{}, {}> = function() {
 
 export const Main: Component<{}, {
 	canvas: HTMLCanvasElement,
-	fsOpen: boolean
+	fsOpen: boolean,
+	achievementsOpen: boolean,
 }> = function() {
 	this.css = `
 		width: 100%;
@@ -237,9 +248,16 @@ export const Main: Component<{}, {
 		}
 	`;
 
+	this.fsOpen = false;
+	this.achievementsOpen = false;
+
 	return (
 		<div>
-			<TopBar canvas={use(this.canvas)} bind:fsOpen={use(this.fsOpen)} />
+			<TopBar 
+				canvas={use(this.canvas)}
+				bind:fsOpen={use(this.fsOpen)}
+				bind:achievementsOpen={use(this.achievementsOpen)}
+			/>
 			<div class="main">
 				<div class="game">
 					<GameView bind:canvas={use(this.canvas)} />
@@ -248,6 +266,9 @@ export const Main: Component<{}, {
 			</div>
 			<Dialog name="File System" bind:open={use(this.fsOpen)}>
 				<OpfsExplorer open={use(this.fsOpen)} />
+			</Dialog>
+			<Dialog name="Achievements" bind:open={use(this.achievementsOpen)}>
+				<Achievements open={use(this.achievementsOpen)} />
 			</Dialog>
 			<BottomBar />
 		</div>

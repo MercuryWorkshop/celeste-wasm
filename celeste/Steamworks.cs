@@ -1,7 +1,54 @@
 using System;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Collections.Generic;
+
+[JsonSerializable(typeof(List<string>))]
+internal partial class SourceGenerationContext : JsonSerializerContext
+{
+}
 
 namespace Steamworks
 {
+    class SteamJS
+    {
+        static string AchievementsFile = "/libsdl/achievements.json";
+        static List<string> Achievements = new();
+
+        private static void ReadAchievements()
+        {
+            if (File.Exists(AchievementsFile))
+            {
+                Achievements = JsonSerializer.Deserialize<List<string>>(File.ReadAllText(AchievementsFile), SourceGenerationContext.Default.ListString);
+            }
+            else
+            {
+                SaveAchievements();
+            }
+        }
+        private static void SaveAchievements()
+        {
+            File.WriteAllText(AchievementsFile, JsonSerializer.Serialize(Achievements, SourceGenerationContext.Default.ListString));
+        }
+
+        public static bool GetAchievement(string achievement)
+        {
+            ReadAchievements();
+            return Achievements.Contains(achievement);
+        }
+
+        public static void SetAchievement(string achievement)
+        {
+            ReadAchievements();
+            if (!Achievements.Contains(achievement))
+            {
+                Achievements.Add(achievement);
+            }
+            SaveAchievements();
+        }
+    }
+
     class SteamAPI
     {
         public static void RunCallbacks()
@@ -35,12 +82,13 @@ namespace Steamworks
         public static bool GetAchievement(string achievement, out bool achieved)
         {
             Console.WriteLine($"Steamworks polyfill: GetAchievement {achievement}");
-            achieved = false;
+            achieved = SteamJS.GetAchievement(achievement);
             return true;
         }
         public static void SetAchievement(string achievement)
         {
             Console.WriteLine($"Steamworks polyfill: SetAchievement {achievement}");
+            SteamJS.SetAchievement(achievement);
         }
 
         public static bool GetStat(string stat, out int val)

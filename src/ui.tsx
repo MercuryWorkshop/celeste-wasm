@@ -130,6 +130,7 @@ export const Dialog: Component<{ name: string, open: boolean }, { children: any[
 		border-radius: 1rem;
 
 		width: min(32rem, 100%);
+		max-height: min(40rem, 100%);
 
 		position: fixed;
 		inset: 0;
@@ -155,6 +156,14 @@ export const Dialog: Component<{ name: string, open: boolean }, { children: any[
 			align-items: center;
 		}
 
+		.header h2 {
+			margin: 0;
+		}
+
+		.children {
+			overflow: scroll;
+		}
+
 		.expand { flex: 1 }
 	`;
 	this.mount = () => {
@@ -170,7 +179,7 @@ export const Dialog: Component<{ name: string, open: boolean }, { children: any[
 	return (
 		<dialog>
 			<div class="header">
-				<span>{this.name}</span>
+				<h2>{this.name}</h2>
 				<div class="expand" />
 				<Button on:click={() => { this.open = false }} type="normal" icon="full" disabled={false}>
 					<Icon icon={iconClose} />

@@ -8,22 +8,29 @@
 		<RunAOTCompilation>true</RunAOTCompilation>
 		<DisableBuildCompression>true</DisableBuildCompression>
 		<TrimMode>partial</TrimMode>
-		<InvariantGlobalization>true</InvariantGlobalization>
-		<InvariantTimezone>true</InvariantTimezone>
 
 		<NoWarn>IL2026,IL2046,IL2057,IL2062,IL2065,IL2067,IL2070,IL2072,IL2075,IL2087,IL2090</NoWarn>
 		<NoWarn>$(NoWarn),SYSLIB0011,CS0169,CS0219,CS0649,CS8981,CA2022</NoWarn>
 
 		<WasmBuildNative>true</WasmBuildNative>
 		<WasmEnableThreads>true</WasmEnableThreads>
+		<WasmEnableSIMD>true</WasmEnableSIMD>
+		<WasmEnableExceptionHandling>true</WasmEnableExceptionHandling>
+
 		<WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
-		<WasmStripAOTAssemblies>true</WasmStripAOTAssemblies>
 		<WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
+		<WasmNativeStrip>true</WasmNativeStrip>
+		<WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+		<WasmNativeDebugSymbols>false</WasmNativeDebugSymbols>
 
 		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sWASMFS -Wl,--no-check-features</EmccExtraLDFlags>
 		<EmccLinkOptimizationFlag>-O3</EmccLinkOptimizationFlag>
 		<EmccCompileOptimizationFlag>-O3</EmccCompileOptimizationFlag>
+		<EmccEnvironment>web,worker</EmccEnvironment>
 	</PropertyGroup>
+	<ItemGroup>
+		<WasmOptConfigurationFlags Include="--converge -O4 -Oz"></WasmOptConfigurationFlags>
+	</ItemGroup>
 
 	<ItemGroup>
 		<!-- FNA -->

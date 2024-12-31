@@ -75,6 +75,8 @@ export async function play() {
 	console.debug("MainLoop...");
 	const main = () => {
 		if (!exports.Program.MainLoop()) {
+			console.debug("Cleanup...");
+
 			exports.Program.Cleanup();
 			gameState.playing = false;
 
@@ -95,33 +97,11 @@ useChange([gameState.playing], () => {
 			// @ts-expect-error
 			navigator.keyboard.unlock();
 		}
-	} catch(err) { console.log("keyboard lock error:", err); }
+	} catch (err) { console.log("keyboard lock error:", err); }
 });
 
-
-(self as any).copyContent = async () => {
-	const opfsRoot = await navigator.storage.getDirectory();
-	const sourceDirEntry = await showDirectoryPicker();
-	const sourceDirName = sourceDirEntry.name;
-	const targetRootDir = await opfsRoot.getDirectoryHandle(sourceDirName, { create: true });
-	async function copyDirectoryContents(sourceDirEntry: FileSystemDirectoryHandle, targetDir: FileSystemDirectoryHandle) {
-		const entriesIterator = sourceDirEntry.entries();
-		for await (const [entryName, entry] of entriesIterator) {
-			if (entry.kind === 'file') {
-				const file = await entry.getFile(); // Get the actual file from FileSystemFileHandle
-				const fileHandle = await targetDir.getFileHandle(entryName, { create: true });
-				const writableStream = await fileHandle.createWritable();
-				await writableStream.write(file);  // Write the file Blob directly
-				await writableStream.close();
-				console.log(`Successfully copied file: ${entryName}`);
-			} else if (entry.kind === 'directory') {
-				const subDirHandle = await targetDir.getDirectoryHandle(entryName, { create: true });
-				console.log(`Created directory: ${entryName}`);
-				await copyDirectoryContents(entry, subDirHandle);
-			}
-		}
+document.addEventListener("keydown", (e: KeyboardEvent) => {
+	if (gameState.playing && ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab"].includes(e.code)) {
+		e.preventDefault();
 	}
-
-	// Start copying from the source directory to the new root directory in OPFS
-	await copyDirectoryContents(sourceDirEntry, targetRootDir);
-}
+});
