@@ -9,8 +9,8 @@ A mostly-complete port of Celeste (2018) to WebAssembly using dotnet 9's threade
 This "fork" will be merged into [the original](https://github.com/mercuryWorkshop/celeste-wasm) soon.
 
 ## Limitations
-- Loading the game consumes 500M or so of memory, which is still an improvement over the original, but it is still too much for low end devices.
-- MonoMod has no support for WASM, so [Everest](https://github.com/EverestAPI/Everest) was not able to be included
+- Loading the game consumes 600M or so of memory, which is still around 3x lower than the original port, but it is still too much for low end devices.
+- MonoMod has no support for hooking WASM, so [Everest](https://github.com/EverestAPI/Everest) was not able to be included
 - You may encounter issues on firefox.
 
 ## I want to build this
@@ -45,6 +45,12 @@ to enable the download/decrypt feature:
 3. run `bash tools/genpatches.sh`
 4. commit the generated patches
 
+**main improvements that need to be done:**
+- move `Init` to another thread to remove the last of the freezing
+- remove the janky `WRAP_FNA` stuff and replace it with a SDL that doesn't use EGL emulation
+- fix freeze when removing controller while in a level
+- port over everest (if possible)
+
 ## I want to port this to a newer version of celeste (once it exists)
 1. run `bash tools/decompile.sh path/to/Celeste.exe`
 2. run `bash tools/applypatches.sh`
@@ -52,8 +58,12 @@ to enable the download/decrypt feature:
 3. run `bash tools/genpatches.sh`
 4. make a pr!
 
-**main improvements that need to be done:**
-- move `Init` to another thread to remove the last of the freezing
-- remove the janky `WRAP_FNA` stuff and replace it with a SDL that doesn't use EGL emulation
-- fix freeze when removing controller while in a level
-- port over everest (if possible)
+## I want to figure out how this works
+- The native dotnet WASM support is used to compile a decompiled Celeste to WASM
+    - `celeste/Program.cs` sets up the Celeste object and exports a function that polls its main loop
+    - `celeste/Steamworks.cs` polyfills the Steam achievements API for Steam builds of Celeste
+    - dotnet even supports JITing WASM but it uses more resources and is overall slower so right now AOT is used
+- FMOD's WASM builds don't support threads so a wrapper that proxies it to the main thread is built and used instead
+    - See `tools/fmod-patch` for more information
+- SDL2 doesn't use the native Emscripten WebGL apis and instead uses Emscripten's EGL emulation, so calling GL apis always fails
+    - To fix this, another wrapper is used that proxies all FNA3D calls to the main thread
