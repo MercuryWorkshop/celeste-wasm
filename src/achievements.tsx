@@ -1,9 +1,7 @@
 import { achievements, glowingAchievements } from "./achievementData";
 import { rootFolder } from "./fs";
 
-// @ts-expect-error ts dum
 import glowOuter from "./steam-glow-outer.png";
-// @ts-expect-error ts dum
 import glowInner from "./steam-glow-inner.png";
 
 export type Achievement = {
