@@ -10,4 +10,5 @@ celeste/Monocle
 
 node_modules
 public/_framework
+public/content
 dist

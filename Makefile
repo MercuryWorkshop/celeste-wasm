@@ -12,7 +12,7 @@ clean:
 
 build: statics
 	pnpm i
-	rm -rv bin/Release/net9.0/publish/wwwroot/_framework	public/_framework || true
+	rm -rv bin/Release/net9.0/publish/wwwroot/_framework public/_framework || true
 	dotnet publish -v d -c Release
 	# microsoft messed up
 	sed -i 's/FS_createPath("\/","usr\/share",!0,!0)/FS_createPath("\/usr","share",!0,!0)/' bin/Release/net9.0/publish/wwwroot/_framework/dotnet.runtime.*.js

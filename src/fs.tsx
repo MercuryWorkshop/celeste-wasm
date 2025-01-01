@@ -8,6 +8,8 @@ import iconSave from "@ktibow/iconset-material-symbols/save";
 import iconUploadFile from "@ktibow/iconset-material-symbols/upload-file";
 import iconUploadFolder from "@ktibow/iconset-material-symbols/drive-folder-upload";
 
+export const PICKERS_UNAVAILABLE = !window.showDirectoryPicker || !window.showOpenFilePicker;
+
 export const rootFolder = await navigator.storage.getDirectory();
 
 export async function copyFile(file: FileSystemFileHandle, to: FileSystemDirectoryHandle) {
@@ -17,11 +19,27 @@ export async function copyFile(file: FileSystemFileHandle, to: FileSystemDirecto
 	await data.pipeTo(writable);
 }
 
-export async function copyFolder(folder: FileSystemDirectoryHandle, to: FileSystemDirectoryHandle) {
+export async function countFolder(folder: FileSystemDirectoryHandle): Promise<number> {
+	let count = 0;
+	async function countOne(folder: FileSystemDirectoryHandle) {
+		for await (const [_, entry] of folder) {
+			if (entry.kind === "file") {
+				count++;
+			} else {
+				await countOne(entry);
+			}
+		}
+	}
+	await countOne(folder);
+	return count;
+}
+
+export async function copyFolder(folder: FileSystemDirectoryHandle, to: FileSystemDirectoryHandle, callback?: (name: string) => void) {
 	async function upload(from: FileSystemDirectoryHandle, to: FileSystemDirectoryHandle) {
 		for await (const [name, entry] of from) {
 			if (entry.kind === "file") {
 				await copyFile(entry, to);
+				if (callback) callback(name);
 			} else {
 				const newTo = await to.getDirectoryHandle(name, { create: true });
 				await upload(entry, newTo);
@@ -158,15 +176,17 @@ export const OpfsExplorer: Component<{
 		this.uploading = false;
 	};
 
+	const uploadDisabled = use(this.uploading, x => x || PICKERS_UNAVAILABLE);
+
 	return (
 		<div>
 			<div class="path">
 				<h3>{use(this.components, x => "/" + x.join("/"))}</h3>
 				<div class="expand" />
-				<Button type="normal" icon="full" disabled={use(this.uploading)} on:click={uploadFile}>
+				<Button type="normal" icon="full" disabled={uploadDisabled} on:click={uploadFile}>
 					<Icon icon={iconUploadFile} />
 				</Button>
-				<Button type="normal" icon="full" disabled={use(this.uploading)} on:click={uploadFolder}>
+				<Button type="normal" icon="full" disabled={uploadDisabled} on:click={uploadFolder}>
 					<Icon icon={iconUploadFolder} />
 				</Button>
 			</div>

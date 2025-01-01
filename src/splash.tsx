@@ -1,16 +1,364 @@
 import { Logo } from "./main";
 import { Button, Icon, Link } from "./ui";
+import { copyFolder, countFolder, PICKERS_UNAVAILABLE, rootFolder } from "./fs";
+
+// @ts-expect-error
+import { fromWeb as streamFromWeb, toWeb as streamToWeb } from "streamx-webstream";
+import tar from "tar-stream";
 
 import iconFolderOpen from "@ktibow/iconset-material-symbols/folder-open-outline";
 import iconDownload from "@ktibow/iconset-material-symbols/download";
-import { copyFolder, rootFolder } from "./fs";
+import iconEncrypted from "@ktibow/iconset-material-symbols/encrypted";
+
+const DECRYPT_INFO = import.meta.env.VITE_DECRYPT_ENABLED ? {
+	key: import.meta.env.VITE_DECRYPT_KEY,
+	path: import.meta.env.VITE_DECRYPT_PATH,
+	compressed: import.meta.env.VITE_DECRYPT_PATH.endsWith(".gz"),
+	size: parseInt(import.meta.env.VITE_DECRYPT_SIZE),
+	count: parseInt(import.meta.env.VITE_DECRYPT_COUNT),
+} : null;
+
+(self as any).decrypt = DECRYPT_INFO;
+
+const validateDirectory = async (directory: FileSystemDirectoryHandle) => {
+	if (directory.name != "Content") {
+		return "Directory name is not Content";
+	}
+	for (const child of ["Celeste", "Dialog", "Effects", "FMOD", "Graphics", "Maps", "Monocle", "Overworld", "Tutorials"]) {
+		try {
+			await directory.getDirectoryHandle(child, { create: false });
+		} catch {
+			return `Failed to find subdirectory ${child}`
+		}
+	}
+	return "";
+};
+
+const Intro: Component<{
+	"on:next": (type: "copy" | "download") => void,
+}, {}> = function() {
+	this.css = `
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		.warning {
+			color: var(--warning);
+		}
+		.error {
+			color: var(--error);
+		}
+	`;
+
+	return (
+		<div>
+			<div>
+				This is a mostly-complete port of <Link href="https://www.celestegame.com/">Celeste</Link> to the browser using dotnet 9's threaded WASM support.
+				It needs around 0.6GB of memory and will probably not work on low-end devices.
+			</div>
+
+			<div>
+				You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer.
+			</div>
+
+			<div>
+				The background is from <Link href="https://www.fangamer.com/products/celeste-desk-mat-skies">fangamer merch</Link>.
+			</div>
+
+			{PICKERS_UNAVAILABLE ?
+				<div class="warning">
+					Your browser does not support the
+					{' '}<Link href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">File System Access API</Link>.{' '}
+					You will be unable to copy your Celeste assets to play or use the upload features in the filesystem viewer.
+				</div>
+				: null}
+			{DECRYPT_INFO ? null :
+				<div class="warning">
+					This deployment of celeste-wasm does not have encrypted assets. You cannot download and decrypt them to play.
+				</div>}
+			{PICKERS_UNAVAILABLE && !DECRYPT_INFO ?
+				<div class="error">
+					You will have to switch browsers (to a Chromium-based one) to play as both methods of getting Celeste assets are unavailable.
+				</div>
+				: null}
+
+			<Button on:click={() => this["on:next"]("copy")} type="primary" icon="left" disabled={PICKERS_UNAVAILABLE}>
+				<Icon icon={iconFolderOpen} />
+				{PICKERS_UNAVAILABLE ? "Copying local Celeste assets is unsupported" : "Copy local Celeste assets"}
+			</Button>
+			<Button on:click={() => this["on:next"]("download")} type="primary" icon="left" disabled={!DECRYPT_INFO}>
+				<Icon icon={iconDownload} />
+				{DECRYPT_INFO ? "Download and decrypt assets" : "Download and decrypt assets is disabled"}
+			</Button>
+		</div>
+	)
+}
+
+const Progress: Component<{ percent: number }, {}> = function() {
+	this.css = `
+		background: var(--surface1);
+		border-radius: 1rem;
+		height: 1rem;
+
+		.bar {
+			background: var(--accent);
+			border-radius: 1rem;
+			height: 1rem;
+			transition: width 250ms;
+		}
+	`;
+
+	return (
+		<div><div class="bar" style={use`width:${this.percent}%`} /></div>
+	)
+}
+
+const Copy: Component<{
+	"on:done": () => void,
+}, {
+	copying: boolean,
+	status: string,
+	percent: number,
+}> = function() {
+	this.css = `
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	`;
+
+	const opfs = async () => {
+		const directory = await showDirectoryPicker();
+		const res = await validateDirectory(directory);
+		if (res) {
+			this.status = res;
+			return;
+		}
+
+		const max = await countFolder(directory);
+		let cnt = 0;
+		this.copying = true;
+		const before = performance.now();
+		await copyFolder(directory, rootFolder, (x) => {
+			cnt++;
+			this.percent = cnt / max * 100;
+			console.debug(`copied ${x}: ${(cnt / max * 100).toFixed(2)}`);
+		});
+		const after = performance.now();
+		console.debug(`copy took ${(after - before).toFixed(2)}ms`);
+
+		await new Promise(r => setTimeout(r, 250));
+		this["on:done"]();
+	}
+
+	return (
+		<div>
+			<div>
+				Select your Celeste install's Content directory. It will be copied to browser storage and can be removed in the file manager.
+			</div>
+			<div>
+				The Content directory for Steam installs of Celeste is usually located in one of these locations:
+				<ul>
+					<li><code>~/.steam/root/steamapps/common/Celeste</code></li>
+					<li><code>C:\Program Files (x86)\Steam\steamapps\common\Celeste</code></li>
+					<li><code>~/Library/Application Support/Steam/steamapps/common/Celeste</code></li>
+				</ul>
+			</div>
+			{$if(use(this.copying), <Progress percent={use(this.percent)} />)}
+			<Button on:click={opfs} type="primary" icon="left" disabled={use(this.copying)}>
+				<Icon icon={iconFolderOpen} />
+				Select Celeste Content directory
+			</Button>
+			{$if(use(this.status), <div class="error">{use(this.status)}</div>)}
+		</div>
+	)
+}
+
+export const Download: Component<{
+	"on:done": () => void,
+}, {
+	downloading: boolean,
+	status: string,
+	percent: number,
+	input: HTMLInputElement,
+}> = function() {
+	this.css = `
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		input[type="file"] {
+			display: none;
+		}
+	`;
+
+	const download = async () => {
+		const self = this;
+		let bytes = 0;
+		let keyCursor = 0;
+		let chunkCursor = 0;
+		let count = 0;
+		const length = ("" + DECRYPT_INFO!.count).length;
+
+		const inputPromise = new Promise<Uint8Array>((res, rej) => {
+			const fileHandler = () => {
+				this.input.removeEventListener("input", fileHandler);
+				const file = this.input.files ? this.input.files[0] : null;
+				if (!file) {
+					rej(new Error("No file was provided"));
+					return;
+				}
+
+				const reader = new FileReader();
+				reader.onload = () => {
+					res(new Uint8Array(reader.result as ArrayBuffer));
+				}
+				reader.onerror = () => {
+					rej(reader.error);
+				}
+				reader.readAsArrayBuffer(file);
+			};
+			this.input.addEventListener("input", fileHandler);
+		});
+		this.input.click();
+		const key = await inputPromise;
+
+		this.downloading = true;
+		const input = new ReadableStream({
+			async pull(controller) {
+				if (count >= DECRYPT_INFO!.count) {
+					controller.close();
+					return;
+				}
+
+				const path = `${DECRYPT_INFO!.path}.${("" + count).padStart(length, '0')}`;
+				console.log(`downloading path ${path}`);
+				const resp = await fetch(path);
+				if (!resp.body) throw new Error(`Failed to fetch ${path}`);
+				const reader = resp.body.getReader();
+
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done || !value) break;
+
+					controller.enqueue(value);
+				}
+
+				count++;
+			},
+		});
+		const decrypt = new TransformStream({
+			async transform(chunk, controller) {
+				while (chunkCursor < chunk.length) {
+					chunk[chunkCursor] ^= key[keyCursor % key.length];
+					chunkCursor += 4096;
+					keyCursor += 4096;
+				}
+				chunkCursor -= chunk.length;
+				controller.enqueue(chunk);
+			}
+		});
+		const counter = new TransformStream({
+			transform(chunk, controller) {
+				bytes += chunk.length;
+				self.percent = bytes / DECRYPT_INFO!.size * 100;
+
+				controller.enqueue(chunk);
+			}
+		});
+		const decrypted = input.pipeThrough(decrypt).pipeThrough(counter);
+		let decompressed;
+		if (DECRYPT_INFO!.compressed) {
+			decompressed = decrypted.pipeThrough(new DecompressionStream("gzip"));
+		} else {
+			decompressed = decrypted;
+		}
+
+		const tarInput = streamFromWeb(decompressed);
+		const archive = tar.extract();
+
+		let root = await rootFolder.getDirectoryHandle("Content", { create: true });
+
+		archive.on("error", (err) => {
+			this.status = "" + err;
+		});
+		archive.on("entry", async (header, stream, next) => {
+			const body: ReadableStream<Uint8Array> = streamToWeb(stream);
+
+			async function consume() {
+				const reader = body.getReader();
+
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done || !value) break;
+				}
+			}
+
+			const path = header.name.split("/");
+			if (path[path.length - 1] === "") path.pop();
+			if (path[0] === "Content") path.shift();
+			if (path.length === 0) {
+				await consume();
+				next();
+				return;
+			}
+
+			let handle = root;
+			for (const name of path.splice(0, path.length - 1)) {
+				handle = await handle.getDirectoryHandle(name, { create: true });
+			}
+
+			if (header.type === "directory") {
+				console.log(`extracting directory ${path[0]}`);
+				await handle.getDirectoryHandle(path[0], { create: true });
+				await consume();
+			} else if (header.type === "file") {
+				console.log(`extracting file ${path[0]}`);
+				const file = await handle.getFileHandle(path[0], { create: true });
+				const writable = await file.createWritable();
+				await body.pipeTo(writable);
+			} else {
+				await consume();
+			}
+
+			next();
+		});
+
+		const promise = new Promise<void>(res => {
+			archive.on("finish", () => res());
+		});
+
+		tarInput.pipe(archive);
+
+		await promise;
+
+		this["on:done"]();
+	};
+
+	return (
+		<div>
+			<div>
+				{(DECRYPT_INFO!.size / (1024 * 1024)).toFixed(2)} MiB of {DECRYPT_INFO!.compressed ? "compressed" : ""} data will be downloaded and decrypted.
+			</div>
+			<div>
+				Select <code>{DECRYPT_INFO!.key}</code> from your Celeste install's Content directory. It will be used to decrypt the download.
+			</div>
+			{$if(use(this.status), <div class="error">
+				{use(this.status)}<br />You might have chosen the wrong decryption file. Please reload to try again.
+			</div>)}
+			{$if(use(this.downloading), <Progress percent={use(this.percent)} />)}
+			<input type="file" bind:this={use(this.input)} />
+			<Button type="primary" icon="left" disabled={use(this.downloading)} on:click={download}>
+				<Icon icon={iconEncrypted} />
+				Select decryption file
+			</Button>
+		</div>
+	)
+}
 
 export const Splash: Component<{
 	"on:next": () => void,
 }, {
-	copyDisabled: boolean,
-	downloadDisabled: boolean,
-	status: string,
+	next: "" | "copy" | "download",
 }> = function() {
 	this.css = `
 		position: relative;
@@ -53,7 +401,7 @@ export const Splash: Component<{
 
 			display: flex;
 			flex-direction: column;
-			gap: 0.5em;
+			gap: 0.5rem;
 		}
 
 		.logo {
@@ -62,39 +410,7 @@ export const Splash: Component<{
 		}
 	`;
 
-	this.copyDisabled = false;
-	this.downloadDisabled = true;
-	this.status = "";
-
-	const validateDirectory = async (directory: FileSystemDirectoryHandle) => {
-		if (directory.name != "Content") {
-			return "Directory name is not Content";
-		}
-		for (const child of ["Celeste", "Dialog", "Effects", "FMOD", "Graphics", "Maps", "Monocle", "Overworld", "Tutorials"]) {
-			try {
-				await directory.getDirectoryHandle(child, { create: false });
-			} catch {
-				return `Failed to find subdirectory ${child}`
-			}
-		}
-		return "";
-	};
-
-	const opfs = async () => {
-		const directory = await showDirectoryPicker();
-		const res = await validateDirectory(directory);
-		if (res) {
-			this.status = res;
-			return;
-		}
-
-		this.copyDisabled = true;
-		this.status = "Copying...";
-		await copyFolder(directory, rootFolder);
-		this.status = "Copied!";
-
-		this["on:next"]();
-	}
+	this.next = "";
 
 	return (
 		<div>
@@ -105,28 +421,15 @@ export const Splash: Component<{
 					<div class="logo">
 						<Logo />
 					</div>
-					<div>
-						This is a mostly-complete port of <Link href="https://www.celestegame.com/">Celeste</Link> to the browser using dotnet 9's threaded WASM support.
-						It needs around 0.5GB of memory and will probably not work on low-end devices.
-					</div>
-
-					<div>
-						You will need to own Celeste to play this. Make sure you have it downloaded and installed on your computer.
-					</div>
-
-					<div>
-						The background is from <Link href="https://www.fangamer.com/products/celeste-desk-mat-skies">fangamer merch</Link>.
-					</div>
-
-					<Button on:click={opfs} type="primary" icon="left" disabled={use(this.copyDisabled)}>
-						<Icon icon={iconFolderOpen} />
-						Select Celeste Content folder
-					</Button>
-					<Button on:click={() => { }} type="primary" icon="left" disabled={use(this.downloadDisabled)}>
-						<Icon icon={iconDownload} />
-						Download/decrypt coming soon
-					</Button>
-					{$if(use(this.status, x => x.length > 0), <span>{use(this.status)}</span>)}
+					{use(this.next, x => {
+						if (!x) {
+							return <Intro on:next={(x) => this.next = x} />;
+						} else if (x === "copy") {
+							return <Copy on:done={this["on:next"]} />;
+						} else {
+							return <Download on:done={this["on:next"]} />;
+						}
+					})}
 				</div>
 			</div>
 		</div>
