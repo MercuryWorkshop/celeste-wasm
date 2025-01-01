@@ -1,4 +1,4 @@
-import { gameState, play } from "./game";
+import { gameState, play, TIMEBUF_SIZE } from "./game";
 import { Button, Dialog, Icon, Link } from "./ui";
 import { store } from "./store";
 import { OpfsExplorer } from "./fs";
@@ -26,19 +26,24 @@ export const Logo: Component<{}, {}> = function() {
 			height: 3rem;
 		}
 
-		.superscript {
+		.extras {
 			align-self: start;
-			padding-top: 0.25rem;
-
+			padding: 0.25rem 0;
 			font-size: 1rem;
 			color: var(--fg6);
+
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
 		}
 	`;
 	return (
 		<div>
 			<img src="/app.ico" />
 			<span>celeste-wasm</span>
-			<subt class="superscript">v1.4.0.0</subt>
+			<div class="extras">
+				<span>v1.4.0.0</span>
+			</div>
 		</div>
 	)
 }
@@ -47,55 +52,85 @@ const TopBar: Component<{
 	canvas: HTMLCanvasElement,
 	fsOpen: boolean,
 	achievementsOpen: boolean,
-}, { allowPlay: boolean, }> = function() {
+}, { allowPlay: boolean, fps: HTMLElement }> = function() {
 	this.css = `
 		background: var(--bg-sub);
-		display: flex;
-		align-items: center;
-		gap: 1em;
 		padding: 1em;
-		height: 3rem;
 		border-bottom: 2px solid var(--surface1);
 
+		display: flex;
+		align-items: stretch;
+		gap: 0.5rem;
+
+		.group {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
+
 		.expand { flex: 1; }
+
+		@media (max-width: 750px) {
+			& {
+				flex-direction: column;
+			}
+			.group {
+				justify-content: space-evenly;
+			}
+		}
 	`;
 
 	useChange([gameState.ready, gameState.playing], () => {
 		this.allowPlay = gameState.ready && !gameState.playing;
 	});
 
+	this.mount = () => {
+		setInterval(() => {
+			if (gameState.playing) {
+				const avgFrametime = gameState.timebuf.toArray().reduce((acc, x) => acc + x, 0) / TIMEBUF_SIZE;
+				const avgFps = (1000 / avgFrametime).toFixed(0);
+				this.fps.innerText = "" + avgFps;
+			}
+		}, 1000);
+	}
+
 	return (
 		<div>
-			<Logo />
+			<div class="group">
+				<Logo />
+				{$if(use(gameState.playing), <div>FPS: <span bind:this={use(this.fps)}></span></div>)}
+			</div>
 			<div class="expand" />
-			<Button on:click={() => this.achievementsOpen = true} icon="full" type="normal" disabled={false}>
-				<Icon icon={iconTrophy} />
-			</Button>
-			<Button on:click={() => this.fsOpen = true} icon="full" type="normal" disabled={false}>
-				<Icon icon={iconFolderOpen} />
-			</Button>
-			<Button on:click={() => {
-				if (store.theme === "light") {
-					store.theme = "dark";
-				} else {
-					store.theme = "light";
-				}
-			}} icon="full" type="normal" disabled={false}>
-				<Icon icon={use(store.theme, x => x === "light" ? iconDarkMode : iconLightMode)} />
-			</Button>
-			<Button on:click={async () => {
-				try {
-					await this.canvas.requestFullscreen({ navigationUI: "hide" });
-				} catch { }
-			}} icon="full" type="normal" disabled={use(gameState.playing, x => !x)}>
-				<Icon icon={iconFullscreen} />
-			</Button>
-			<Button on:click={() => {
-				play();
-			}} icon="left" type="primary" disabled={use(this.allowPlay, x => !x)}>
-				<Icon icon={iconPlayArrow} />
-				Play
-			</Button>
+			<div class="group">
+				<Button on:click={() => this.achievementsOpen = true} icon="full" type="normal" disabled={false}>
+					<Icon icon={iconTrophy} />
+				</Button>
+				<Button on:click={() => this.fsOpen = true} icon="full" type="normal" disabled={false}>
+					<Icon icon={iconFolderOpen} />
+				</Button>
+				<Button on:click={() => {
+					if (store.theme === "light") {
+						store.theme = "dark";
+					} else {
+						store.theme = "light";
+					}
+				}} icon="full" type="normal" disabled={false}>
+					<Icon icon={use(store.theme, x => x === "light" ? iconDarkMode : iconLightMode)} />
+				</Button>
+				<Button on:click={async () => {
+					try {
+						await this.canvas.requestFullscreen({ navigationUI: "hide" });
+					} catch { }
+				}} icon="full" type="normal" disabled={use(gameState.playing, x => !x)}>
+					<Icon icon={iconFullscreen} />
+				</Button>
+				<Button on:click={() => {
+					play();
+				}} icon="left" type="primary" disabled={use(this.allowPlay, x => !x)}>
+					<Icon icon={iconPlayArrow} />
+					Play
+				</Button>
+			</div>
 		</div>
 	)
 }
@@ -110,6 +145,17 @@ const BottomBar: Component<{}, {}> = function() {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+
+		span {
+			text-align: center;
+		}
+
+		@media (max-width: 750px) {
+			& {
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+		}
 	`;
 
 	return (
@@ -123,19 +169,16 @@ const BottomBar: Component<{}, {}> = function() {
 
 const GameView: Component<{ canvas: HTMLCanvasElement }, {}> = function() {
 	this.css = `
-		position: relative;
 		aspect-ratio: 16 / 9;
 		user-select: none;
+		display: grid;
+		grid-template-areas: "overlay";
 
 		div, canvas {
-			position: absolute;
-			left: 0;
-			top: 0;
+			grid-area: overlay;
 			width: 100%;
 			height: 100%;
-
 			border: 2px solid var(--surface6);
-			border-radius: 1rem;
 		}
 		div.started, canvas.stopped {
 			display: none;
@@ -180,13 +223,12 @@ const GameView: Component<{ canvas: HTMLCanvasElement }, {}> = function() {
 
 const LogView: Component<{}, {}> = function() {
 	this.css = `
-		min-height: 16rem;
-		max-height: 32rem;
+		height: 16rem;
 		overflow: scroll;
 		padding: 1em;
 
 		border: 2px solid var(--surface6);
-		border-radius: 1rem;
+		border-top: none;
 		background: var(--bg-sub);
 
 		font-family: var(--font-mono);
@@ -236,7 +278,6 @@ export const Main: Component<{}, {
 			flex: 1;
 			display: flex;
 			flex-direction: column;
-			gap: 1rem;
 			padding: 1rem 0;
 
 			margin: auto;
@@ -253,15 +294,13 @@ export const Main: Component<{}, {
 
 	return (
 		<div>
-			<TopBar 
+			<TopBar
 				canvas={use(this.canvas)}
 				bind:fsOpen={use(this.fsOpen)}
 				bind:achievementsOpen={use(this.achievementsOpen)}
 			/>
 			<div class="main">
-				<div class="game">
-					<GameView bind:canvas={use(this.canvas)} />
-				</div>
+				<GameView bind:canvas={use(this.canvas)} />
 				<LogView />
 			</div>
 			<Dialog name="File System" bind:open={use(this.fsOpen)}>

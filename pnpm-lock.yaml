@@ -17,6 +17,9 @@ importers:
       events:
         specifier: ^3.3.0
         version: 3.3.0
+      ring-buffer-ts:
+        specifier: ^1.2.0
+        version: 1.2.0
       rollup-plugin-node-polyfills:
         specifier: ^0.2.1
         version: 0.2.1
@@ -358,6 +361,9 @@ packages:
   queue-tick@1.0.1:
     resolution: {integrity: sha512-kJt5qhMxoszgU/62PLP1CJytzd2NKetjSRnyuj31fDd3Rlcz3fzlFdFLD1SItunPwyqEOkca6GbV612BWfaBag==}
 
+  ring-buffer-ts@1.2.0:
+    resolution: {integrity: sha512-dkGqA7YHZgXp1dWwcNIsmt+4EgHK1RmY9sp7eqHLLfTkhYhQQ4agAwqgED7hJakELMaXkBgZ5568vqaI3/wV6Q==}
+
   rollup-plugin-inject@3.0.2:
     resolution: {integrity: sha512-ptg9PQwzs3orn4jkgXJ74bfs5vYz1NCZlSQMBUA0wKcGp5i5pA1AO3fOUEte8enhGUC+iapTCzEWw2jEFFUO/w==}
     deprecated: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-inject.
@@ -655,6 +661,8 @@ snapshots:
       source-map-js: 1.2.1
 
   queue-tick@1.0.1: {}
+
+  ring-buffer-ts@1.2.0: {}
 
   rollup-plugin-inject@3.0.2:
     dependencies:

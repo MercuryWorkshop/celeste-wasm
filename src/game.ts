@@ -1,12 +1,19 @@
+import { RingBuffer } from "ring-buffer-ts";
+
 export type Log = { color: string, log: string };
+export const TIMEBUF_SIZE = 120;
 export const gameState: Stateful<{
 	ready: boolean,
 	playing: boolean,
-	logbuf: Log[]
+
+	// these will NOT work with use()
+	logbuf: Log[],
+	timebuf: RingBuffer<number>,
 }> = $state({
 	ready: false,
 	playing: false,
 	logbuf: [],
+	timebuf: new RingBuffer<number>(TIMEBUF_SIZE)
 });
 
 function proxyConsole(name: string, color: string) {
@@ -21,10 +28,10 @@ function proxyConsole(name: string, color: string) {
 			str = "<failed to render>";
 		}
 		old(...args);
-		gameState.logbuf = [...gameState.logbuf, {
+		gameState.logbuf.push({
 			color,
 			log: `[${new Date().toISOString()}]: ${str}`
-		}];
+		});
 	}
 }
 proxyConsole("error", "var(--error)");
@@ -74,8 +81,16 @@ export async function play() {
 
 	console.debug("MainLoop...");
 	const main = () => {
-		if (!exports.Program.MainLoop()) {
+		const before = performance.now();
+		const ret = exports.Program.MainLoop();
+		const after = performance.now();
+
+		gameState.timebuf.add(after - before);
+
+		if (!ret) {
 			console.debug("Cleanup...");
+
+			gameState.timebuf.clear();
 
 			exports.Program.Cleanup();
 			gameState.playing = false;
