@@ -1,0 +1,10 @@
+--- celeste/Decompiled/Celeste/Credits.cs
++++ celeste/Celeste/Credits.cs
+@@ -469,6 +469,7 @@
+ 		}
+ 		list.Add(new Thanks("Operations Manager", "Heidy Motta"));
+ 		list.Add(new Thanks("Porting", "Sickhead Games, LLC", "Ethan Lee"));
++		list.Add(new Thanks("WASM Porting", "r58Playz"));
+ 		list.Add(new MultiCredit("Localization", new MultiCredit.Section("French, Italian, Korean, Russian,\nSimplified Chinese, Spanish,\nBrazilian Portuguese, German", "EDS Wordland, Ltd."), new MultiCredit.Section("Japanese", "8-4, Ltd", "Keiko Fukuichi", "Graeme Howard", "John Ricciardi"), new MultiCredit.Section("German, Additional Brazilian Portuguese", "Shloc, Ltd.", "Oli Chance", "Isabel Sterner", "Nadine Leonhardt"), new MultiCredit.Section("Additional Brazilian Portuguese", "Amora B.")));
+ 		list.Add(new Thanks("Contributors & Playtesters", "Nels Anderson", "Liam & Graeme Berry", "Tamara Bruketta", "Allan Defensor", "Grayson Evans", "Jada Gibbs", "Em Halberstadt", "Justin Jaffray", "Chevy Ray Johnston", "Will Lacerda", "Myriame Lachapelle", "Greg Lobanov", "Rafinha Martinelli", "Shane Neville", "Kyle Pulver", "Murphy Pyan", "Garret Randell", "Kevin Regamey", "Atlas Regaudie", "Stefano Strapazzon", "Nick Suttner", "Ryan Thorson", "Greg Wohlwend", "Justin Yngelmo", "baldjared", "zep", "DevilSquirrel", "Covert_Muffin", "buhbai", "Chaikitty", "Msushi", "TGH"));
+ 		list.Add(new Thanks("Community", "Speedrunners & Tool Assisted Speedrunners", "Everest Modding Community", "The Celeste Discord"));
