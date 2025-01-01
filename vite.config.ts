@@ -14,5 +14,10 @@ export default defineConfig({
 	},
 	build: {
 		target: "es2022",
+	},
+	resolve: {
+		alias: {
+			fs: "rollup-plugin-node-polyfills/polyfills/empty",
+		}
 	}
 });
