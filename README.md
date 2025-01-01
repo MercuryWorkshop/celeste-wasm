@@ -24,8 +24,20 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
 5. run `sudo dotnet workload restore` in this dir
 6. run `bash tools/decompile.sh path/to/Celeste.exe`
 7. run `bash tools/applypatches.sh`
-8. run `make serve`
-9. manually copy over your Content folder to OPFS with `window.copyContent`
+8. run `make serve` for a dev server and `make publish` for a release build
+
+to enable the download/decrypt feature:
+1. create a tar archive (optionally gzip compressed) of the Content directory
+2. run `python3 tools/xor.py path/to/archive.tar.gz path/to/key > archive.xor.tar.gz`
+3. optionally split the archive into chunks - these chunks must have a suffix of `.CHUNKNUM` where `CHUNKNUM` is a number starting from 0
+    - if you do not split the archive, give it a suffix of `.0`
+4. pass these env vars to `make serve` or `make publish`:
+    - `VITE_DECRYPT_ENABLED=1`
+    - `VITE_DECRYPT_KEY`: path to the key from within the Content folder
+    - `VITE_DECRYPT_PATH`: path to the archive relative to the http root
+    - `VITE_DECRYPT_SIZE`: total size of the archive (after compression if you did that)
+    - `VITE_DECRYPT_COUNT`: total number of chunks - set this to 1 if you did not split the archive
+    - these vars can also be placed in a `.env.local` - see [Vite docs](https://vite.dev/guide/env-and-mode)
 
 ## I want to modify the decompiled Celeste
 1. follow "I want to build this"
