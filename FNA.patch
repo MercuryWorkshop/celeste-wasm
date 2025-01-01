@@ -19,7 +19,7 @@ index e54d68e..a233ced 100644
  				convertedFormat = SurfaceFormat.Color;
  			}
 diff --git a/src/Content/ContentTypeReaderManager.cs b/src/Content/ContentTypeReaderManager.cs
-index 5fcf9e1..a7c2338 100644
+index ffa306e..2d967f4 100644
 --- a/src/Content/ContentTypeReaderManager.cs
 +++ b/src/Content/ContentTypeReaderManager.cs
 @@ -196,6 +196,13 @@ namespace Microsoft.Xna.Framework.Content
@@ -50,10 +50,10 @@ index e577a32..04056ee 100644
  					LogWarnFunc,
  					LogErrorFunc
 diff --git a/src/FNAPlatform/SDL2_FNAPlatform.cs b/src/FNAPlatform/SDL2_FNAPlatform.cs
-index 91b6c5d..3adc7f0 100644
+index 5d7c8be..72317e8 100644
 --- a/src/FNAPlatform/SDL2_FNAPlatform.cs
 +++ b/src/FNAPlatform/SDL2_FNAPlatform.cs
-@@ -416,7 +416,7 @@ namespace Microsoft.Xna.Framework
+@@ -410,7 +410,7 @@ namespace Microsoft.Xna.Framework
  				SDL.SDL_WindowFlags.SDL_WINDOW_HIDDEN |
  				SDL.SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS |
  				SDL.SDL_WindowFlags.SDL_WINDOW_MOUSE_FOCUS
@@ -62,7 +62,7 @@ index 91b6c5d..3adc7f0 100644
  
  			if ((initFlags & SDL.SDL_WindowFlags.SDL_WINDOW_VULKAN) == SDL.SDL_WindowFlags.SDL_WINDOW_VULKAN)
  			{
-@@ -647,7 +647,7 @@ namespace Microsoft.Xna.Framework
+@@ -641,7 +641,7 @@ namespace Microsoft.Xna.Framework
  		{
  			int ww, wh, dw, dh;
  			SDL.SDL_GetWindowSize(window, out ww, out wh);
@@ -71,7 +71,7 @@ index 91b6c5d..3adc7f0 100644
  			if (	ww != 0 &&
  				wh != 0 &&
  				dw != 0 &&
-@@ -1231,7 +1231,7 @@ namespace Microsoft.Xna.Framework
+@@ -1215,7 +1215,7 @@ namespace Microsoft.Xna.Framework
  					}
  				}
  
@@ -80,6 +80,19 @@ index 91b6c5d..3adc7f0 100644
  				{
  					int bytes = MeasureStringLength(evt.edit.text);
  					if (bytes > 0)
+diff --git a/src/Game.cs b/src/Game.cs
+index c71ad3c..c43643f 100644
+--- a/src/Game.cs
++++ b/src/Game.cs
+@@ -181,7 +181,7 @@ namespace Microsoft.Xna.Framework
+ 
+ 		#region Internal Variables
+ 
+-		internal bool RunApplication;
++		public bool RunApplication;
+ 
+ 		#endregion
+ 
 diff --git a/src/Graphics/Effect/Effect.cs b/src/Graphics/Effect/Effect.cs
 index 2ce0869..3cd9c69 100644
 --- a/src/Graphics/Effect/Effect.cs
@@ -4365,7 +4378,7 @@ index 0a0dffb..166ae86 100644
  			) == 1;
  		}
 diff --git a/src/Graphics/Texture.cs b/src/Graphics/Texture.cs
-index b3bd69c..28914e2 100644
+index 5ddf155..e687205 100644
 --- a/src/Graphics/Texture.cs
 +++ b/src/Graphics/Texture.cs
 @@ -78,7 +78,7 @@ namespace Microsoft.Xna.Framework.Graphics
@@ -4378,7 +4391,7 @@ index b3bd69c..28914e2 100644
  						toDispose
  					);
 diff --git a/src/Graphics/Texture2D.cs b/src/Graphics/Texture2D.cs
-index 582d8ff..51f3412 100644
+index 59becca..665bfae 100644
 --- a/src/Graphics/Texture2D.cs
 +++ b/src/Graphics/Texture2D.cs
 @@ -78,7 +78,7 @@ namespace Microsoft.Xna.Framework.Graphics
