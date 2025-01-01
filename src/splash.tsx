@@ -1,10 +1,6 @@
 import { Logo } from "./main";
 import { Button, Icon, Link } from "./ui";
-import { copyFolder, countFolder, PICKERS_UNAVAILABLE, rootFolder } from "./fs";
-
-// @ts-expect-error
-import { fromWeb as streamFromWeb, toWeb as streamToWeb } from "streamx-webstream";
-import tar from "tar-stream";
+import { copyFolder, countFolder, extractTar, PICKERS_UNAVAILABLE, rootFolder } from "./fs";
 
 import iconFolderOpen from "@ktibow/iconset-material-symbols/folder-open-outline";
 import iconDownload from "@ktibow/iconset-material-symbols/download";
@@ -222,6 +218,8 @@ export const Download: Component<{
 		this.input.click();
 		const key = await inputPromise;
 
+		const root = await rootFolder.getDirectoryHandle("Content", { create: true });
+
 		this.downloading = true;
 		const input = new ReadableStream({
 			async pull(controller) {
@@ -273,63 +271,12 @@ export const Download: Component<{
 			decompressed = decrypted;
 		}
 
-		const tarInput = streamFromWeb(decompressed);
-		const archive = tar.extract();
-
-		let root = await rootFolder.getDirectoryHandle("Content", { create: true });
-
-		archive.on("error", (err) => {
-			this.status = "" + err;
+		const before = performance.now();
+		await extractTar(decompressed, root, (type, name) => {
+			console.log(`extracted ${type} "${name}"`);
 		});
-		archive.on("entry", async (header, stream, next) => {
-			const body: ReadableStream<Uint8Array> = streamToWeb(stream);
-
-			async function consume() {
-				const reader = body.getReader();
-
-				while (true) {
-					const { done, value } = await reader.read();
-					if (done || !value) break;
-				}
-			}
-
-			const path = header.name.split("/");
-			if (path[path.length - 1] === "") path.pop();
-			if (path[0] === "Content") path.shift();
-			if (path.length === 0) {
-				await consume();
-				next();
-				return;
-			}
-
-			let handle = root;
-			for (const name of path.splice(0, path.length - 1)) {
-				handle = await handle.getDirectoryHandle(name, { create: true });
-			}
-
-			if (header.type === "directory") {
-				console.log(`extracting directory ${path[0]}`);
-				await handle.getDirectoryHandle(path[0], { create: true });
-				await consume();
-			} else if (header.type === "file") {
-				console.log(`extracting file ${path[0]}`);
-				const file = await handle.getFileHandle(path[0], { create: true });
-				const writable = await file.createWritable();
-				await body.pipeTo(writable);
-			} else {
-				await consume();
-			}
-
-			next();
-		});
-
-		const promise = new Promise<void>(res => {
-			archive.on("finish", () => res());
-		});
-
-		tarInput.pipe(archive);
-
-		await promise;
+		const after = performance.now();
+		console.log(`downloaded and extracted assets in ${(after - before).toFixed(2)}ms`);
 
 		this["on:done"]();
 	};

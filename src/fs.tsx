@@ -1,5 +1,9 @@
 import { Button, Icon } from "./ui";
 
+import tar from "tar-stream";
+// @ts-expect-error
+import { fromWeb as streamFromWeb, toWeb as streamToWeb } from "streamx-webstream";
+
 import iconFolder from "@ktibow/iconset-material-symbols/folder";
 import iconDraft from "@ktibow/iconset-material-symbols/draft";
 import iconDelete from "@ktibow/iconset-material-symbols/delete";
@@ -52,11 +56,80 @@ export async function copyFolder(folder: FileSystemDirectoryHandle, to: FileSyst
 
 export async function hasContent(): Promise<boolean> {
 	try {
-		await rootFolder.getDirectoryHandle("Content", { create: false })
+		const directory = await rootFolder.getDirectoryHandle("Content", { create: false })
+		for (const child of ["Celeste", "Dialog", "Effects", "FMOD", "Graphics", "Maps", "Monocle", "Overworld", "Tutorials"]) {
+			try {
+				await directory.getDirectoryHandle(child, { create: false });
+			} catch {
+				return false;
+			}
+		}
 		return true;
 	} catch {
 		return false;
 	}
+}
+
+export async function extractTar(
+	stream: ReadableStream<Uint8Array>,
+	folder: FileSystemDirectoryHandle,
+	callback?: (type: "directory" | "file", name: string) => void
+) {
+	const tarInput = streamFromWeb(stream);
+	const archive = tar.extract();
+
+	archive.on("entry", async (header, stream, next) => {
+		const body: ReadableStream<Uint8Array> = streamToWeb(stream);
+
+		async function consume() {
+			const reader = body.getReader();
+
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done || !value) break;
+			}
+		}
+
+		const path = header.name.split("/");
+		if (path[path.length - 1] === "") path.pop();
+		if (path[0] === folder.name) path.shift();
+		if (path.length === 0) {
+			await consume();
+			next();
+			return;
+		}
+
+		let handle = folder;
+		for (const name of path.splice(0, path.length - 1)) {
+			handle = await handle.getDirectoryHandle(name, { create: true });
+		}
+
+		if (header.type === "directory") {
+			await handle.getDirectoryHandle(path[0], { create: true });
+			await consume();
+
+			if (callback) callback("directory", path[0]);
+		} else if (header.type === "file") {
+			const file = await handle.getFileHandle(path[0], { create: true });
+			const writable = await file.createWritable();
+			await body.pipeTo(writable);
+
+			if (callback) callback("file", path[0]);
+		} else {
+			await consume();
+		}
+
+		next();
+	});
+
+	const promise = new Promise<void>((res, rej) => {
+		archive.on("finish", () => res());
+		archive.on("error", (err) => rej(err));
+	});
+
+
+	tarInput.pipe(archive);
+	await promise;
 }
 
 async function recursiveGetDirectory(dir: FileSystemDirectoryHandle, path: string[]): Promise<FileSystemDirectoryHandle> {
