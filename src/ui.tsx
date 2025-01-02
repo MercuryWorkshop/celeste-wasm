@@ -15,83 +15,90 @@ export const Button: Component<{
 	// @ts-expect-error
 	this._leak = true;
 	this.css = `
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
 
-		border: none;
-		border-radius: 1rem;
-		padding: 0.5rem;
+			width: 100%;
+			height: 100%;
 
-		transition: background 0.25s;
-		font-family: var(--font-body);
-		cursor: pointer;
+			border: none;
+			border-radius: 1rem;
+			padding: 0.5rem;
 
-		&.icon-full svg, &.icon-left svg {
+			transition: background 0.25s;
+			font-family: var(--font-body);
+			cursor: pointer;
+		}
+
+		button.icon-full svg, button.icon-left svg {
 			width: 1.5rem;
 			height: 1.5rem;
 		}
-		&.icon-full {
+		button.icon-full {
 			border-radius: 4rem;
 		}
-		&.icon-left {
+		button.icon-left {
 			gap: 0.25rem;
 		}
 
-		&.type-primary {
+		button.type-primary {
 			background: var(--accent);
 			color: var(--fg);
 		}
-		&.type-normal {
+		button.type-normal {
 			background: var(--surface1);
 			color: var(--fg);
 		}
-		&.type-listitem {
+		button.type-listitem {
 			background: transparent;
 			color: var(--fg);
 			border-radius: 0.5rem;
 		}
-		&.type-listaction {
+		button.type-listaction {
 			background: var(--surface2);
 			color: var(--fg);
 		}
 
-		&.type-primary:not(:disabled):hover {
+		button.type-primary:not(:disabled):hover {
 			background: color-mix(in srgb, var(--accent) 80%, white);
 		}
-		&.type-primary:not(:disabled):active {
+		button.type-primary:not(:disabled):active {
 			background: color-mix(in srgb, var(--accent) 70%, white);
 		}
-		&.type-normal:not(:disabled):hover {
+		button.type-normal:not(:disabled):hover {
 			background: var(--surface2);
 		}
-		&.type-normal:not(:disabled):active {
+		button.type-normal:not(:disabled):active {
 			background: var(--surface3);
 		}
-		&.type-listitem:not(:disabled):hover {
+		button.type-listitem:not(:disabled):hover {
 			background: var(--surface1);
 		}
-		&.type-listitem:not(:disabled):active {
+		button.type-listitem:not(:disabled):active {
 			background: var(--surface2);
 		}
-		&.type-listaction:not(:disabled):hover {
+		button.type-listaction:not(:disabled):hover {
 			background: var(--surface3);
 		}
-		&.type-listaction:not(:disabled):active {
+		button.type-listaction:not(:disabled):active {
 			background: var(--surface4);
 		}
 
-		&:disabled {
+		button:disabled {
 			background: var(--surface0);
 			cursor: not-allowed;
 		}
 	`;
 	return (
-		<button
-			on:click={this["on:click"]}
-			class={`icon-${this.icon} type-${this.type} ${this.class}`}
-			disabled={use(this.disabled)}
-		>{use(this.children)}</button>
+		<div>
+			<button
+				on:click={this["on:click"]}
+				class={`icon-${this.icon} type-${this.type} ${this.class}`}
+				disabled={use(this.disabled)}
+			>{use(this.children)}</button>
+		</div>
 	)
 }
 
