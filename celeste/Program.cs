@@ -24,6 +24,7 @@ partial class Program
     [JSExport]
     internal static Task PreInit()
     {
+        Celeste.Celeste._mainThreadId = Thread.CurrentThread.ManagedThreadId;
         return Task.Run(() =>
         {
             Console.WriteLine("calling mount_opfs");
@@ -33,20 +34,22 @@ partial class Program
             {
                 throw new Exception("Failed to mount OPFS");
             }
+
+
+            Console.WriteLine("initializing settings");
+            Settings.Initialize();
+            if (!Settings.Existed)
+            {
+                Settings.Instance.Language = SteamApps.GetCurrentGameLanguage();
+            }
+            _ = Settings.Existed;
+            Console.WriteLine("initialized settings");
         });
     }
 
     [JSExport]
     internal static void Init()
     {
-        Celeste.Celeste._mainThreadId = Thread.CurrentThread.ManagedThreadId;
-        Settings.Initialize();
-        if (!Settings.Existed)
-        {
-            Settings.Instance.Language = SteamApps.GetCurrentGameLanguage();
-        }
-        _ = Settings.Existed;
-
         celeste = new Celeste.Celeste();
     }
 

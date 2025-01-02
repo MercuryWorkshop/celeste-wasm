@@ -40,6 +40,34 @@ proxyConsole("log", "var(--fg)");
 proxyConsole("info", "var(--info)");
 proxyConsole("debug", "var(--fg6)");
 
+function hookfmod() {
+	let contexts: AudioContext[] = [];
+
+	let ctx = AudioContext;
+	(AudioContext as any) = function() {
+		let context = new ctx();
+
+		contexts.push(context);
+		return context;
+	};
+
+	window.addEventListener("focus", () => {
+		for (let context of contexts) {
+			try {
+				context.resume();
+			} catch { }
+		}
+	});
+	window.addEventListener("blur", () => {
+		for (let context of contexts) {
+			try {
+				context.suspend();
+			} catch { }
+		}
+	});
+}
+hookfmod();
+
 const wasm = await eval(`import("/_framework/dotnet.js")`);
 const dotnet = wasm.dotnet;
 let exports: any;
@@ -76,8 +104,11 @@ preInit();
 export async function play() {
 	gameState.playing = true;
 
+	const before = performance.now();
 	console.debug("Init...");
 	exports.Program.Init();
+	const after = performance.now();
+	console.debug(`Init : ${(after - before).toFixed(2)}ms`);
 
 	console.debug("MainLoop...");
 	const main = () => {

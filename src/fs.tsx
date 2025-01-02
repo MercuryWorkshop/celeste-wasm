@@ -6,6 +6,7 @@ import { fromWeb as streamFromWeb, toWeb as streamToWeb } from "streamx-webstrea
 
 import iconFolder from "@ktibow/iconset-material-symbols/folder";
 import iconDraft from "@ktibow/iconset-material-symbols/draft";
+import iconDownload from "@ktibow/iconset-material-symbols/download";
 import iconDelete from "@ktibow/iconset-material-symbols/delete";
 import iconClose from "@ktibow/iconset-material-symbols/close";
 import iconSave from "@ktibow/iconset-material-symbols/save";
@@ -162,6 +163,7 @@ export const OpfsExplorer: Component<{
 			display: flex;
 			align-items: center;
 			gap: 0.5rem;
+			margin: 0 0.5rem;
 		}
 		.path h3 {
 			font-family: var(--font-mono);
@@ -177,7 +179,7 @@ export const OpfsExplorer: Component<{
 		.entry {
 			display: flex;
 			align-items: center;
-			gap: 0.5em;
+			gap: 0.5rem;
 
 			font-family: var(--font-mono);
 		}
@@ -275,6 +277,22 @@ export const OpfsExplorer: Component<{
 						await this.path.removeEntry(x.name, { recursive: true });
 						this.path = this.path;
 					};
+					const download = async (e: Event) => {
+						e.stopImmediatePropagation();
+						if (x.entry.kind === "file") {
+							const entry = x.entry as FileSystemFileHandle;
+							const blob = await entry.getFile();
+
+							const url = URL.createObjectURL(blob);
+							const a = document.createElement("a");
+							a.href = url;
+							a.download = x.name;
+							a.click();
+
+							await new Promise(r => setTimeout(r, 100));
+							URL.revokeObjectURL(url);
+						}
+					}
 					const action = () => {
 						if (x.entry.kind === "directory") {
 							this.editing = null;
@@ -285,10 +303,13 @@ export const OpfsExplorer: Component<{
 					}
 
 					return (
-						<Button on:click={action} icon="left" type="listitem" disabled={false} class="entry">
+						<Button on:click={action} icon="none" type="listitem" disabled={false} class="entry">
 							<Icon icon={icon} />
 							<span>{x.name}</span>
 							<div class="expand" />
+							<Button class={x.entry.kind !== "file" ? "hidden" : ""} on:click={download} icon="full" type="listaction" disabled={false}>
+								<Icon icon={iconDownload} />
+							</Button>
 							<Button class={x.name === ".." ? "hidden" : ""} on:click={remove} icon="full" type="listaction" disabled={false}>
 								<Icon icon={iconDelete} />
 							</Button>

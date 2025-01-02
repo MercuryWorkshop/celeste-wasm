@@ -28,15 +28,6 @@
  		Engine.Commands.Enabled = PlayMode == PlayModes.Debug;
  		Engine.Scene = new GameLoader();
  	}
-@@ -102,7 +103,7 @@
- 			HudTarget = VirtualContent.CreateRenderTarget("hud-target", 1922, 1082);
- 			WipeTarget = VirtualContent.CreateRenderTarget("wipe-target", 1922, 1082);
- 			OVR.Load();
--			if (!IsGGP)
-+			if (!IsGGP && false)
- 			{
- 				GFX.Load();
- 				MTN.Load();
 @@ -165,6 +166,7 @@
  		}
  	}
