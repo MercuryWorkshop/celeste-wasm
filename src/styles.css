@@ -74,7 +74,7 @@ html {
 	font-family: "Renogare";
 	src:
 		local("Renogare"),
-		url("Renogare.woff2") format("woff2"),
+		url("/Renogare.woff2") format("woff2"),
 }
 
 h1,

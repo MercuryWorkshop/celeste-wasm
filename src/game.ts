@@ -51,17 +51,17 @@ function hookfmod() {
 		return context;
 	};
 
-	window.addEventListener("focus", () => {
+	window.addEventListener("focus", async () => {
 		for (let context of contexts) {
 			try {
-				context.resume();
+				await context.resume();
 			} catch { }
 		}
 	});
-	window.addEventListener("blur", () => {
+	window.addEventListener("blur", async () => {
 		for (let context of contexts) {
 			try {
-				context.suspend();
+				await context.suspend();
 			} catch { }
 		}
 	});
