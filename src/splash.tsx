@@ -20,7 +20,7 @@ const validateDirectory = async (directory: FileSystemDirectoryHandle) => {
 	if (directory.name != "Content") {
 		return "Directory name is not Content";
 	}
-	for (const child of ["Celeste", "Dialog", "Effects", "FMOD", "Graphics", "Maps", "Monocle", "Overworld", "Tutorials"]) {
+	for (const child of ["Dialog", "Effects", "FMOD", "Graphics", "Maps", "Monocle", "Overworld", "Tutorials"]) {
 		try {
 			await directory.getDirectoryHandle(child, { create: false });
 		} catch {

@@ -58,7 +58,7 @@ export async function copyFolder(folder: FileSystemDirectoryHandle, to: FileSyst
 export async function hasContent(): Promise<boolean> {
 	try {
 		const directory = await rootFolder.getDirectoryHandle("Content", { create: false })
-		for (const child of ["Celeste", "Dialog", "Effects", "FMOD", "Graphics", "Maps", "Monocle", "Overworld", "Tutorials"]) {
+		for (const child of ["Dialog", "Effects", "FMOD", "Graphics", "Maps", "Monocle", "Overworld", "Tutorials"]) {
 			try {
 				await directory.getDirectoryHandle(child, { create: false });
 			} catch {
