@@ -8,7 +8,7 @@
 		<DisableBuildCompression>true</DisableBuildCompression>
 		<TrimMode>partial</TrimMode>
 
-		<NoWarn>IL2026,IL2046,IL2057,IL2062,IL2065,IL2067,IL2070,IL2072,IL2075,IL2077,IL2087,IL2090,IL2111</NoWarn>
+		<NoWarn>IL2026,IL2045,IL2046,IL2055,IL2057,IL2060,IL2062,IL2065,IL2067,IL2070,IL2072,IL2075,IL2077,IL2080,IL2087,IL2090,IL2091,IL2104,IL2111</NoWarn>
 		<NoWarn>$(NoWarn),SYSLIB0011,CS0169,CS0219,CS0649,CS8981,CA2022,CA1416</NoWarn>
 
 		<WasmBuildNative>true</WasmBuildNative>
@@ -27,9 +27,6 @@
 		<EmccCompileOptimizationFlag>-O3</EmccCompileOptimizationFlag>
 		<EmccEnvironment>web,worker</EmccEnvironment>
 	</PropertyGroup>
-	<ItemGroup>
-		<WasmOptConfigurationFlags Include="--converge -O4 -Oz"></WasmOptConfigurationFlags>
-	</ItemGroup>
 
 	<ItemGroup>
 		<!-- FNA -->
@@ -42,6 +39,9 @@
 		<NativeFileReference Include="celeste\fmod\fmodstudio.a" />
 		<NativeFileReference Include="celeste\fmod\fmod.a" />
 
+		<!-- MonoMod -->
+		<NativeFileReference Include="statics\liba.o" />
+
 		<!-- WASMFS -->
 		<NativeFileReference Include="celeste\Emscripten.c" />
 	</ItemGroup>
@@ -50,7 +50,8 @@
 		<ProjectReference Include="..\FNA\FNA.Core.csproj" />
 		<Compile Remove="celeste\Decompiled\**\*" />
 
-		<!-- Everest -->
+		<!-- MonoMod -->
 		<ProjectReference Include="..\MonoMod\src\MonoMod.RuntimeDetour\MonoMod.RuntimeDetour.csproj" />
+		<PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />
 	</ItemGroup>
 </Project>

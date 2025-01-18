@@ -5,6 +5,8 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.InteropServices;
 using Celeste;
 using Steamworks;
+using MonoMod.RuntimeDetour;
+using FMOD.Studio;
 
 [assembly: System.Runtime.Versioning.SupportedOSPlatform("browser")]
 
@@ -21,10 +23,23 @@ partial class Program
     static Celeste.Celeste celeste;
     public static bool firstLaunch = true;
 
+	internal static Bank LoadHook(Func<string, bool, Bank> orig, string name, bool loadStrings) {
+		Console.WriteLine("Hook test!!!");
+		return orig(name, loadStrings);
+	}
+
+	static Hook hook;
+
     [JSExport]
     internal static Task PreInit()
     {
         Celeste.Celeste._mainThreadId = Thread.CurrentThread.ManagedThreadId;
+		try {
+			hook = new Hook(typeof(Celeste.Audio.Banks).GetMethod("Load"), LoadHook);
+		} catch(Exception err) {
+			Console.Error.WriteLine("Failed to create hook");
+			Console.Error.WriteLine(err);
+		}
         return Task.Run(() =>
         {
             Console.WriteLine("calling mount_opfs");
@@ -34,7 +49,6 @@ partial class Program
             {
                 throw new Exception("Failed to mount OPFS");
             }
-
 
             Console.WriteLine("initializing settings");
             Settings.Initialize();

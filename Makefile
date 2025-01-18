@@ -1,14 +1,12 @@
 STATICS_RELEASE=7a74fd6f-2c6f-4283-ba61-873c64649b24
-STATICS=statics/FAudio.a statics/FNA3D_Wrapped.a statics/libmojoshader.a statics/SDL2.a statics/liba.o
 
-staticsdir:
+statics:
 	mkdir statics
-
-$(STATICS):
-	wget https://github.com/r58Playz/FNA-WASM-Build/releases/download/$(STATICS_RELEASE)/$(@F) -O $@
-
-statics: $(STATICS)
-	cp FNA3D_Wrapped.a FNA3D.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/download/$(STATICS_RELEASE)/FAudio.a -O statics/FAudio.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/download/$(STATICS_RELEASE)/FNA3D_Wrapped.a -O statics/FNA3D.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/download/$(STATICS_RELEASE)/libmojoshader.a -O statics/libmojoshader.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/download/$(STATICS_RELEASE)/SDL2.a -O statics/SDL2.a
+	wget https://github.com/r58Playz/FNA-WASM-Build/releases/download/$(STATICS_RELEASE)/liba.o -O statics/liba.o
 
 clean:
 	rm -rv statics obj bin public/_framework || true
