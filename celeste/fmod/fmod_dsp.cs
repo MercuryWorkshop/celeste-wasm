@@ -13,6 +13,7 @@
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using FMOD.Studio;
 
 namespace FMOD
 {
@@ -245,8 +246,8 @@ namespace FMOD
     [StructLayout(LayoutKind.Sequential)]
     public struct DSP_PARAMETER_3DATTRIBUTES
     {
-        public ATTRIBUTES_3D relative;
-        public ATTRIBUTES_3D absolute;
+        public _3D_ATTRIBUTES relative;
+        public _3D_ATTRIBUTES absolute;
     }
     
     [StructLayout(LayoutKind.Sequential)]
@@ -254,10 +255,10 @@ namespace FMOD
     {
         public int            numlisteners;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        public ATTRIBUTES_3D[] relative;
+        public _3D_ATTRIBUTES[] relative;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
         public float[] weight;
-        public ATTRIBUTES_3D absolute;
+        public _3D_ATTRIBUTES absolute;
     }
     
     [StructLayout(LayoutKind.Sequential)]

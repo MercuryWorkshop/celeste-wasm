@@ -13,6 +13,15 @@ using System.Collections;
 
 namespace FMOD.Studio
 {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct _3D_ATTRIBUTES
+    {
+        public VECTOR position;
+        public VECTOR velocity;
+        public VECTOR forward;
+        public VECTOR up;
+    }
+
     public partial class STUDIO_VERSION
     {
 #if !UNITY_2019_4_OR_NEWER
@@ -386,11 +395,12 @@ namespace FMOD.Studio
         #endregion
     }
 
-    public struct System
+    public class System
     {
         // Initialization / system functions.
         public static RESULT create(out System system)
         {
+			system = new System(default(IntPtr));
             return WRAP_FMOD_Studio_System_Create(out system.handle, VERSION.number);
         }
         public RESULT setAdvancedSettings(ADVANCEDSETTINGS settings)
@@ -426,14 +436,16 @@ namespace FMOD.Studio
         {
             return WRAP_FMOD_Studio_System_Update(this.handle);
         }
-        public RESULT getCoreSystem(out FMOD.System coresystem)
+        public RESULT getLowLevelSystem(out FMOD.System coresystem)
         {
+			coresystem = new FMOD.System(default(IntPtr));
             return WRAP_FMOD_Studio_System_GetCoreSystem(this.handle, out coresystem.handle);
         }
         public RESULT getEvent(string path, out EventDescription _event)
         {
             using (StringHelper.ThreadSafeEncoding encoder = StringHelper.GetFreeHelper())
             {
+				_event = new EventDescription(default(IntPtr));
                 return WRAP_FMOD_Studio_System_GetEvent(this.handle, encoder.byteFromStringUTF8(path), out _event.handle);
             }
         }
@@ -461,6 +473,7 @@ namespace FMOD.Studio
 
         public RESULT getEventByID(GUID id, out EventDescription _event)
         {
+			_event = new EventDescription(default(IntPtr));
             return WRAP_FMOD_Studio_System_GetEventByID(this.handle, ref id, out _event.handle);
         }
         public RESULT getBusByID(GUID id, out Bus bus)
@@ -582,7 +595,7 @@ namespace FMOD.Studio
                 return WRAP_FMOD_Studio_System_GetParameterByName(this.handle, encoder.byteFromStringUTF8(name), out value, out finalvalue);
             }
         }
-        public RESULT setParameterByName(string name, float value, bool ignoreseekspeed = false)
+        public RESULT setParameterValue(string name, float value, bool ignoreseekspeed = false)
         {
             using (StringHelper.ThreadSafeEncoding encoder = StringHelper.GetFreeHelper())
             {
@@ -637,19 +650,19 @@ namespace FMOD.Studio
         {
             return WRAP_FMOD_Studio_System_SetNumListeners(this.handle, numlisteners);
         }
-        public RESULT getListenerAttributes(int listener, out ATTRIBUTES_3D attributes)
+        public RESULT getListenerAttributes(int listener, out _3D_ATTRIBUTES attributes)
         {
             return WRAP_FMOD_Studio_System_GetListenerAttributes(this.handle, listener, out attributes, IntPtr.Zero);
         }
-        public RESULT getListenerAttributes(int listener, out ATTRIBUTES_3D attributes, out VECTOR attenuationposition)
+        public RESULT getListenerAttributes(int listener, out _3D_ATTRIBUTES attributes, out VECTOR attenuationposition)
         {
             return WRAP_FMOD_Studio_System_GetListenerAttributes(this.handle, listener, out attributes, out attenuationposition);
         }
-        public RESULT setListenerAttributes(int listener, ATTRIBUTES_3D attributes)
+        public RESULT setListenerAttributes(int listener, _3D_ATTRIBUTES attributes)
         {
             return WRAP_FMOD_Studio_System_SetListenerAttributes(this.handle, listener, ref attributes, IntPtr.Zero);
         }
-        public RESULT setListenerAttributes(int listener, ATTRIBUTES_3D attributes, VECTOR attenuationposition)
+        public RESULT setListenerAttributes(int listener, _3D_ATTRIBUTES attributes, VECTOR attenuationposition)
         {
             return WRAP_FMOD_Studio_System_SetListenerAttributes(this.handle, listener, ref attributes, ref attenuationposition);
         }
@@ -887,13 +900,13 @@ namespace FMOD.Studio
         [DllImport(STUDIO_VERSION.dll)]
         private static extern RESULT WRAP_FMOD_Studio_System_SetNumListeners         (IntPtr system, int numlisteners);
         [DllImport(STUDIO_VERSION.dll)]
-        private static extern RESULT WRAP_FMOD_Studio_System_GetListenerAttributes   (IntPtr system, int listener, out ATTRIBUTES_3D attributes, IntPtr zero);
+        private static extern RESULT WRAP_FMOD_Studio_System_GetListenerAttributes   (IntPtr system, int listener, out _3D_ATTRIBUTES attributes, IntPtr zero);
         [DllImport(STUDIO_VERSION.dll)]
-        private static extern RESULT WRAP_FMOD_Studio_System_GetListenerAttributes   (IntPtr system, int listener, out ATTRIBUTES_3D attributes, out VECTOR attenuationposition);
+        private static extern RESULT WRAP_FMOD_Studio_System_GetListenerAttributes   (IntPtr system, int listener, out _3D_ATTRIBUTES attributes, out VECTOR attenuationposition);
         [DllImport(STUDIO_VERSION.dll)]
-        private static extern RESULT WRAP_FMOD_Studio_System_SetListenerAttributes   (IntPtr system, int listener, ref ATTRIBUTES_3D attributes, IntPtr zero);
+        private static extern RESULT WRAP_FMOD_Studio_System_SetListenerAttributes   (IntPtr system, int listener, ref _3D_ATTRIBUTES attributes, IntPtr zero);
         [DllImport(STUDIO_VERSION.dll)]
-        private static extern RESULT WRAP_FMOD_Studio_System_SetListenerAttributes   (IntPtr system, int listener, ref ATTRIBUTES_3D attributes, ref VECTOR attenuationposition);
+        private static extern RESULT WRAP_FMOD_Studio_System_SetListenerAttributes   (IntPtr system, int listener, ref _3D_ATTRIBUTES attributes, ref VECTOR attenuationposition);
         [DllImport(STUDIO_VERSION.dll)]
         private static extern RESULT WRAP_FMOD_Studio_System_GetListenerWeight       (IntPtr system, int listener, out float weight);
         [DllImport(STUDIO_VERSION.dll)]
@@ -956,7 +969,7 @@ namespace FMOD.Studio
         #endregion
     }
 
-    public struct EventDescription
+    public class EventDescription
     {
         public RESULT getID(out GUID id)
         {
@@ -1139,6 +1152,7 @@ namespace FMOD.Studio
 
         public RESULT createInstance(out EventInstance instance)
         {
+			instance = new EventInstance(default(IntPtr));
             return WRAP_FMOD_Studio_EventDescription_CreateInstance(this.handle, out instance.handle);
         }
 
@@ -1298,10 +1312,11 @@ namespace FMOD.Studio
         #endregion
     }
 
-    public struct EventInstance
+    public class EventInstance
     {
         public RESULT getDescription(out EventDescription description)
         {
+			description = new EventDescription(default(IntPtr));
             return WRAP_FMOD_Studio_EventInstance_GetDescription(this.handle, out description.handle);
         }
         public RESULT getVolume(out float volume)
@@ -1328,11 +1343,11 @@ namespace FMOD.Studio
         {
             return WRAP_FMOD_Studio_EventInstance_SetPitch(this.handle, pitch);
         }
-        public RESULT get3DAttributes(out ATTRIBUTES_3D attributes)
+        public RESULT get3DAttributes(out _3D_ATTRIBUTES attributes)
         {
             return WRAP_FMOD_Studio_EventInstance_Get3DAttributes(this.handle, out attributes);
         }
-        public RESULT set3DAttributes(ATTRIBUTES_3D attributes)
+        public RESULT set3DAttributes(_3D_ATTRIBUTES attributes)
         {
             return WRAP_FMOD_Studio_EventInstance_Set3DAttributes(this.handle, ref attributes);
         }
@@ -1440,7 +1455,7 @@ namespace FMOD.Studio
                 return WRAP_FMOD_Studio_EventInstance_GetParameterByName(this.handle, encoder.byteFromStringUTF8(name), out value, out finalvalue);
             }
         }
-        public RESULT setParameterByName(string name, float value, bool ignoreseekspeed = false)
+        public RESULT setParameterValue(string name, float value, bool ignoreseekspeed = false)
         {
             using (StringHelper.ThreadSafeEncoding encoder = StringHelper.GetFreeHelper())
             {
@@ -1455,7 +1470,7 @@ namespace FMOD.Studio
                 return WRAP_FMOD_Studio_EventInstance_SetParameterByNameWithLabel(this.handle, encoder.byteFromStringUTF8(name), labelEncoder.byteFromStringUTF8(label), ignoreseekspeed);
             }
         }
-        public RESULT keyOff()
+        public RESULT triggerCue()
         {
             return WRAP_FMOD_Studio_EventInstance_KeyOff(this.handle);
         }
@@ -1497,9 +1512,9 @@ namespace FMOD.Studio
         [DllImport(STUDIO_VERSION.dll)]
         private static extern RESULT WRAP_FMOD_Studio_EventInstance_SetPitch                    (IntPtr _event, float pitch);
         [DllImport(STUDIO_VERSION.dll)]
-        private static extern RESULT WRAP_FMOD_Studio_EventInstance_Get3DAttributes             (IntPtr _event, out ATTRIBUTES_3D attributes);
+        private static extern RESULT WRAP_FMOD_Studio_EventInstance_Get3DAttributes             (IntPtr _event, out _3D_ATTRIBUTES attributes);
         [DllImport(STUDIO_VERSION.dll)]
-        private static extern RESULT WRAP_FMOD_Studio_EventInstance_Set3DAttributes             (IntPtr _event, ref ATTRIBUTES_3D attributes);
+        private static extern RESULT WRAP_FMOD_Studio_EventInstance_Set3DAttributes             (IntPtr _event, ref _3D_ATTRIBUTES attributes);
         [DllImport(STUDIO_VERSION.dll)]
         private static extern RESULT WRAP_FMOD_Studio_EventInstance_GetListenerMask             (IntPtr _event, out uint mask);
         [DllImport(STUDIO_VERSION.dll)]
@@ -2073,6 +2088,7 @@ namespace FMOD.Studio
         // Information query
         public RESULT getSystem(out System system)
         {
+			system = new System(default(IntPtr));
             return WRAP_FMOD_Studio_CommandReplay_GetSystem(this.handle, out system.handle);
         }
 

@@ -138,15 +138,6 @@ namespace FMOD
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct ATTRIBUTES_3D
-    {
-        public VECTOR position;
-        public VECTOR velocity;
-        public VECTOR forward;
-        public VECTOR up;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
     public partial struct GUID
     {
         public int Data1;
@@ -968,6 +959,7 @@ namespace FMOD
     {
         public static RESULT System_Create(out System system)
         {
+			system = new System(default(IntPtr));
             return FMOD5_System_Create(out system.handle, VERSION.number);
         }
 
@@ -1035,7 +1027,7 @@ namespace FMOD
     /*
         'System' API.
     */
-    public struct System
+    public class System
     {
         public RESULT release()
         {
@@ -1742,6 +1734,7 @@ namespace FMOD
         }
         public RESULT getSystemObject(out System system)
         {
+			system = new System(default(IntPtr));
             return FMOD5_Sound_GetSystemObject(this.handle, out system.handle);
         }
 
@@ -2213,6 +2206,7 @@ namespace FMOD
 
         public RESULT getSystemObject(out System system)
         {
+			system = new System(default(IntPtr));
             return FMOD5_Channel_GetSystemObject(this.handle, out system.handle);
         }
 
@@ -2697,6 +2691,7 @@ namespace FMOD
 
         public RESULT getSystemObject(out System system)
         {
+			system = new System(default(IntPtr));
             return FMOD5_ChannelGroup_GetSystemObject(this.handle, out system.handle);
         }
 
@@ -3124,6 +3119,7 @@ namespace FMOD
 
         public RESULT getSystemObject(out System system)
         {
+			system = new System(default(IntPtr));
             return FMOD5_SoundGroup_GetSystemObject(this.handle, out system.handle);
         }
 
@@ -3261,6 +3257,7 @@ namespace FMOD
         }
         public RESULT getSystemObject(out System system)
         {
+			system = new System(default(IntPtr));
             return FMOD5_DSP_GetSystemObject(this.handle, out system.handle);
         }
 

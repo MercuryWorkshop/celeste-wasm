@@ -5,7 +5,6 @@
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 		<Nullable>disable</Nullable>
 
-		<RunAOTCompilation>true</RunAOTCompilation>
 		<DisableBuildCompression>true</DisableBuildCompression>
 		<TrimMode>partial</TrimMode>
 
