@@ -11,12 +11,17 @@ if ! [[ -d "celeste/Decompiled" ]]; then
 	echo "Please run tools/decompile.sh first"
 fi
 
-rm -r celeste/Patches
+if ! [[ "$#" -eq "1" ]]; then
+	echo "usage: bash tools/genpatches.sh <dir>"
+	exit 1
+fi
+
+rm -r "celeste/Patches/$1" || true
 
 DECOMPDIR="celeste/Decompiled/"
 find "$DECOMPDIR"{Celeste,Celeste.Editor,Celeste.Pico8,Monocle} -type f -name "*.cs" | while read -r file; do
 	file="${file#${DECOMPDIR}}"
-	patch="celeste/Patches/Code/$file.patch"
+	patch="celeste/Patches/$1/$file.patch"
 
 
 	mkdir -p "$(dirname "$patch")"

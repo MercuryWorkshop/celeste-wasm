@@ -10,7 +10,6 @@ This "fork" will be merged into [the original](https://github.com/mercuryWorksho
 
 ## Limitations
 - Loading the game consumes 600M or so of memory, which is still around 3x lower than the original port, but it is still too much for low end devices.
-- MonoMod has no support for hooking WASM, so [Everest](https://github.com/EverestAPI/Everest) was not able to be included
 - You may encounter issues on firefox.
 
 ## I want to build this
@@ -20,10 +19,11 @@ if you can't reproduce this (it's really finnicky) feel free to ask us, the inst
     - note that the `-bin` prefix is only because arch repos haven't updated to dotnet 9, use the unprefixed packages if they are dotnet 9 
 2. run `dotnet tool install --global ilspycmd --version 8.2.0.7535`
 3. clone [FNA](https://github.com/FNA-XNA/FNA) version 24.01 in the parent dir (`../`)
+4. clone [this MonoMod fork](https://github.com/r58playz/MonoMod) in the parent dir
 4. apply (`git apply ...`) `FNA.patch` to FNA
 5. run `sudo dotnet workload restore` in this dir
 6. run `bash tools/decompile.sh path/to/Celeste.exe`
-7. run `bash tools/applypatches.sh`
+7. run `bash tools/applypatches.sh Vanilla`
 8. run `make serve` for a dev server and `make publish` for a release build
 
 to enable the download/decrypt feature:
@@ -49,13 +49,12 @@ to enable the download/decrypt feature:
 - move `Init` to another thread to remove the last of the freezing
 - remove the janky `WRAP_FNA` stuff and replace it with a SDL that doesn't use EGL emulation
 - fix freeze when removing controller while in a level
-- port over everest (if possible)
 
 ## I want to port this to a newer version of celeste (once it exists)
 1. run `bash tools/decompile.sh path/to/Celeste.exe`
-2. run `bash tools/applypatches.sh`
+2. run `bash tools/applypatches.sh Vanilla`
 3. fix any broken patches/make it run
-3. run `bash tools/genpatches.sh`
+3. run `bash tools/genpatches.sh Vanilla`
 4. make a pr!
 
 ## I want to figure out how this works

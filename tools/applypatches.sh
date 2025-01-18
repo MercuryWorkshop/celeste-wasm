@@ -11,8 +11,13 @@ if ! [[ -d "celeste/Patches" ]]; then
 	echo "Please run tools/genpatches.sh first."
 fi
 
-find "celeste/Patches/Code" -type f -name "*.patch" | while read -r patch; do
-	file=${patch#celeste/Patches/Code/}
+if ! [[ "$#" -eq "1" ]]; then
+	echo "usage: bash tools/applypatches.sh <dir>"
+	exit 1
+fi
+
+find "celeste/Patches/$1" -type f -name "*.patch" | while read -r patch; do
+	file=${patch#celeste/Patches/$1/}
 	file=${file%.patch}
 
 	patch --version-control=none --no-backup-if-mismatch -p1 -i "$patch" "celeste/$file"

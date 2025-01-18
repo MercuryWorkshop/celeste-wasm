@@ -3,9 +3,7 @@ obj
 statics
 
 celeste/Decompiled
-celeste/Celeste
-celeste/Celeste.Editor
-celeste/Celeste.Pico8
+celeste/Celeste*
 celeste/Monocle
 
 node_modules
