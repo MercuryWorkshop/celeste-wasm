@@ -1,6 +1,7 @@
 bin
 obj
 statics
+nuget
 
 celeste/Decompiled
 celeste/Celeste*

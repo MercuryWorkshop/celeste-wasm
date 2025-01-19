@@ -15,6 +15,7 @@
 		<WasmEnableThreads>true</WasmEnableThreads>
 		<WasmEnableSIMD>true</WasmEnableSIMD>
 		<WasmEnableExceptionHandling>true</WasmEnableExceptionHandling>
+		<WasmEnableWebcil>false</WasmEnableWebcil>
 
 		<WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
 		<WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
@@ -49,6 +50,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\FNA\FNA.Core.csproj" />
 		<Compile Remove="celeste\Decompiled\**\*" />
+		<Compile Remove="nuget\**\*" />
 
 		<!-- MonoMod -->
 		<ProjectReference Include="..\MonoMod\src\MonoMod.RuntimeDetour\MonoMod.RuntimeDetour.csproj" />
