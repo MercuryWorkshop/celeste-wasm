@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.InteropServices;
-using Celeste;
+using System.Reflection;
 using Steamworks;
 using MonoMod.RuntimeDetour;
-using FMOD.Studio;
+using Microsoft.Xna.Framework;
 
 [assembly: System.Runtime.Versioning.SupportedOSPlatform("browser")]
 
@@ -20,44 +20,45 @@ partial class Program
     [DllImport("Emscripten")]
     public extern static int mount_opfs();
 
-    static Celeste.Celeste celeste;
+    static Game celeste;
     public static bool firstLaunch = true;
 
-	internal static Bank LoadHook(Func<string, bool, Bank> orig, string name, bool loadStrings) {
-		Console.WriteLine("Hook test!!!");
-		return orig(name, loadStrings);
-	}
-
-	static Hook hook;
+	static BloomHooker BloomHook;
 
     [JSExport]
     internal static Task PreInit()
     {
-        Celeste.Celeste._mainThreadId = Thread.CurrentThread.ManagedThreadId;
-		try {
-			hook = new Hook(typeof(Celeste.Audio.Banks).GetMethod("Load"), LoadHook);
-		} catch(Exception err) {
-			Console.Error.WriteLine("Failed to create hook");
-			Console.Error.WriteLine(err);
-		}
+        typeof(Celeste.Celeste).GetField("_mainThreadId", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, Thread.CurrentThread.ManagedThreadId);
         return Task.Run(() =>
         {
-            Console.WriteLine("calling mount_opfs");
-            int ret = mount_opfs();
-            Console.WriteLine($"called mount_opfs: {ret}");
-            if (ret != 0)
+            try
             {
-                throw new Exception("Failed to mount OPFS");
-            }
+				BloomHook = new(Assembly.GetExecutingAssembly());
+                Console.WriteLine("calling mount_opfs");
+                int ret = mount_opfs();
+                Console.WriteLine($"called mount_opfs: {ret}");
+                if (ret != 0)
+                {
+                    throw new Exception("Failed to mount OPFS");
+                }
 
-            Console.WriteLine("initializing settings");
-            Settings.Initialize();
-            if (!Settings.Existed)
-            {
-                Settings.Instance.Language = SteamApps.GetCurrentGameLanguage();
+                Console.WriteLine("initializing settings");
+                Celeste.Settings.Initialize();
+                if (!Celeste.Settings.Existed)
+                {
+                    Celeste.Settings.Instance.Language = SteamApps.GetCurrentGameLanguage();
+                }
+                _ = Celeste.Settings.Existed;
+                Console.WriteLine("initialized settings");
+
+				typeof(Celeste.Celeste).GetField("IsGGP", BindingFlags.Static | BindingFlags.Public).SetValue(null, true);
             }
-            _ = Settings.Existed;
-            Console.WriteLine("initialized settings");
+            catch (Exception error)
+            {
+                Console.Error.WriteLine("Error in PreInit()!");
+                Console.Error.WriteLine(error);
+                throw error;
+            }
         });
     }
 
@@ -71,9 +72,9 @@ partial class Program
     internal static void Cleanup()
     {
         firstLaunch = false;
-        RunThread.WaitAll();
+        Celeste.RunThread.WaitAll();
         celeste.Dispose();
-        Audio.Unload();
+        Celeste.Audio.Unload();
     }
 
     [JSExport]

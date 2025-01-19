@@ -439,7 +439,10 @@ namespace FMOD.Studio
         public RESULT getLowLevelSystem(out FMOD.System coresystem)
         {
 			coresystem = new FMOD.System(default(IntPtr));
-            return WRAP_FMOD_Studio_System_GetCoreSystem(this.handle, out coresystem.handle);
+            RESULT res = WRAP_FMOD_Studio_System_GetCoreSystem(this.handle, out coresystem.handle);
+			if (res != RESULT.OK) return res;
+			coresystem.setDSPBufferSize(4096, 4);
+			return res;
         }
         public RESULT getEvent(string path, out EventDescription _event)
         {

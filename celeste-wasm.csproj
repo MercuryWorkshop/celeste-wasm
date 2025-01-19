@@ -5,6 +5,8 @@
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 		<Nullable>disable</Nullable>
 
+		<StartupObject>Program</StartupObject>
+
 		<DisableBuildCompression>true</DisableBuildCompression>
 		<TrimMode>partial</TrimMode>
 
@@ -15,12 +17,10 @@
 		<WasmEnableThreads>true</WasmEnableThreads>
 		<WasmEnableSIMD>true</WasmEnableSIMD>
 		<WasmEnableExceptionHandling>true</WasmEnableExceptionHandling>
-		<WasmEnableWebcil>false</WasmEnableWebcil>
 
 		<WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
 		<WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
 		<WasmNativeStrip>true</WasmNativeStrip>
-		<WasmStripILAfterAOT>true</WasmStripILAfterAOT>
 		<WasmNativeDebugSymbols>false</WasmNativeDebugSymbols>
 
 		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sWASMFS -Wl,--no-check-features</EmccExtraLDFlags>
