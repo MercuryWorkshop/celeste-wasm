@@ -38,7 +38,7 @@ partial class Program
             {
                 Console.Error.WriteLine("Error in PreInit()!");
                 Console.Error.WriteLine(e);
-                throw e;
+                throw;
             }
         });
     }
@@ -73,7 +73,7 @@ partial class Program
         {
             Console.Error.WriteLine("Error in Init()!");
             Console.Error.WriteLine(e);
-            throw e;
+            throw;
         }
     }
 
@@ -90,7 +90,7 @@ partial class Program
         {
             Console.Error.WriteLine("Error in Cleanup()!");
             Console.Error.WriteLine(e);
-            throw e;
+            throw;
         }
     }
 
@@ -105,7 +105,7 @@ partial class Program
         {
             Console.Error.WriteLine("Error in MainLoop()!");
             Console.Error.WriteLine(e);
-            throw e;
+            throw;
         }
         return game.RunApplication;
     }
