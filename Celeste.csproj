@@ -19,7 +19,6 @@
 		<WasmEnableExceptionHandling>true</WasmEnableExceptionHandling>
 		<WasmEnableWebcil>false</WasmEnableWebcil>
 
-		<WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
 		<WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
 		<WasmNativeStrip>true</WasmNativeStrip>
 		<WasmNativeDebugSymbols>false</WasmNativeDebugSymbols>
@@ -46,6 +45,9 @@
 
 		<!-- WASMFS -->
 		<NativeFileReference Include="celeste\Emscripten.c" />
+
+		<!-- SDL stubs -->
+		<NativeFileReference Include="celeste\SDL.c" />
 	</ItemGroup>
 
 	<ItemGroup>
