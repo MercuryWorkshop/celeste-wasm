@@ -7,7 +7,7 @@ which ilspycmd &> /dev/null || {
 	exit 1
 }
 
-ILSPY="ilspycmd: 9.0.0.7833"
+ILSPY="ilspycmd: 9.0.0.7889"
 if ! [[ "$(ilspycmd --version | head -1)" =~ ^"$ILSPY" ]]; then
 	echo "Incorrect ilspycmd version: '$(ilspycmd --version | head -1)' != '$ILSPY'"
 	exit 1

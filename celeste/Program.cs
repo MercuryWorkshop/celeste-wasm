@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.InteropServices;
+using System.IO;
 using System.Reflection;
 using Steamworks;
-using MonoMod.RuntimeDetour;
 using Microsoft.Xna.Framework;
 
 [assembly: System.Runtime.Versioning.SupportedOSPlatform("browser")]
@@ -17,24 +17,16 @@ partial class Program
         Console.WriteLine("Hi!");
     }
 
+
     [DllImport("Emscripten")]
     public extern static int mount_opfs();
-
-    static Game celeste;
-    public static bool firstLaunch = true;
-
-	static BloomHooker BloomHook;
-
     [JSExport]
     internal static Task PreInit()
     {
-        typeof(Celeste.Celeste).GetField("_mainThreadId", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, Thread.CurrentThread.ManagedThreadId);
         return Task.Run(() =>
         {
             try
             {
-				BloomHook = new(Assembly.GetExecutingAssembly());
-                Console.WriteLine("calling mount_opfs");
                 int ret = mount_opfs();
                 Console.WriteLine($"called mount_opfs: {ret}");
                 if (ret != 0)
@@ -42,39 +34,69 @@ partial class Program
                     throw new Exception("Failed to mount OPFS");
                 }
 
-                Console.WriteLine("initializing settings");
-                Celeste.Settings.Initialize();
-                if (!Celeste.Settings.Existed)
-                {
-                    Celeste.Settings.Instance.Language = SteamApps.GetCurrentGameLanguage();
-                }
-                _ = Celeste.Settings.Existed;
-                Console.WriteLine("initialized settings");
-
-				typeof(Celeste.Celeste).GetField("IsGGP", BindingFlags.Static | BindingFlags.Public).SetValue(null, true);
+                File.CreateSymbolicLink("/Content", "/libsdl/Content");
             }
-            catch (Exception error)
+            catch (Exception e)
             {
                 Console.Error.WriteLine("Error in PreInit()!");
-                Console.Error.WriteLine(error);
-                throw error;
+                Console.Error.WriteLine(e);
+                throw e;
             }
         });
     }
 
+    static Game game;
+    static Assembly celeste;
+
     [JSExport]
     internal static void Init()
     {
-        celeste = new Celeste.Celeste();
+        try
+        {
+            celeste = Assembly.GetExecutingAssembly();
+            var Celeste = celeste.GetType("Celeste.Celeste");
+            var Settings = celeste.GetType("Celeste.Settings");
+            var Engine = celeste.GetType("Monocle.Engine");
+
+            var MainThreadId = Celeste.GetField("_mainThreadId", BindingFlags.Static | BindingFlags.NonPublic);
+            var AssemblyDirectory = Engine.GetField("AssemblyDirectory", BindingFlags.Static | BindingFlags.NonPublic);
+            var SettingsInitialize = Settings.GetMethod("Initialize", BindingFlags.Static | BindingFlags.Public);
+            var GameConstructor = Celeste.GetConstructor([]);
+
+            Console.WriteLine(SettingsInitialize);
+            Console.WriteLine(GameConstructor);
+
+            Hooks.Initialize(celeste);
+            MainThreadId.SetValue(null, Thread.CurrentThread.ManagedThreadId);
+            AssemblyDirectory.SetValue(null, "/");
+
+            SettingsInitialize.Invoke(null, []);
+
+            game = (Game)GameConstructor.Invoke([]);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine("Error in Init()!");
+            Console.Error.WriteLine(e);
+            throw e;
+        }
     }
 
     [JSExport]
     internal static void Cleanup()
     {
-        firstLaunch = false;
-        Celeste.RunThread.WaitAll();
-        celeste.Dispose();
-        Celeste.Audio.Unload();
+        try
+        {
+            celeste.GetType("Celeste.RunThread").GetMethod("WaitAll").Invoke(null, []);
+            game.Dispose();
+            celeste.GetType("Celeste.Audio").GetMethod("Unload").Invoke(null, []);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine("Error in Cleanup()!");
+            Console.Error.WriteLine(e);
+            throw e;
+        }
     }
 
     [JSExport]
@@ -82,14 +104,14 @@ partial class Program
     {
         try
         {
-            celeste.RunOneFrame();
+            game.RunOneFrame();
         }
         catch (Exception e)
         {
             Console.Error.WriteLine("Error in MainLoop()!");
             Console.Error.WriteLine(e);
-            throw;
+            throw e;
         }
-        return celeste.RunApplication;
+        return game.RunApplication;
     }
 }

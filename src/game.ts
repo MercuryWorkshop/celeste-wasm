@@ -124,6 +124,7 @@ export async function play() {
 			gameState.timebuf.clear();
 
 			exports.Program.Cleanup();
+			gameState.ready = false;
 			gameState.playing = false;
 
 			return;
