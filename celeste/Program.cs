@@ -5,7 +5,6 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Reflection;
-using Steamworks;
 using Microsoft.Xna.Framework;
 
 [assembly: System.Runtime.Versioning.SupportedOSPlatform("browser")]
@@ -16,7 +15,6 @@ partial class Program
     {
         Console.WriteLine("Hi!");
     }
-
 
     [DllImport("Emscripten")]
     public extern static int mount_opfs();
@@ -53,18 +51,20 @@ partial class Program
     {
         try
         {
-            celeste = Assembly.GetExecutingAssembly();
+            // celeste = Assembly.LoadFile("/libsdl/Celeste.dll");
+            celeste = Assembly.GetEntryAssembly();
+            Console.WriteLine(celeste);
             var Celeste = celeste.GetType("Celeste.Celeste");
+            Console.WriteLine(Celeste);
             var Settings = celeste.GetType("Celeste.Settings");
+            Console.WriteLine(Settings);
             var Engine = celeste.GetType("Monocle.Engine");
+            Console.WriteLine(Engine);
 
             var MainThreadId = Celeste.GetField("_mainThreadId", BindingFlags.Static | BindingFlags.NonPublic);
             var AssemblyDirectory = Engine.GetField("AssemblyDirectory", BindingFlags.Static | BindingFlags.NonPublic);
             var SettingsInitialize = Settings.GetMethod("Initialize", BindingFlags.Static | BindingFlags.Public);
             var GameConstructor = Celeste.GetConstructor([]);
-
-            Console.WriteLine(SettingsInitialize);
-            Console.WriteLine(GameConstructor);
 
             Hooks.Initialize(celeste);
             MainThreadId.SetValue(null, Thread.CurrentThread.ManagedThreadId);
