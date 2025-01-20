@@ -17,6 +17,7 @@
 		<WasmEnableThreads>true</WasmEnableThreads>
 		<WasmEnableSIMD>true</WasmEnableSIMD>
 		<WasmEnableExceptionHandling>true</WasmEnableExceptionHandling>
+		<WasmEnableWebcil>false</WasmEnableWebcil>
 
 		<WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
 		<WasmBitcodeCompileOptimizationFlag>-O3</WasmBitcodeCompileOptimizationFlag>
@@ -54,6 +55,5 @@
 
 		<!-- MonoMod -->
 		<ProjectReference Include="..\MonoMod\src\MonoMod.RuntimeDetour\MonoMod.RuntimeDetour.csproj" />
-		<PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />
 	</ItemGroup>
 </Project>

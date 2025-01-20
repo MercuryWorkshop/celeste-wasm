@@ -51,15 +51,10 @@ partial class Program
     {
         try
         {
-            // celeste = Assembly.LoadFile("/libsdl/Celeste.dll");
             celeste = Assembly.GetEntryAssembly();
-            Console.WriteLine(celeste);
             var Celeste = celeste.GetType("Celeste.Celeste");
-            Console.WriteLine(Celeste);
             var Settings = celeste.GetType("Celeste.Settings");
-            Console.WriteLine(Settings);
             var Engine = celeste.GetType("Monocle.Engine");
-            Console.WriteLine(Engine);
 
             var MainThreadId = Celeste.GetField("_mainThreadId", BindingFlags.Static | BindingFlags.NonPublic);
             var AssemblyDirectory = Engine.GetField("AssemblyDirectory", BindingFlags.Static | BindingFlags.NonPublic);
