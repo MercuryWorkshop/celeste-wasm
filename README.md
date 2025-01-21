@@ -22,7 +22,8 @@ This "fork" will be merged into [the original](https://github.com/mercuryWorksho
 4. apply (`git apply ...`) `FNA.patch` to FNA
 5. run `sudo dotnet workload restore` in this dir
 6. run `bash tools/decompile.sh path/to/Celeste.exe`
-7. run `make serve` for a dev server and `make publish` for a release build
+7. run `bash tools/applypatches.sh Vanilla`
+8. run `make serve` for a dev server and `make publish` for a release build
 
 to enable the download/decrypt feature:
 1. create a tar archive (optionally gzip compressed) of the Content directory

@@ -1,0 +1,14 @@
+--- celeste/Decompiled/FMOD/Debug.cs
++++ celeste/FMOD/Debug.cs
+@@ -6,9 +6,9 @@
+ {
+ 	public static RESULT Initialize(DEBUG_FLAGS flags, DEBUG_MODE mode = DEBUG_MODE.TTY, DEBUG_CALLBACK callback = null, string filename = null)
+ 	{
+-		return FMOD_Debug_Initialize(flags, mode, callback, filename);
++		return WRAP_FMOD_Debug_Initialize(flags, mode, callback, filename);
+ 	}
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Debug_Initialize(DEBUG_FLAGS flags, DEBUG_MODE mode, DEBUG_CALLBACK callback, string filename);
++	private static extern RESULT WRAP_FMOD_Debug_Initialize(DEBUG_FLAGS flags, DEBUG_MODE mode, DEBUG_CALLBACK callback, string filename);
+ }

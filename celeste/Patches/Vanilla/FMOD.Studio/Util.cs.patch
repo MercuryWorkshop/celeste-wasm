@@ -1,0 +1,14 @@
+--- celeste/Decompiled/FMOD.Studio/Util.cs
++++ celeste/FMOD.Studio/Util.cs
+@@ -8,9 +8,9 @@
+ {
+ 	public static RESULT ParseID(string idString, out Guid id)
+ 	{
+-		return FMOD_Studio_ParseID(Encoding.UTF8.GetBytes(idString + "\0"), out id);
++		return WRAP_FMOD_Studio_ParseID(Encoding.UTF8.GetBytes(idString + "\0"), out id);
+ 	}
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_ParseID(byte[] idString, out Guid id);
++	private static extern RESULT WRAP_FMOD_Studio_ParseID(byte[] idString, out Guid id);
+ }

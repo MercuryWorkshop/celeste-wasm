@@ -1,0 +1,331 @@
+--- celeste/Decompiled/FMOD.Studio/EventDescription.cs
++++ celeste/FMOD.Studio/EventDescription.cs
+@@ -8,7 +8,7 @@
+ {
+ 	public RESULT getID(out Guid id)
+ 	{
+-		return FMOD_Studio_EventDescription_GetID(rawPtr, out id);
++		return WRAP_FMOD_Studio_EventDescription_GetID(rawPtr, out id);
+ 	}
+ 
+ 	public RESULT getPath(out string path)
+@@ -16,11 +16,11 @@
+ 		path = null;
+ 		byte[] array = new byte[256];
+ 		int retrieved = 0;
+-		RESULT rESULT = FMOD_Studio_EventDescription_GetPath(rawPtr, array, array.Length, out retrieved);
++		RESULT rESULT = WRAP_FMOD_Studio_EventDescription_GetPath(rawPtr, array, array.Length, out retrieved);
+ 		if (rESULT == RESULT.ERR_TRUNCATED)
+ 		{
+ 			array = new byte[retrieved];
+-			rESULT = FMOD_Studio_EventDescription_GetPath(rawPtr, array, array.Length, out retrieved);
++			rESULT = WRAP_FMOD_Studio_EventDescription_GetPath(rawPtr, array, array.Length, out retrieved);
+ 		}
+ 		if (rESULT == RESULT.OK)
+ 		{
+@@ -31,14 +31,14 @@
+ 
+ 	public RESULT getParameterCount(out int count)
+ 	{
+-		return FMOD_Studio_EventDescription_GetParameterCount(rawPtr, out count);
++		return WRAP_FMOD_Studio_EventDescription_GetParameterDescriptionCount(rawPtr, out count);
+ 	}
+ 
+ 	public RESULT getParameterByIndex(int index, out PARAMETER_DESCRIPTION parameter)
+ 	{
+ 		parameter = default(PARAMETER_DESCRIPTION);
+ 		PARAMETER_DESCRIPTION_INTERNAL parameter2;
+-		RESULT rESULT = FMOD_Studio_EventDescription_GetParameterByIndex(rawPtr, index, out parameter2);
++		RESULT rESULT = WRAP_FMOD_Studio_EventDescription_GetParameterDescriptionByIndex(rawPtr, index, out parameter2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -51,7 +51,7 @@
+ 	{
+ 		parameter = default(PARAMETER_DESCRIPTION);
+ 		PARAMETER_DESCRIPTION_INTERNAL parameter2;
+-		RESULT rESULT = FMOD_Studio_EventDescription_GetParameter(rawPtr, Encoding.UTF8.GetBytes(name + "\0"), out parameter2);
++		RESULT rESULT = WRAP_FMOD_Studio_EventDescription_GetParameterDescriptionByName(rawPtr, Encoding.UTF8.GetBytes(name + "\0"), out parameter2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -62,13 +62,13 @@
+ 
+ 	public RESULT getUserPropertyCount(out int count)
+ 	{
+-		return FMOD_Studio_EventDescription_GetUserPropertyCount(rawPtr, out count);
++		return WRAP_FMOD_Studio_EventDescription_GetUserPropertyCount(rawPtr, out count);
+ 	}
+ 
+ 	public RESULT getUserPropertyByIndex(int index, out USER_PROPERTY property)
+ 	{
+ 		USER_PROPERTY_INTERNAL property2;
+-		RESULT rESULT = FMOD_Studio_EventDescription_GetUserPropertyByIndex(rawPtr, index, out property2);
++		RESULT rESULT = WRAP_FMOD_Studio_EventDescription_GetUserPropertyByIndex(rawPtr, index, out property2);
+ 		if (rESULT != 0)
+ 		{
+ 			property = default(USER_PROPERTY);
+@@ -81,7 +81,7 @@
+ 	public RESULT getUserProperty(string name, out USER_PROPERTY property)
+ 	{
+ 		USER_PROPERTY_INTERNAL property2;
+-		RESULT rESULT = FMOD_Studio_EventDescription_GetUserProperty(rawPtr, Encoding.UTF8.GetBytes(name + "\0"), out property2);
++		RESULT rESULT = WRAP_FMOD_Studio_EventDescription_GetUserProperty(rawPtr, Encoding.UTF8.GetBytes(name + "\0"), out property2);
+ 		if (rESULT != 0)
+ 		{
+ 			property = default(USER_PROPERTY);
+@@ -93,54 +93,54 @@
+ 
+ 	public RESULT getLength(out int length)
+ 	{
+-		return FMOD_Studio_EventDescription_GetLength(rawPtr, out length);
++		return WRAP_FMOD_Studio_EventDescription_GetLength(rawPtr, out length);
+ 	}
+ 
+ 	public RESULT getMinimumDistance(out float distance)
+ 	{
+-		return FMOD_Studio_EventDescription_GetMinimumDistance(rawPtr, out distance);
++		return WRAP_FMOD_Studio_EventDescription_GetMinMaxDistance(rawPtr, out distance, out var _);
+ 	}
+ 
+ 	public RESULT getMaximumDistance(out float distance)
+ 	{
+-		return FMOD_Studio_EventDescription_GetMaximumDistance(rawPtr, out distance);
++		return WRAP_FMOD_Studio_EventDescription_GetMinMaxDistance(rawPtr, out var _, out distance);
+ 	}
+ 
+ 	public RESULT getSoundSize(out float size)
+ 	{
+-		return FMOD_Studio_EventDescription_GetSoundSize(rawPtr, out size);
++		return WRAP_FMOD_Studio_EventDescription_GetSoundSize(rawPtr, out size);
+ 	}
+ 
+ 	public RESULT isSnapshot(out bool snapshot)
+ 	{
+-		return FMOD_Studio_EventDescription_IsSnapshot(rawPtr, out snapshot);
++		return WRAP_FMOD_Studio_EventDescription_IsSnapshot(rawPtr, out snapshot);
+ 	}
+ 
+ 	public RESULT isOneshot(out bool oneshot)
+ 	{
+-		return FMOD_Studio_EventDescription_IsOneshot(rawPtr, out oneshot);
++		return WRAP_FMOD_Studio_EventDescription_IsOneshot(rawPtr, out oneshot);
+ 	}
+ 
+ 	public RESULT isStream(out bool isStream)
+ 	{
+-		return FMOD_Studio_EventDescription_IsStream(rawPtr, out isStream);
++		return WRAP_FMOD_Studio_EventDescription_IsStream(rawPtr, out isStream);
+ 	}
+ 
+ 	public RESULT is3D(out bool is3D)
+ 	{
+-		return FMOD_Studio_EventDescription_Is3D(rawPtr, out is3D);
++		return WRAP_FMOD_Studio_EventDescription_Is3D(rawPtr, out is3D);
+ 	}
+ 
+ 	public RESULT hasCue(out bool cue)
+ 	{
+-		return FMOD_Studio_EventDescription_HasCue(rawPtr, out cue);
++		return WRAP_FMOD_Studio_EventDescription_HasSustainPoint(rawPtr, out cue);
+ 	}
+ 
+ 	public RESULT createInstance(out EventInstance instance)
+ 	{
+ 		instance = null;
+ 		IntPtr instance2 = default(IntPtr);
+-		RESULT rESULT = FMOD_Studio_EventDescription_CreateInstance(rawPtr, out instance2);
++		RESULT rESULT = WRAP_FMOD_Studio_EventDescription_CreateInstance(rawPtr, out instance2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -151,13 +151,13 @@
+ 
+ 	public RESULT getInstanceCount(out int count)
+ 	{
+-		return FMOD_Studio_EventDescription_GetInstanceCount(rawPtr, out count);
++		return WRAP_FMOD_Studio_EventDescription_GetInstanceCount(rawPtr, out count);
+ 	}
+ 
+ 	public RESULT getInstanceList(out EventInstance[] array)
+ 	{
+ 		array = null;
+-		RESULT rESULT = FMOD_Studio_EventDescription_GetInstanceCount(rawPtr, out var count);
++		RESULT rESULT = WRAP_FMOD_Studio_EventDescription_GetInstanceCount(rawPtr, out var count);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -168,7 +168,7 @@
+ 			return rESULT;
+ 		}
+ 		IntPtr[] array2 = new IntPtr[count];
+-		rESULT = FMOD_Studio_EventDescription_GetInstanceList(rawPtr, array2, count, out var count2);
++		rESULT = WRAP_FMOD_Studio_EventDescription_GetInstanceList(rawPtr, array2, count, out var count2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -187,122 +187,119 @@
+ 
+ 	public RESULT loadSampleData()
+ 	{
+-		return FMOD_Studio_EventDescription_LoadSampleData(rawPtr);
++		return WRAP_FMOD_Studio_EventDescription_LoadSampleData(rawPtr);
+ 	}
+ 
+ 	public RESULT unloadSampleData()
+ 	{
+-		return FMOD_Studio_EventDescription_UnloadSampleData(rawPtr);
++		return WRAP_FMOD_Studio_EventDescription_UnloadSampleData(rawPtr);
+ 	}
+ 
+ 	public RESULT getSampleLoadingState(out LOADING_STATE state)
+ 	{
+-		return FMOD_Studio_EventDescription_GetSampleLoadingState(rawPtr, out state);
++		return WRAP_FMOD_Studio_EventDescription_GetSampleLoadingState(rawPtr, out state);
+ 	}
+ 
+ 	public RESULT releaseAllInstances()
+ 	{
+-		return FMOD_Studio_EventDescription_ReleaseAllInstances(rawPtr);
++		return WRAP_FMOD_Studio_EventDescription_ReleaseAllInstances(rawPtr);
+ 	}
+ 
+ 	public RESULT setCallback(EVENT_CALLBACK callback, EVENT_CALLBACK_TYPE callbackmask = EVENT_CALLBACK_TYPE.ALL)
+ 	{
+-		return FMOD_Studio_EventDescription_SetCallback(rawPtr, callback, callbackmask);
++		return WRAP_FMOD_Studio_EventDescription_SetCallback(rawPtr, callback, callbackmask);
+ 	}
+ 
+ 	public RESULT getUserData(out IntPtr userdata)
+ 	{
+-		return FMOD_Studio_EventDescription_GetUserData(rawPtr, out userdata);
++		return WRAP_FMOD_Studio_EventDescription_GetUserData(rawPtr, out userdata);
+ 	}
+ 
+ 	public RESULT setUserData(IntPtr userdata)
+ 	{
+-		return FMOD_Studio_EventDescription_SetUserData(rawPtr, userdata);
++		return WRAP_FMOD_Studio_EventDescription_SetUserData(rawPtr, userdata);
+ 	}
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern bool FMOD_Studio_EventDescription_IsValid(IntPtr eventdescription);
++	private static extern bool WRAP_FMOD_Studio_EventDescription_IsValid(IntPtr eventdescription);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetID(IntPtr eventdescription, out Guid id);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetID(IntPtr eventdescription, out Guid id);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetPath(IntPtr eventdescription, [Out] byte[] path, int size, out int retrieved);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetPath(IntPtr eventdescription, [Out] byte[] path, int size, out int retrieved);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetParameterCount(IntPtr eventdescription, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetParameterDescriptionCount(IntPtr eventdescription, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetParameterByIndex(IntPtr eventdescription, int index, out PARAMETER_DESCRIPTION_INTERNAL parameter);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetParameterDescriptionByIndex(IntPtr eventdescription, int index, out PARAMETER_DESCRIPTION_INTERNAL parameter);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetParameter(IntPtr eventdescription, byte[] name, out PARAMETER_DESCRIPTION_INTERNAL parameter);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetParameterDescriptionByName(IntPtr eventdescription, byte[] name, out PARAMETER_DESCRIPTION_INTERNAL parameter);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetUserPropertyCount(IntPtr eventdescription, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetUserPropertyCount(IntPtr eventdescription, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetUserPropertyByIndex(IntPtr eventdescription, int index, out USER_PROPERTY_INTERNAL property);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetUserPropertyByIndex(IntPtr eventdescription, int index, out USER_PROPERTY_INTERNAL property);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetUserProperty(IntPtr eventdescription, byte[] name, out USER_PROPERTY_INTERNAL property);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetUserProperty(IntPtr eventdescription, byte[] name, out USER_PROPERTY_INTERNAL property);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetLength(IntPtr eventdescription, out int length);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetLength(IntPtr eventdescription, out int length);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetMinimumDistance(IntPtr eventdescription, out float distance);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetMinMaxDistance(IntPtr eventdescription, out float min, out float max);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetMaximumDistance(IntPtr eventdescription, out float distance);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetSoundSize(IntPtr eventdescription, out float size);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetSoundSize(IntPtr eventdescription, out float size);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_IsSnapshot(IntPtr eventdescription, out bool snapshot);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_IsSnapshot(IntPtr eventdescription, out bool snapshot);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_IsOneshot(IntPtr eventdescription, out bool oneshot);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_IsOneshot(IntPtr eventdescription, out bool oneshot);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_IsStream(IntPtr eventdescription, out bool isStream);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_IsStream(IntPtr eventdescription, out bool isStream);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_Is3D(IntPtr eventdescription, out bool is3D);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_Is3D(IntPtr eventdescription, out bool is3D);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_HasSustainPoint(IntPtr eventdescription, out bool cue);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_HasCue(IntPtr eventdescription, out bool cue);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_CreateInstance(IntPtr eventdescription, out IntPtr instance);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_CreateInstance(IntPtr eventdescription, out IntPtr instance);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetInstanceCount(IntPtr eventdescription, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetInstanceCount(IntPtr eventdescription, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetInstanceList(IntPtr eventdescription, IntPtr[] array, int capacity, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetInstanceList(IntPtr eventdescription, IntPtr[] array, int capacity, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_LoadSampleData(IntPtr eventdescription);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_LoadSampleData(IntPtr eventdescription);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_UnloadSampleData(IntPtr eventdescription);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_UnloadSampleData(IntPtr eventdescription);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetSampleLoadingState(IntPtr eventdescription, out LOADING_STATE state);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetSampleLoadingState(IntPtr eventdescription, out LOADING_STATE state);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_ReleaseAllInstances(IntPtr eventdescription);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_ReleaseAllInstances(IntPtr eventdescription);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_SetCallback(IntPtr eventdescription, EVENT_CALLBACK callback, EVENT_CALLBACK_TYPE callbackmask);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_SetCallback(IntPtr eventdescription, EVENT_CALLBACK callback, EVENT_CALLBACK_TYPE callbackmask);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_GetUserData(IntPtr eventdescription, out IntPtr userdata);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_GetUserData(IntPtr eventdescription, out IntPtr userdata);
+-
+-	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_EventDescription_SetUserData(IntPtr eventdescription, IntPtr userdata);
++	private static extern RESULT WRAP_FMOD_Studio_EventDescription_SetUserData(IntPtr eventdescription, IntPtr userdata);
+ 
+ 	public EventDescription(IntPtr raw)
+ 		: base(raw)
+@@ -311,6 +308,6 @@
+ 
+ 	protected override bool isValidInternal()
+ 	{
+-		return FMOD_Studio_EventDescription_IsValid(rawPtr);
++		return WRAP_FMOD_Studio_EventDescription_IsValid(rawPtr);
+ 	}
+ }

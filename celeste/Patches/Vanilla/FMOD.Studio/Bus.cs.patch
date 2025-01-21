@@ -1,0 +1,155 @@
+--- celeste/Decompiled/FMOD.Studio/Bus.cs
++++ celeste/FMOD.Studio/Bus.cs
+@@ -8,7 +8,7 @@
+ {
+ 	public RESULT getID(out Guid id)
+ 	{
+-		return FMOD_Studio_Bus_GetID(rawPtr, out id);
++		return WRAP_FMOD_Studio_Bus_GetID(rawPtr, out id);
+ 	}
+ 
+ 	public RESULT getPath(out string path)
+@@ -16,11 +16,11 @@
+ 		path = null;
+ 		byte[] array = new byte[256];
+ 		int retrieved = 0;
+-		RESULT rESULT = FMOD_Studio_Bus_GetPath(rawPtr, array, array.Length, out retrieved);
++		RESULT rESULT = WRAP_FMOD_Studio_Bus_GetPath(rawPtr, array, array.Length, out retrieved);
+ 		if (rESULT == RESULT.ERR_TRUNCATED)
+ 		{
+ 			array = new byte[retrieved];
+-			rESULT = FMOD_Studio_Bus_GetPath(rawPtr, array, array.Length, out retrieved);
++			rESULT = WRAP_FMOD_Studio_Bus_GetPath(rawPtr, array, array.Length, out retrieved);
+ 		}
+ 		if (rESULT == RESULT.OK)
+ 		{
+@@ -31,54 +31,54 @@
+ 
+ 	public RESULT getVolume(out float volume, out float finalvolume)
+ 	{
+-		return FMOD_Studio_Bus_GetVolume(rawPtr, out volume, out finalvolume);
++		return WRAP_FMOD_Studio_Bus_GetVolume(rawPtr, out volume, out finalvolume);
+ 	}
+ 
+ 	public RESULT setVolume(float volume)
+ 	{
+-		return FMOD_Studio_Bus_SetVolume(rawPtr, volume);
++		return WRAP_FMOD_Studio_Bus_SetVolume(rawPtr, volume);
+ 	}
+ 
+ 	public RESULT getPaused(out bool paused)
+ 	{
+-		return FMOD_Studio_Bus_GetPaused(rawPtr, out paused);
++		return WRAP_FMOD_Studio_Bus_GetPaused(rawPtr, out paused);
+ 	}
+ 
+ 	public RESULT setPaused(bool paused)
+ 	{
+-		return FMOD_Studio_Bus_SetPaused(rawPtr, paused);
++		return WRAP_FMOD_Studio_Bus_SetPaused(rawPtr, paused);
+ 	}
+ 
+ 	public RESULT getMute(out bool mute)
+ 	{
+-		return FMOD_Studio_Bus_GetMute(rawPtr, out mute);
++		return WRAP_FMOD_Studio_Bus_GetMute(rawPtr, out mute);
+ 	}
+ 
+ 	public RESULT setMute(bool mute)
+ 	{
+-		return FMOD_Studio_Bus_SetMute(rawPtr, mute);
++		return WRAP_FMOD_Studio_Bus_SetMute(rawPtr, mute);
+ 	}
+ 
+ 	public RESULT stopAllEvents(STOP_MODE mode)
+ 	{
+-		return FMOD_Studio_Bus_StopAllEvents(rawPtr, mode);
++		return WRAP_FMOD_Studio_Bus_StopAllEvents(rawPtr, mode);
+ 	}
+ 
+ 	public RESULT lockChannelGroup()
+ 	{
+-		return FMOD_Studio_Bus_LockChannelGroup(rawPtr);
++		return WRAP_FMOD_Studio_Bus_LockChannelGroup(rawPtr);
+ 	}
+ 
+ 	public RESULT unlockChannelGroup()
+ 	{
+-		return FMOD_Studio_Bus_UnlockChannelGroup(rawPtr);
++		return WRAP_FMOD_Studio_Bus_UnlockChannelGroup(rawPtr);
+ 	}
+ 
+ 	public RESULT getChannelGroup(out ChannelGroup group)
+ 	{
+ 		group = null;
+ 		IntPtr group2 = default(IntPtr);
+-		RESULT rESULT = FMOD_Studio_Bus_GetChannelGroup(rawPtr, out group2);
++		RESULT rESULT = WRAP_FMOD_Studio_Bus_GetChannelGroup(rawPtr, out group2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -88,43 +88,43 @@
+ 	}
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern bool FMOD_Studio_Bus_IsValid(IntPtr bus);
++	private static extern bool WRAP_FMOD_Studio_Bus_IsValid(IntPtr bus);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_GetID(IntPtr bus, out Guid id);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_GetID(IntPtr bus, out Guid id);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_GetPath(IntPtr bus, [Out] byte[] path, int size, out int retrieved);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_GetPath(IntPtr bus, [Out] byte[] path, int size, out int retrieved);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_GetVolume(IntPtr bus, out float volume, out float finalvolume);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_GetVolume(IntPtr bus, out float volume, out float finalvolume);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_SetVolume(IntPtr bus, float volume);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_SetVolume(IntPtr bus, float volume);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_GetPaused(IntPtr bus, out bool paused);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_GetPaused(IntPtr bus, out bool paused);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_SetPaused(IntPtr bus, bool paused);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_SetPaused(IntPtr bus, bool paused);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_GetMute(IntPtr bus, out bool mute);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_GetMute(IntPtr bus, out bool mute);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_SetMute(IntPtr bus, bool mute);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_SetMute(IntPtr bus, bool mute);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_StopAllEvents(IntPtr bus, STOP_MODE mode);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_StopAllEvents(IntPtr bus, STOP_MODE mode);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_LockChannelGroup(IntPtr bus);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_LockChannelGroup(IntPtr bus);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_UnlockChannelGroup(IntPtr bus);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_UnlockChannelGroup(IntPtr bus);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bus_GetChannelGroup(IntPtr bus, out IntPtr group);
++	private static extern RESULT WRAP_FMOD_Studio_Bus_GetChannelGroup(IntPtr bus, out IntPtr group);
+ 
+ 	public Bus(IntPtr raw)
+ 		: base(raw)
+@@ -133,6 +133,6 @@
+ 
+ 	protected override bool isValidInternal()
+ 	{
+-		return FMOD_Studio_Bus_IsValid(rawPtr);
++		return WRAP_FMOD_Studio_Bus_IsValid(rawPtr);
+ 	}
+ }

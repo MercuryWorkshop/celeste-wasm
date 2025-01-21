@@ -1,0 +1,106 @@
+--- celeste/Decompiled/FMOD/ChannelGroup.cs
++++ celeste/FMOD/ChannelGroup.cs
+@@ -8,7 +8,7 @@
+ {
+ 	public RESULT release()
+ 	{
+-		RESULT num = FMOD_ChannelGroup_Release(getRaw());
++		RESULT num = WRAP_FMOD_ChannelGroup_Release(getRaw());
+ 		if (num == RESULT.OK)
+ 		{
+ 			rawPtr = IntPtr.Zero;
+@@ -20,21 +20,21 @@
+ 	{
+ 		connection = null;
+ 		IntPtr connection2;
+-		RESULT result = FMOD_ChannelGroup_AddGroup(getRaw(), group.getRaw(), propagatedspclock, out connection2);
++		RESULT result = WRAP_FMOD_ChannelGroup_AddGroup(getRaw(), group.getRaw(), propagatedspclock, out connection2);
+ 		connection = new DSPConnection(connection2);
+ 		return result;
+ 	}
+ 
+ 	public RESULT getNumGroups(out int numgroups)
+ 	{
+-		return FMOD_ChannelGroup_GetNumGroups(getRaw(), out numgroups);
++		return WRAP_FMOD_ChannelGroup_GetNumGroups(getRaw(), out numgroups);
+ 	}
+ 
+ 	public RESULT getGroup(int index, out ChannelGroup group)
+ 	{
+ 		group = null;
+ 		IntPtr group2;
+-		RESULT result = FMOD_ChannelGroup_GetGroup(getRaw(), index, out group2);
++		RESULT result = WRAP_FMOD_ChannelGroup_GetGroup(getRaw(), index, out group2);
+ 		group = new ChannelGroup(group2);
+ 		return result;
+ 	}
+@@ -43,7 +43,7 @@
+ 	{
+ 		group = null;
+ 		IntPtr group2;
+-		RESULT result = FMOD_ChannelGroup_GetParentGroup(getRaw(), out group2);
++		RESULT result = WRAP_FMOD_ChannelGroup_GetParentGroup(getRaw(), out group2);
+ 		group = new ChannelGroup(group2);
+ 		return result;
+ 	}
+@@ -51,7 +51,7 @@
+ 	public RESULT getName(StringBuilder name, int namelen)
+ 	{
+ 		IntPtr intPtr = Marshal.AllocHGlobal(name.Capacity);
+-		RESULT result = FMOD_ChannelGroup_GetName(getRaw(), intPtr, namelen);
++		RESULT result = WRAP_FMOD_ChannelGroup_GetName(getRaw(), intPtr, namelen);
+ 		StringMarshalHelper.NativeToBuilder(name, intPtr);
+ 		Marshal.FreeHGlobal(intPtr);
+ 		return result;
+@@ -59,41 +59,41 @@
+ 
+ 	public RESULT getNumChannels(out int numchannels)
+ 	{
+-		return FMOD_ChannelGroup_GetNumChannels(getRaw(), out numchannels);
++		return WRAP_FMOD_ChannelGroup_GetNumChannels(getRaw(), out numchannels);
+ 	}
+ 
+ 	public RESULT getChannel(int index, out Channel channel)
+ 	{
+ 		channel = null;
+ 		IntPtr channel2;
+-		RESULT result = FMOD_ChannelGroup_GetChannel(getRaw(), index, out channel2);
++		RESULT result = WRAP_FMOD_ChannelGroup_GetChannel(getRaw(), index, out channel2);
+ 		channel = new Channel(channel2);
+ 		return result;
+ 	}
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_ChannelGroup_Release(IntPtr channelgroup);
++	private static extern RESULT WRAP_FMOD_ChannelGroup_Release(IntPtr channelgroup);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_ChannelGroup_AddGroup(IntPtr channelgroup, IntPtr group, bool propagatedspclock, out IntPtr connection);
++	private static extern RESULT WRAP_FMOD_ChannelGroup_AddGroup(IntPtr channelgroup, IntPtr group, bool propagatedspclock, out IntPtr connection);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_ChannelGroup_GetNumGroups(IntPtr channelgroup, out int numgroups);
++	private static extern RESULT WRAP_FMOD_ChannelGroup_GetNumGroups(IntPtr channelgroup, out int numgroups);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_ChannelGroup_GetGroup(IntPtr channelgroup, int index, out IntPtr group);
++	private static extern RESULT WRAP_FMOD_ChannelGroup_GetGroup(IntPtr channelgroup, int index, out IntPtr group);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_ChannelGroup_GetParentGroup(IntPtr channelgroup, out IntPtr group);
++	private static extern RESULT WRAP_FMOD_ChannelGroup_GetParentGroup(IntPtr channelgroup, out IntPtr group);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_ChannelGroup_GetName(IntPtr channelgroup, IntPtr name, int namelen);
++	private static extern RESULT WRAP_FMOD_ChannelGroup_GetName(IntPtr channelgroup, IntPtr name, int namelen);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_ChannelGroup_GetNumChannels(IntPtr channelgroup, out int numchannels);
++	private static extern RESULT WRAP_FMOD_ChannelGroup_GetNumChannels(IntPtr channelgroup, out int numchannels);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_ChannelGroup_GetChannel(IntPtr channelgroup, int index, out IntPtr channel);
++	private static extern RESULT WRAP_FMOD_ChannelGroup_GetChannel(IntPtr channelgroup, int index, out IntPtr channel);
+ 
+ 	public ChannelGroup(IntPtr raw)
+ 		: base(raw)

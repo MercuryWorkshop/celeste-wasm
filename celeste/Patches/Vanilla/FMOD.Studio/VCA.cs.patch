@@ -1,0 +1,69 @@
+--- celeste/Decompiled/FMOD.Studio/VCA.cs
++++ celeste/FMOD.Studio/VCA.cs
+@@ -8,7 +8,7 @@
+ {
+ 	public RESULT getID(out Guid id)
+ 	{
+-		return FMOD_Studio_VCA_GetID(rawPtr, out id);
++		return WRAP_FMOD_Studio_VCA_GetID(rawPtr, out id);
+ 	}
+ 
+ 	public RESULT getPath(out string path)
+@@ -16,11 +16,11 @@
+ 		path = null;
+ 		byte[] array = new byte[256];
+ 		int retrieved = 0;
+-		RESULT rESULT = FMOD_Studio_VCA_GetPath(rawPtr, array, array.Length, out retrieved);
++		RESULT rESULT = WRAP_FMOD_Studio_VCA_GetPath(rawPtr, array, array.Length, out retrieved);
+ 		if (rESULT == RESULT.ERR_TRUNCATED)
+ 		{
+ 			array = new byte[retrieved];
+-			rESULT = FMOD_Studio_VCA_GetPath(rawPtr, array, array.Length, out retrieved);
++			rESULT = WRAP_FMOD_Studio_VCA_GetPath(rawPtr, array, array.Length, out retrieved);
+ 		}
+ 		if (rESULT == RESULT.OK)
+ 		{
+@@ -31,28 +31,28 @@
+ 
+ 	public RESULT getVolume(out float volume, out float finalvolume)
+ 	{
+-		return FMOD_Studio_VCA_GetVolume(rawPtr, out volume, out finalvolume);
++		return WRAP_FMOD_Studio_VCA_GetVolume(rawPtr, out volume, out finalvolume);
+ 	}
+ 
+ 	public RESULT setVolume(float volume)
+ 	{
+-		return FMOD_Studio_VCA_SetVolume(rawPtr, volume);
++		return WRAP_FMOD_Studio_VCA_SetVolume(rawPtr, volume);
+ 	}
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern bool FMOD_Studio_VCA_IsValid(IntPtr vca);
++	private static extern bool WRAP_FMOD_Studio_VCA_IsValid(IntPtr vca);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_VCA_GetID(IntPtr vca, out Guid id);
++	private static extern RESULT WRAP_FMOD_Studio_VCA_GetID(IntPtr vca, out Guid id);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_VCA_GetPath(IntPtr vca, [Out] byte[] path, int size, out int retrieved);
++	private static extern RESULT WRAP_FMOD_Studio_VCA_GetPath(IntPtr vca, [Out] byte[] path, int size, out int retrieved);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_VCA_GetVolume(IntPtr vca, out float volume, out float finalvolume);
++	private static extern RESULT WRAP_FMOD_Studio_VCA_GetVolume(IntPtr vca, out float volume, out float finalvolume);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_VCA_SetVolume(IntPtr vca, float value);
++	private static extern RESULT WRAP_FMOD_Studio_VCA_SetVolume(IntPtr vca, float value);
+ 
+ 	public VCA(IntPtr raw)
+ 		: base(raw)
+@@ -61,6 +61,6 @@
+ 
+ 	protected override bool isValidInternal()
+ 	{
+-		return FMOD_Studio_VCA_IsValid(rawPtr);
++		return WRAP_FMOD_Studio_VCA_IsValid(rawPtr);
+ 	}
+ }

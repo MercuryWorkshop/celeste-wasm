@@ -18,8 +18,8 @@ if ! [[ "$#" -eq "1" ]]; then
 	exit 1
 fi
 
-rm -r celeste/Decompiled celeste/{Celeste,Celeste.Editor,Celeste.Pico8,Monocle} || true
+rm -r celeste/Decompiled celeste/{Celeste,Celeste.Editor,Celeste.Pico8,Monocle,FMOD,FMOD.Studio} || true
 ilspycmd -lv CSharp11_0 -p -o celeste/Decompiled "$1"
-cp -r celeste/Decompiled/{Celeste,Celeste.Editor,Celeste.Pico8,Monocle} celeste/
+cp -r celeste/Decompiled/{Celeste,Celeste.Editor,Celeste.Pico8,Monocle,FMOD,FMOD.Studio} celeste/
 rm celeste/Decompiled/Celeste.csproj
 cp celeste/Decompiled/app.ico public/

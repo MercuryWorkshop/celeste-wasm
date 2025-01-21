@@ -13,7 +13,7 @@ int SDL_GetAndroidSDKVersion(void) { return 10; }
 int SDL_iPhoneSetAnimationCallback(void * window, int interval, void *callback, void *callbackParam) { return -1; }
 void SDL_iPhoneSetEventPump(int enabled) {}
 int SDL_IsAndroidTV(void) { return 0; }
-int SDL_IsChromebook(void) { return 0; }
+int SDL_IsChromebook(void) { return 1; }
 int SDL_IsDeXMode(void) { return 0; }
 void* SDL_RenderGetD3D11Device(void * renderer) { return NULL; }
 void* SDL_RenderGetD3D9Device(void * renderer) { return NULL; }

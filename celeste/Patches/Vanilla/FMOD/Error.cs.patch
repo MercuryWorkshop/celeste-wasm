@@ -1,0 +1,28 @@
+--- celeste/Decompiled/FMOD/Error.cs
++++ celeste/FMOD/Error.cs
+@@ -45,7 +45,7 @@
+ 			RESULT.ERR_INVALID_VECTOR => "The vectors passed in are not unit length, or perpendicular.", 
+ 			RESULT.ERR_MAXAUDIBLE => "Reached maximum audible playback count for this sound's soundgroup.", 
+ 			RESULT.ERR_MEMORY => "Not enough memory or resources.", 
+-			RESULT.ERR_MEMORY_CANTPOINT => "Can't use FMOD_OPENMEMORY_POINT on non PCM source data, or non mp3/xma/adpcm data if FMOD_CREATECOMPRESSEDSAMPLE was used.", 
++			RESULT.ERR_MEMORY_CANTPOINT => "Can't use WRAP_FMOD_OPENMEMORY_POINT on non PCM source data, or non mp3/xma/adpcm data if FMOD_CREATECOMPRESSEDSAMPLE was used.", 
+ 			RESULT.ERR_NEEDS3D => "Tried to call a command on a 2d sound when the command was meant for 3d sound.", 
+ 			RESULT.ERR_NEEDSHARDWARE => "Tried to use a feature that requires hardware support.", 
+ 			RESULT.ERR_NET_CONNECT => "Couldn't connect to the specified host.", 
+@@ -58,14 +58,14 @@
+ 			RESULT.ERR_OUTPUT_DRIVERCALL => "A call to a standard soundcard driver failed, which could possibly mean a bug in the driver or resources were missing or exhausted.", 
+ 			RESULT.ERR_OUTPUT_FORMAT => "Soundcard does not support the specified format.", 
+ 			RESULT.ERR_OUTPUT_INIT => "Error initializing output device.", 
+-			RESULT.ERR_OUTPUT_NODRIVERS => "The output device has no drivers installed.  If pre-init, FMOD_OUTPUT_NOSOUND is selected as the output mode.  If post-init, the function just fails.", 
++			RESULT.ERR_OUTPUT_NODRIVERS => "The output device has no drivers installed.  If pre-init, WRAP_FMOD_OUTPUT_NOSOUND is selected as the output mode.  If post-init, the function just fails.", 
+ 			RESULT.ERR_PLUGIN => "An unspecified error has been returned from a plugin.", 
+ 			RESULT.ERR_PLUGIN_MISSING => "A requested output, dsp unit type or codec was not available.", 
+ 			RESULT.ERR_PLUGIN_RESOURCE => "A resource that the plugin requires cannot be found. (ie the DLS file for MIDI playback)", 
+ 			RESULT.ERR_PLUGIN_VERSION => "A plugin was built with an unsupported SDK version.", 
+ 			RESULT.ERR_RECORD => "An error occurred trying to initialize the recording device.", 
+ 			RESULT.ERR_REVERB_CHANNELGROUP => "Reverb properties cannot be set on this channel because a parent channelgroup owns the reverb connection.", 
+-			RESULT.ERR_REVERB_INSTANCE => "Specified instance in FMOD_REVERB_PROPERTIES couldn't be set. Most likely because it is an invalid instance number or the reverb doesn't exist.", 
++			RESULT.ERR_REVERB_INSTANCE => "Specified instance in WRAP_FMOD_REVERB_PROPERTIES couldn't be set. Most likely because it is an invalid instance number or the reverb doesn't exist.", 
+ 			RESULT.ERR_SUBSOUNDS => "The error occurred because the sound referenced contains subsounds when it shouldn't have, or it doesn't contain subsounds when it should have.  The operation may also not be able to be performed on a parent sound.", 
+ 			RESULT.ERR_SUBSOUND_ALLOCATED => "This subsound is already being used by another sound, you cannot have more than one parent to a sound.  Null out the other parent's entry first.", 
+ 			RESULT.ERR_SUBSOUND_CANTMOVE => "Shared subsounds cannot be replaced or moved from their parent stream, such as when the parent stream is an FSB file.", 

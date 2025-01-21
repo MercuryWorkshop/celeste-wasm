@@ -1,0 +1,18 @@
+--- celeste/Decompiled/FMOD/Factory.cs
++++ celeste/FMOD/Factory.cs
+@@ -10,7 +10,7 @@
+ 		system = null;
+ 		RESULT rESULT = RESULT.OK;
+ 		IntPtr system2 = default(IntPtr);
+-		rESULT = FMOD_System_Create(out system2);
++		rESULT = WRAP_FMOD_System_Create(out system2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -20,5 +20,5 @@
+ 	}
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_System_Create(out IntPtr system);
++	private static extern RESULT WRAP_FMOD_System_Create(out IntPtr system);
+ }

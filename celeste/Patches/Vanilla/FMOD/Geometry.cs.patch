@@ -1,0 +1,209 @@
+--- celeste/Decompiled/FMOD/Geometry.cs
++++ celeste/FMOD/Geometry.cs
+@@ -7,7 +7,7 @@
+ {
+ 	public RESULT release()
+ 	{
+-		RESULT num = FMOD_Geometry_Release(getRaw());
++		RESULT num = WRAP_FMOD_Geometry_Release(getRaw());
+ 		if (num == RESULT.OK)
+ 		{
+ 			rawPtr = IntPtr.Zero;
+@@ -17,158 +17,158 @@
+ 
+ 	public RESULT addPolygon(float directocclusion, float reverbocclusion, bool doublesided, int numvertices, VECTOR[] vertices, out int polygonindex)
+ 	{
+-		return FMOD_Geometry_AddPolygon(rawPtr, directocclusion, reverbocclusion, doublesided, numvertices, vertices, out polygonindex);
++		return WRAP_FMOD_Geometry_AddPolygon(rawPtr, directocclusion, reverbocclusion, doublesided, numvertices, vertices, out polygonindex);
+ 	}
+ 
+ 	public RESULT getNumPolygons(out int numpolygons)
+ 	{
+-		return FMOD_Geometry_GetNumPolygons(rawPtr, out numpolygons);
++		return WRAP_FMOD_Geometry_GetNumPolygons(rawPtr, out numpolygons);
+ 	}
+ 
+ 	public RESULT getMaxPolygons(out int maxpolygons, out int maxvertices)
+ 	{
+-		return FMOD_Geometry_GetMaxPolygons(rawPtr, out maxpolygons, out maxvertices);
++		return WRAP_FMOD_Geometry_GetMaxPolygons(rawPtr, out maxpolygons, out maxvertices);
+ 	}
+ 
+ 	public RESULT getPolygonNumVertices(int index, out int numvertices)
+ 	{
+-		return FMOD_Geometry_GetPolygonNumVertices(rawPtr, index, out numvertices);
++		return WRAP_FMOD_Geometry_GetPolygonNumVertices(rawPtr, index, out numvertices);
+ 	}
+ 
+ 	public RESULT setPolygonVertex(int index, int vertexindex, ref VECTOR vertex)
+ 	{
+-		return FMOD_Geometry_SetPolygonVertex(rawPtr, index, vertexindex, ref vertex);
++		return WRAP_FMOD_Geometry_SetPolygonVertex(rawPtr, index, vertexindex, ref vertex);
+ 	}
+ 
+ 	public RESULT getPolygonVertex(int index, int vertexindex, out VECTOR vertex)
+ 	{
+-		return FMOD_Geometry_GetPolygonVertex(rawPtr, index, vertexindex, out vertex);
++		return WRAP_FMOD_Geometry_GetPolygonVertex(rawPtr, index, vertexindex, out vertex);
+ 	}
+ 
+ 	public RESULT setPolygonAttributes(int index, float directocclusion, float reverbocclusion, bool doublesided)
+ 	{
+-		return FMOD_Geometry_SetPolygonAttributes(rawPtr, index, directocclusion, reverbocclusion, doublesided);
++		return WRAP_FMOD_Geometry_SetPolygonAttributes(rawPtr, index, directocclusion, reverbocclusion, doublesided);
+ 	}
+ 
+ 	public RESULT getPolygonAttributes(int index, out float directocclusion, out float reverbocclusion, out bool doublesided)
+ 	{
+-		return FMOD_Geometry_GetPolygonAttributes(rawPtr, index, out directocclusion, out reverbocclusion, out doublesided);
++		return WRAP_FMOD_Geometry_GetPolygonAttributes(rawPtr, index, out directocclusion, out reverbocclusion, out doublesided);
+ 	}
+ 
+ 	public RESULT setActive(bool active)
+ 	{
+-		return FMOD_Geometry_SetActive(rawPtr, active);
++		return WRAP_FMOD_Geometry_SetActive(rawPtr, active);
+ 	}
+ 
+ 	public RESULT getActive(out bool active)
+ 	{
+-		return FMOD_Geometry_GetActive(rawPtr, out active);
++		return WRAP_FMOD_Geometry_GetActive(rawPtr, out active);
+ 	}
+ 
+ 	public RESULT setRotation(ref VECTOR forward, ref VECTOR up)
+ 	{
+-		return FMOD_Geometry_SetRotation(rawPtr, ref forward, ref up);
++		return WRAP_FMOD_Geometry_SetRotation(rawPtr, ref forward, ref up);
+ 	}
+ 
+ 	public RESULT getRotation(out VECTOR forward, out VECTOR up)
+ 	{
+-		return FMOD_Geometry_GetRotation(rawPtr, out forward, out up);
++		return WRAP_FMOD_Geometry_GetRotation(rawPtr, out forward, out up);
+ 	}
+ 
+ 	public RESULT setPosition(ref VECTOR position)
+ 	{
+-		return FMOD_Geometry_SetPosition(rawPtr, ref position);
++		return WRAP_FMOD_Geometry_SetPosition(rawPtr, ref position);
+ 	}
+ 
+ 	public RESULT getPosition(out VECTOR position)
+ 	{
+-		return FMOD_Geometry_GetPosition(rawPtr, out position);
++		return WRAP_FMOD_Geometry_GetPosition(rawPtr, out position);
+ 	}
+ 
+ 	public RESULT setScale(ref VECTOR scale)
+ 	{
+-		return FMOD_Geometry_SetScale(rawPtr, ref scale);
++		return WRAP_FMOD_Geometry_SetScale(rawPtr, ref scale);
+ 	}
+ 
+ 	public RESULT getScale(out VECTOR scale)
+ 	{
+-		return FMOD_Geometry_GetScale(rawPtr, out scale);
++		return WRAP_FMOD_Geometry_GetScale(rawPtr, out scale);
+ 	}
+ 
+ 	public RESULT save(IntPtr data, out int datasize)
+ 	{
+-		return FMOD_Geometry_Save(rawPtr, data, out datasize);
++		return WRAP_FMOD_Geometry_Save(rawPtr, data, out datasize);
+ 	}
+ 
+ 	public RESULT setUserData(IntPtr userdata)
+ 	{
+-		return FMOD_Geometry_SetUserData(rawPtr, userdata);
++		return WRAP_FMOD_Geometry_SetUserData(rawPtr, userdata);
+ 	}
+ 
+ 	public RESULT getUserData(out IntPtr userdata)
+ 	{
+-		return FMOD_Geometry_GetUserData(rawPtr, out userdata);
++		return WRAP_FMOD_Geometry_GetUserData(rawPtr, out userdata);
+ 	}
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_Release(IntPtr geometry);
++	private static extern RESULT WRAP_FMOD_Geometry_Release(IntPtr geometry);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_AddPolygon(IntPtr geometry, float directocclusion, float reverbocclusion, bool doublesided, int numvertices, VECTOR[] vertices, out int polygonindex);
++	private static extern RESULT WRAP_FMOD_Geometry_AddPolygon(IntPtr geometry, float directocclusion, float reverbocclusion, bool doublesided, int numvertices, VECTOR[] vertices, out int polygonindex);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetNumPolygons(IntPtr geometry, out int numpolygons);
++	private static extern RESULT WRAP_FMOD_Geometry_GetNumPolygons(IntPtr geometry, out int numpolygons);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetMaxPolygons(IntPtr geometry, out int maxpolygons, out int maxvertices);
++	private static extern RESULT WRAP_FMOD_Geometry_GetMaxPolygons(IntPtr geometry, out int maxpolygons, out int maxvertices);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetPolygonNumVertices(IntPtr geometry, int index, out int numvertices);
++	private static extern RESULT WRAP_FMOD_Geometry_GetPolygonNumVertices(IntPtr geometry, int index, out int numvertices);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_SetPolygonVertex(IntPtr geometry, int index, int vertexindex, ref VECTOR vertex);
++	private static extern RESULT WRAP_FMOD_Geometry_SetPolygonVertex(IntPtr geometry, int index, int vertexindex, ref VECTOR vertex);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetPolygonVertex(IntPtr geometry, int index, int vertexindex, out VECTOR vertex);
++	private static extern RESULT WRAP_FMOD_Geometry_GetPolygonVertex(IntPtr geometry, int index, int vertexindex, out VECTOR vertex);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_SetPolygonAttributes(IntPtr geometry, int index, float directocclusion, float reverbocclusion, bool doublesided);
++	private static extern RESULT WRAP_FMOD_Geometry_SetPolygonAttributes(IntPtr geometry, int index, float directocclusion, float reverbocclusion, bool doublesided);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetPolygonAttributes(IntPtr geometry, int index, out float directocclusion, out float reverbocclusion, out bool doublesided);
++	private static extern RESULT WRAP_FMOD_Geometry_GetPolygonAttributes(IntPtr geometry, int index, out float directocclusion, out float reverbocclusion, out bool doublesided);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_SetActive(IntPtr geometry, bool active);
++	private static extern RESULT WRAP_FMOD_Geometry_SetActive(IntPtr geometry, bool active);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetActive(IntPtr geometry, out bool active);
++	private static extern RESULT WRAP_FMOD_Geometry_GetActive(IntPtr geometry, out bool active);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_SetRotation(IntPtr geometry, ref VECTOR forward, ref VECTOR up);
++	private static extern RESULT WRAP_FMOD_Geometry_SetRotation(IntPtr geometry, ref VECTOR forward, ref VECTOR up);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetRotation(IntPtr geometry, out VECTOR forward, out VECTOR up);
++	private static extern RESULT WRAP_FMOD_Geometry_GetRotation(IntPtr geometry, out VECTOR forward, out VECTOR up);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_SetPosition(IntPtr geometry, ref VECTOR position);
++	private static extern RESULT WRAP_FMOD_Geometry_SetPosition(IntPtr geometry, ref VECTOR position);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetPosition(IntPtr geometry, out VECTOR position);
++	private static extern RESULT WRAP_FMOD_Geometry_GetPosition(IntPtr geometry, out VECTOR position);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_SetScale(IntPtr geometry, ref VECTOR scale);
++	private static extern RESULT WRAP_FMOD_Geometry_SetScale(IntPtr geometry, ref VECTOR scale);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetScale(IntPtr geometry, out VECTOR scale);
++	private static extern RESULT WRAP_FMOD_Geometry_GetScale(IntPtr geometry, out VECTOR scale);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_Save(IntPtr geometry, IntPtr data, out int datasize);
++	private static extern RESULT WRAP_FMOD_Geometry_Save(IntPtr geometry, IntPtr data, out int datasize);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_SetUserData(IntPtr geometry, IntPtr userdata);
++	private static extern RESULT WRAP_FMOD_Geometry_SetUserData(IntPtr geometry, IntPtr userdata);
+ 
+ 	[DllImport("fmod")]
+-	private static extern RESULT FMOD_Geometry_GetUserData(IntPtr geometry, out IntPtr userdata);
++	private static extern RESULT WRAP_FMOD_Geometry_GetUserData(IntPtr geometry, out IntPtr userdata);
+ 
+ 	public Geometry(IntPtr raw)
+ 		: base(raw)

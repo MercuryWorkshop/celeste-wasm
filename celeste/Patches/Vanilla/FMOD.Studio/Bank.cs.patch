@@ -1,0 +1,252 @@
+--- celeste/Decompiled/FMOD.Studio/Bank.cs
++++ celeste/FMOD.Studio/Bank.cs
+@@ -8,7 +8,7 @@
+ {
+ 	public RESULT getID(out Guid id)
+ 	{
+-		return FMOD_Studio_Bank_GetID(rawPtr, out id);
++		return WRAP_FMOD_Studio_Bank_GetID(rawPtr, out id);
+ 	}
+ 
+ 	public RESULT getPath(out string path)
+@@ -16,11 +16,11 @@
+ 		path = null;
+ 		byte[] array = new byte[256];
+ 		int retrieved = 0;
+-		RESULT rESULT = FMOD_Studio_Bank_GetPath(rawPtr, array, array.Length, out retrieved);
++		RESULT rESULT = WRAP_FMOD_Studio_Bank_GetPath(rawPtr, array, array.Length, out retrieved);
+ 		if (rESULT == RESULT.ERR_TRUNCATED)
+ 		{
+ 			array = new byte[retrieved];
+-			rESULT = FMOD_Studio_Bank_GetPath(rawPtr, array, array.Length, out retrieved);
++			rESULT = WRAP_FMOD_Studio_Bank_GetPath(rawPtr, array, array.Length, out retrieved);
+ 		}
+ 		if (rESULT == RESULT.OK)
+ 		{
+@@ -31,7 +31,7 @@
+ 
+ 	public RESULT unload()
+ 	{
+-		RESULT rESULT = FMOD_Studio_Bank_Unload(rawPtr);
++		RESULT rESULT = WRAP_FMOD_Studio_Bank_Unload(rawPtr);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -42,27 +42,27 @@
+ 
+ 	public RESULT loadSampleData()
+ 	{
+-		return FMOD_Studio_Bank_LoadSampleData(rawPtr);
++		return WRAP_FMOD_Studio_Bank_LoadSampleData(rawPtr);
+ 	}
+ 
+ 	public RESULT unloadSampleData()
+ 	{
+-		return FMOD_Studio_Bank_UnloadSampleData(rawPtr);
++		return WRAP_FMOD_Studio_Bank_UnloadSampleData(rawPtr);
+ 	}
+ 
+ 	public RESULT getLoadingState(out LOADING_STATE state)
+ 	{
+-		return FMOD_Studio_Bank_GetLoadingState(rawPtr, out state);
++		return WRAP_FMOD_Studio_Bank_GetLoadingState(rawPtr, out state);
+ 	}
+ 
+ 	public RESULT getSampleLoadingState(out LOADING_STATE state)
+ 	{
+-		return FMOD_Studio_Bank_GetSampleLoadingState(rawPtr, out state);
++		return WRAP_FMOD_Studio_Bank_GetSampleLoadingState(rawPtr, out state);
+ 	}
+ 
+ 	public RESULT getStringCount(out int count)
+ 	{
+-		return FMOD_Studio_Bank_GetStringCount(rawPtr, out count);
++		return WRAP_FMOD_Studio_Bank_GetStringCount(rawPtr, out count);
+ 	}
+ 
+ 	public RESULT getStringInfo(int index, out Guid id, out string path)
+@@ -70,11 +70,11 @@
+ 		path = null;
+ 		byte[] array = new byte[256];
+ 		int retrieved = 0;
+-		RESULT rESULT = FMOD_Studio_Bank_GetStringInfo(rawPtr, index, out id, array, array.Length, out retrieved);
++		RESULT rESULT = WRAP_FMOD_Studio_Bank_GetStringInfo(rawPtr, index, out id, array, array.Length, out retrieved);
+ 		if (rESULT == RESULT.ERR_TRUNCATED)
+ 		{
+ 			array = new byte[retrieved];
+-			rESULT = FMOD_Studio_Bank_GetStringInfo(rawPtr, index, out id, array, array.Length, out retrieved);
++			rESULT = WRAP_FMOD_Studio_Bank_GetStringInfo(rawPtr, index, out id, array, array.Length, out retrieved);
+ 		}
+ 		if (rESULT == RESULT.OK)
+ 		{
+@@ -85,13 +85,13 @@
+ 
+ 	public RESULT getEventCount(out int count)
+ 	{
+-		return FMOD_Studio_Bank_GetEventCount(rawPtr, out count);
++		return WRAP_FMOD_Studio_Bank_GetEventCount(rawPtr, out count);
+ 	}
+ 
+ 	public RESULT getEventList(out EventDescription[] array)
+ 	{
+ 		array = null;
+-		RESULT rESULT = FMOD_Studio_Bank_GetEventCount(rawPtr, out var count);
++		RESULT rESULT = WRAP_FMOD_Studio_Bank_GetEventCount(rawPtr, out var count);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -102,7 +102,7 @@
+ 			return rESULT;
+ 		}
+ 		IntPtr[] array2 = new IntPtr[count];
+-		rESULT = FMOD_Studio_Bank_GetEventList(rawPtr, array2, count, out var count2);
++		rESULT = WRAP_FMOD_Studio_Bank_GetEventList(rawPtr, array2, count, out var count2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -121,13 +121,13 @@
+ 
+ 	public RESULT getBusCount(out int count)
+ 	{
+-		return FMOD_Studio_Bank_GetBusCount(rawPtr, out count);
++		return WRAP_FMOD_Studio_Bank_GetBusCount(rawPtr, out count);
+ 	}
+ 
+ 	public RESULT getBusList(out Bus[] array)
+ 	{
+ 		array = null;
+-		RESULT rESULT = FMOD_Studio_Bank_GetBusCount(rawPtr, out var count);
++		RESULT rESULT = WRAP_FMOD_Studio_Bank_GetBusCount(rawPtr, out var count);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -138,7 +138,7 @@
+ 			return rESULT;
+ 		}
+ 		IntPtr[] array2 = new IntPtr[count];
+-		rESULT = FMOD_Studio_Bank_GetBusList(rawPtr, array2, count, out var count2);
++		rESULT = WRAP_FMOD_Studio_Bank_GetBusList(rawPtr, array2, count, out var count2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -157,13 +157,13 @@
+ 
+ 	public RESULT getVCACount(out int count)
+ 	{
+-		return FMOD_Studio_Bank_GetVCACount(rawPtr, out count);
++		return WRAP_FMOD_Studio_Bank_GetVCACount(rawPtr, out count);
+ 	}
+ 
+ 	public RESULT getVCAList(out VCA[] array)
+ 	{
+ 		array = null;
+-		RESULT rESULT = FMOD_Studio_Bank_GetVCACount(rawPtr, out var count);
++		RESULT rESULT = WRAP_FMOD_Studio_Bank_GetVCACount(rawPtr, out var count);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -174,7 +174,7 @@
+ 			return rESULT;
+ 		}
+ 		IntPtr[] array2 = new IntPtr[count];
+-		rESULT = FMOD_Studio_Bank_GetVCAList(rawPtr, array2, count, out var count2);
++		rESULT = WRAP_FMOD_Studio_Bank_GetVCAList(rawPtr, array2, count, out var count2);
+ 		if (rESULT != 0)
+ 		{
+ 			return rESULT;
+@@ -193,67 +193,67 @@
+ 
+ 	public RESULT getUserData(out IntPtr userdata)
+ 	{
+-		return FMOD_Studio_Bank_GetUserData(rawPtr, out userdata);
++		return WRAP_FMOD_Studio_Bank_GetUserData(rawPtr, out userdata);
+ 	}
+ 
+ 	public RESULT setUserData(IntPtr userdata)
+ 	{
+-		return FMOD_Studio_Bank_SetUserData(rawPtr, userdata);
++		return WRAP_FMOD_Studio_Bank_SetUserData(rawPtr, userdata);
+ 	}
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern bool FMOD_Studio_Bank_IsValid(IntPtr bank);
++	private static extern bool WRAP_FMOD_Studio_Bank_IsValid(IntPtr bank);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetID(IntPtr bank, out Guid id);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetID(IntPtr bank, out Guid id);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetPath(IntPtr bank, [Out] byte[] path, int size, out int retrieved);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetPath(IntPtr bank, [Out] byte[] path, int size, out int retrieved);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_Unload(IntPtr bank);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_Unload(IntPtr bank);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_LoadSampleData(IntPtr bank);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_LoadSampleData(IntPtr bank);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_UnloadSampleData(IntPtr bank);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_UnloadSampleData(IntPtr bank);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetLoadingState(IntPtr bank, out LOADING_STATE state);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetLoadingState(IntPtr bank, out LOADING_STATE state);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetSampleLoadingState(IntPtr bank, out LOADING_STATE state);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetSampleLoadingState(IntPtr bank, out LOADING_STATE state);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetStringCount(IntPtr bank, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetStringCount(IntPtr bank, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetStringInfo(IntPtr bank, int index, out Guid id, [Out] byte[] path, int size, out int retrieved);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetStringInfo(IntPtr bank, int index, out Guid id, [Out] byte[] path, int size, out int retrieved);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetEventCount(IntPtr bank, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetEventCount(IntPtr bank, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetEventList(IntPtr bank, IntPtr[] array, int capacity, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetEventList(IntPtr bank, IntPtr[] array, int capacity, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetBusCount(IntPtr bank, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetBusCount(IntPtr bank, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetBusList(IntPtr bank, IntPtr[] array, int capacity, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetBusList(IntPtr bank, IntPtr[] array, int capacity, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetVCACount(IntPtr bank, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetVCACount(IntPtr bank, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetVCAList(IntPtr bank, IntPtr[] array, int capacity, out int count);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetVCAList(IntPtr bank, IntPtr[] array, int capacity, out int count);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_GetUserData(IntPtr studiosystem, out IntPtr userdata);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_GetUserData(IntPtr studiosystem, out IntPtr userdata);
+ 
+ 	[DllImport("fmodstudio")]
+-	private static extern RESULT FMOD_Studio_Bank_SetUserData(IntPtr studiosystem, IntPtr userdata);
++	private static extern RESULT WRAP_FMOD_Studio_Bank_SetUserData(IntPtr studiosystem, IntPtr userdata);
+ 
+ 	public Bank(IntPtr raw)
+ 		: base(raw)
+@@ -262,6 +262,6 @@
+ 
+ 	protected override bool isValidInternal()
+ 	{
+-		return FMOD_Studio_Bank_IsValid(rawPtr);
++		return WRAP_FMOD_Studio_Bank_IsValid(rawPtr);
+ 	}
+ }
