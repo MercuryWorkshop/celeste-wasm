@@ -49,7 +49,8 @@ const Intro: Component<{
 	return (
 		<div>
 			<div>
-				This is a mostly-complete port of <Link href="https://www.celestegame.com/">Celeste</Link> to the browser using dotnet 9's threaded WASM support.
+				This is a mostly-complete port of <Link href="https://www.celestegame.com/">Celeste</Link> to the browser using <b>dotnet 9's threaded WASM support</b>.
+				It also uses <Link href="https://github.com/r58playz/monomod">r58Playz's <b>MonoMod WASM port</b></Link> to patch the game dynamically.
 				It needs around 0.6GB of memory and will probably not work on low-end devices.
 			</div>
 
@@ -62,14 +63,14 @@ const Intro: Component<{
 			</div>
 
 			{PICKERS_UNAVAILABLE ?
-				<div class="warning">
+				<div class="error">
 					Your browser does not support the
 					{' '}<Link href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">File System Access API</Link>.{' '}
 					You will be unable to copy your Celeste assets to play or use the upload features in the filesystem viewer.
 				</div>
 				: null}
 			{DECRYPT_INFO ? null :
-				<div class="warning">
+				<div class="error">
 					This deployment of celeste-wasm does not have encrypted assets. You cannot download and decrypt them to play.
 				</div>}
 			{PICKERS_UNAVAILABLE && !DECRYPT_INFO ?

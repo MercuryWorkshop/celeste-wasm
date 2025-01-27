@@ -51,7 +51,15 @@ partial class Program
     {
         try
         {
-            celeste = Assembly.GetEntryAssembly();
+            if (File.Exists("/libsdl/CustomCeleste.dll"))
+            {
+                celeste = Assembly.LoadFile("/libsdl/CustomCeleste.dll");
+            }
+            else
+            {
+                celeste = Assembly.GetEntryAssembly();
+            }
+
             var Celeste = celeste.GetType("Celeste.Celeste");
             var Settings = celeste.GetType("Celeste.Settings");
             var Engine = celeste.GetType("Monocle.Engine");

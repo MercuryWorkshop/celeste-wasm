@@ -11,7 +11,7 @@
 		<TrimMode>partial</TrimMode>
 
 		<NoWarn>IL2026,IL2045,IL2046,IL2055,IL2057,IL2060,IL2062,IL2065,IL2067,IL2070,IL2072,IL2075,IL2077,IL2080,IL2087,IL2090,IL2091,IL2104,IL2111</NoWarn>
-		<NoWarn>$(NoWarn),SYSLIB0011,CS0169,CS0219,CS0649,CS8981,CA2022,CA1416</NoWarn>
+		<NoWarn>$(NoWarn),SYSLIB0011,CS0169,CS0219,CS0649,CS8981,CA2022,CA1416,SYSLIB0003</NoWarn>
 
 		<WasmBuildNative>true</WasmBuildNative>
 		<WasmEnableThreads>true</WasmEnableThreads>
@@ -57,5 +57,7 @@
 
 		<!-- MonoMod -->
 		<ProjectReference Include="..\MonoMod\src\MonoMod.RuntimeDetour\MonoMod.RuntimeDetour.csproj" />
+		<PackageReference Include="System.Security.Permissions" Version="9.0.1" />
+		<PackageReference Include="System.Threading.AccessControl" Version="9.0.1" />
 	</ItemGroup>
 </Project>
