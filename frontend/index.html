@@ -5,21 +5,72 @@
 		<link rel="icon" href="app.webp" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="darkreader-lock" />
-		<title>Webleste</title>
-		<meta property="og:title" content="Webleste" />
+		<title>Stardew Valley WASM</title>
+		<meta property="og:title" content="Stardew Valley WASM" />
 		<meta
 			property="og:description"
-			content="Celeste (2018) and Everest running entirely within the browser, powered by WebAssembly (WASM)."
+			content="Stardew Valley running entirely within the browser, powered by WebAssembly (WASM)."
 		/>
 		<meta
 			name="description"
-			content="Celeste (2018) and Everest running entirely within the browser, powered by WebAssembly (WASM)."
+			content="Stardew Valley running entirely within the browser, powered by WebAssembly (WASM)."
 		/>
-		<link rel="canonical" href="https://celeste.r58playz.dev" />
+		<style>
+			* { margin: 0; padding: 0; box-sizing: border-box; }
+			body { background: #000; display: flex; flex-direction: column; height: 100vh; font-family: monospace; }
+			#loader { flex: 1; display: flex; align-items: center; justify-content: center; color: #0f0; font-size: 16px; }
+			#canvas { flex: 1; width: 100%; height: 100%; }
+			#app { flex: 1; width: 100%; height: 100%; }
+		</style>
 	</head>
 
 	<body>
-		<div id="app"></div>
-		<script type="module" src="/src/app.tsx"></script>
+		<div id="loader">Loading .NET runtime...</div>
+		<canvas id="canvas" style="display: none;"></canvas>
+		<div id="app" style="display: none;"></div>
+
+		<!-- Load .NET WASM runtime via dynamic import to avoid Vite resolver issues -->
+		<script type="module">
+			async function initRuntime() {
+				const runtimeUrl = `${location.origin}/_framework/dotnet.js`;
+				const runtimeModule = await import(runtimeUrl);
+				const { dotnet } = runtimeModule;
+
+				
+				console.log('[WASM] Starting .NET runtime initialization...');
+				console.log('[WASM] Starting .NET runtime initialization...');
+				
+				try {
+					const loader = document.getElementById('loader');
+					const runtime = await dotnet.create();
+					
+					console.log('[WASM] .NET runtime initialized successfully');
+					loader.textContent = 'Runtime loaded. Starting StardewLoader...';
+					
+					// Get the StardewLoader module
+					const exports = await runtime.getAssemblyExports('StardewLoader');
+					console.log('[WASM] StardewLoader exports:', exports);
+					
+					// Log available exports
+					if (exports) {
+						console.log('[WASM] Available exports:', Object.keys(exports));
+						// Try to call Init if available
+						if (exports.StardewLoader?.Init) {
+							console.log('[WASM] Calling StardewLoader.Init()...');
+							await exports.StardewLoader.Init();
+						}
+					}
+					
+					loader.textContent = 'Game initialized - check console for status';
+					
+				} catch (err) {
+					console.error('[WASM] Initialization error:', err);
+					document.getElementById('loader').innerHTML = `<span style="color: #f00;">ERROR: ${err.message}</span>`;
+				}
+			}
+
+			initRuntime();
+		</script>
+		<!-- frontend UI removed to show game canvas directly -->
 	</body>
 </html>

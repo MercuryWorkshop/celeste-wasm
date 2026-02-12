@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+<PropertyGroup>
+<TargetFramework>net9.0</TargetFramework>
+<AssemblyName>StardewLoader</AssemblyName>
+<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+<Nullable>disable</Nullable>
+<PublishTrimmed>false</PublishTrimmed>
+<DisableBuildCompression>true</DisableBuildCompression>
+<WasmEnableThreads>true</WasmEnableThreads>
+<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sWASMFS -sOFFSCREENCANVAS_SUPPORT -sMAXIMUM_MEMORY=4294901760</EmccExtraLDFlags>
+</PropertyGroup>
+
+<ItemGroup>
+<PackageReference Include="System.Security.Permissions" Version="9.0.1" />
+</ItemGroup>
+</Project>

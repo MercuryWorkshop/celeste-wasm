@@ -1,0 +1,21 @@
+--2026-02-11 17:41:29--  https://github.com/r58Playz/FNA-WASM-Build/releases/download/265e23ca-337c-4e8d-b383-0e1e87300468/FAudio.a
+Resolving github.com (github.com)... 140.82.112.3
+Connecting to github.com (github.com)|140.82.112.3|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://release-assets.githubusercontent.com/github-production-release-asset/801666196/c9db4f8a-7357-4d3e-a4d6-08d9a1254d18?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-02-11T23%3A35%3A15Z&rscd=attachment%3B+filename%3DFAudio.a&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-02-11T22%3A34%3A55Z&ske=2026-02-11T23%3A35%3A15Z&sks=b&skv=2018-11-09&sig=wkgB1vaG%2B0phQRRZ5qVn5IPrAEmGv93lql8b%2B35hK2A%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc3MDg0OTk4OSwibmJmIjoxNzcwODQ5Njg5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.5lxCw7AhWkYQDZ-QtMgqHHszZKo0JJOKL_B29Q7P6Ls&response-content-disposition=attachment%3B%20filename%3DFAudio.a&response-content-type=application%2Foctet-stream [following]
+--2026-02-11 17:41:29--  https://release-assets.githubusercontent.com/github-production-release-asset/801666196/c9db4f8a-7357-4d3e-a4d6-08d9a1254d18?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-02-11T23%3A35%3A15Z&rscd=attachment%3B+filename%3DFAudio.a&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-02-11T22%3A34%3A55Z&ske=2026-02-11T23%3A35%3A15Z&sks=b&skv=2018-11-09&sig=wkgB1vaG%2B0phQRRZ5qVn5IPrAEmGv93lql8b%2B35hK2A%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc3MDg0OTk4OSwibmJmIjoxNzcwODQ5Njg5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.5lxCw7AhWkYQDZ-QtMgqHHszZKo0JJOKL_B29Q7P6Ls&response-content-disposition=attachment%3B%20filename%3DFAudio.a&response-content-type=application%2Foctet-stream
+Resolving release-assets.githubusercontent.com (release-assets.githubusercontent.com)... 185.199.108.133, 185.199.109.133, 185.199.111.133, ...
+Connecting to release-assets.githubusercontent.com (release-assets.githubusercontent.com)|185.199.108.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 268022 (262K) [application/octet-stream]
+Saving to: ‘statics/FAudio.a’
+
+     0K .......... .......... .......... .......... .......... 19% 2.19M 0s
+    50K .......... .......... .......... .......... .......... 38% 3.00M 0s
+   100K .......... .......... .......... .......... .......... 57% 23.5M 0s
+   150K .......... .......... .......... .......... .......... 76% 5.71M 0s
+   200K .......... .......... .......... .......... .......... 95%  105M 0s
+   250K .......... .                                          100% 76.4M=0.05s
+
+2026-02-11 17:41:29 (5.13 MB/s) - ‘statics/FAudio.a’ saved [268022/268022]
+

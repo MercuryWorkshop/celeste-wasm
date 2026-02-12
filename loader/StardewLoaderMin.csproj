@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<AssemblyName>StardewLoader</AssemblyName>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Nullable>disable</Nullable>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+
+		<WasmBuildNative>true</WasmBuildNative>
+		<WasmEnableThreads>true</WasmEnableThreads>
+		<WasmEnableSIMD>true</WasmEnableSIMD>
+		<WasmEnableExceptionHandling>true</WasmEnableExceptionHandling>
+		<DisableBuildCompression>true</DisableBuildCompression>
+		<PublishTrimmed>false</PublishTrimmed>
+
+		<EmccExtraLDFlags>-sMIN_WEBGL_VERSION=2 -sWASMFS -sOFFSCREENCANVAS_SUPPORT -sMAXIMUM_MEMORY=4294901760 -sMALLOC=mimalloc</EmccExtraLDFlags>
+		<EmccLinkOptimizationFlag>-O3</EmccLinkOptimizationFlag>
+		<EmccCompileOptimizationFlag>-O3</EmccCompileOptimizationFlag>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<NativeFileReference Include="..\statics\SDL3.a" />
+		<NativeFileReference Include="..\statics\FNA3D.a" />
+		<NativeFileReference Include="..\statics\libmojoshader.a" />
+		<NativeFileReference Include="..\statics\FAudio.a" />
+		<NativeFileReference Include="Emscripten.c" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Security.Permissions" Version="9.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<Target Name="BeforeBuild">
+		<Exec Command="bash '$(MSBuildProjectDirectory)/../replaceruntime.sh'" />
+	</Target>
+</Project>

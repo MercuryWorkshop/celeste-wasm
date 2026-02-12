@@ -46,9 +46,9 @@ build: deps
 	pnpm i
 	rm -r frontend/public/_framework loader/bin/Release/net9.0/publish/wwwroot/_framework || true
 #
-	NUGET_PACKAGES="$(shell realpath .)/nuget" dotnet restore loader $(DOTNETFLAGS)
+	NUGET_PACKAGES="$(shell realpath .)/nuget" dotnet restore loader/StardewLoader.csproj $(DOTNETFLAGS)
 	bash replaceruntime.sh
-	NUGET_PACKAGES="$(shell realpath .)/nuget" dotnet publish loader -c Release $(DOTNETFLAGS)
+	NUGET_PACKAGES="$(shell realpath .)/nuget" dotnet publish loader/StardewLoader.csproj -c Release $(DOTNETFLAGS)
 #
 	cp -r loader/bin/Release/net9.0/publish/wwwroot/_framework frontend/public/
 	# emscripten sucks
