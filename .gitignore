@@ -16,3 +16,6 @@ obj
 
 .env.local
 .DS_Store
+
+/celeste-wasm-server
+/server/cache

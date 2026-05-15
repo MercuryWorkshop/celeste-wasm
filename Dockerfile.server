@@ -1,0 +1,158 @@
+# Multi-stage build for celeste-wasm self-hosted server package
+#
+# This Dockerfile builds the frontend, bundles game assets from celeste-wasm.tar,
+# and produces a lightweight Node.js image that serves everything.
+#
+# Usage:
+#   # 1. Optionally prepare docker-assets/ with Celeste.exe for auto-patching
+#   # 2. Ensure celeste-wasm.tar is at the project root
+#   # 3. Build:
+#   docker build --platform linux/amd64 -f Dockerfile.server -t celeste-wasm-server .
+#   # 4a. Run as Docker container:
+#   docker run -p 8080:8080 celeste-wasm-server
+#   # 4b. OR extract the package to run natively with Node.js:
+#   docker create --name tmp celeste-wasm-server
+#   docker cp tmp:/app celeste-wasm-server
+#   docker rm tmp
+#   cd celeste-wasm-server && node server.mjs
+
+# ---------------------------------------------------------------------------
+# Stage 1: Build the frontend (dotnet + emsdk + pnpm)
+# ---------------------------------------------------------------------------
+FROM --platform=linux/amd64 mcr.microsoft.com/dotnet/sdk:9.0 AS dotnet-build
+
+RUN set -eux; \
+    for i in 1 2 3; do \
+        apt-get update && break || (echo "Retry $i of 3..." && sleep 10); \
+    done; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    git \
+    wget \
+    python3 \
+    build-essential \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN echo "Skipping mono-devel - MonoMod uses Mono.Cecil NuGet package"
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Pin pnpm to v9 — pnpm 10+ blocks build scripts by default and fails on esbuild
+RUN npm install -g pnpm@9
+
+WORKDIR /build
+
+# Copy package files first for better layer caching
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
+
+# Copy project files
+COPY . .
+
+# docker-assets/ for optional Celeste.exe patching
+COPY docker-assets /tmp/docker-assets/
+
+# Install .NET workloads
+RUN cd loader && dotnet workload restore && cd ..
+
+# Clone dependencies first (NLua, FNA, MonoMod, emsdk, etc.)
+RUN make deps
+
+# Fix NLua signing on Linux — must run AFTER make deps clones NLua
+# The _SignAssembly target calls 'sn' which doesn't exist on Linux;
+# rewrite the file to disable signing entirely
+RUN if [ -f NLua/build/targets/NLua.Sign.targets ]; then \
+        printf '<?xml version="1.0" encoding="utf-8"?>\n<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">\n    <PropertyGroup>\n        <SignAssembly>true</SignAssembly>\n        <PublicSign>true</PublicSign>\n        <KeyFileName Condition=" '\''$(KeyFileName)'\'' == '\'''\'' ">NLua.snk</KeyFileName>\n        <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)\\..\\..\\$(KeyFileName)</AssemblyOriginatorKeyFile>\n    </PropertyGroup>\n</Project>\n' \
+            > NLua/build/targets/NLua.Sign.targets && \
+        echo "Replaced NLua.Sign.targets (disabled _SignAssembly target)"; \
+    fi
+
+# Build the frontend (deps already installed, this runs build + pnpm build)
+RUN make publish
+
+# Patch Celeste.exe if Celeste.exe is in docker-assets/ (same logic as existing Dockerfile)
+RUN if [ -f "/tmp/docker-assets/Celeste.exe" ] && [ ! -f "/tmp/docker-assets/CustomCeleste.dll" ]; then \
+        echo "Building patcher tool..."; \
+        cd build-patcher && \
+        dotnet build -c Release -o /tmp/patcher-tool || (echo "Patcher build failed, will patch at runtime" && exit 0); \
+        echo "Patching Celeste.exe to create CustomCeleste.dll..."; \
+        mkdir -p /tmp/patch-work/libsdl/Celeste/Everest /tmp/patch-work/bin; \
+        cp /tmp/docker-assets/Celeste.exe /tmp/patch-work/libsdl/Celeste.exe; \
+        if [ -f "loader/bin/Release/net9.0/publish/Celeste.Wasm.mm.dll" ]; then \
+            cp loader/bin/Release/net9.0/publish/Celeste.Wasm.mm.dll /tmp/patch-work/bin/; \
+        elif [ -f "patcher/bin/Release/net9.0/Celeste.Wasm.mm.dll" ]; then \
+            cp patcher/bin/Release/net9.0/Celeste.Wasm.mm.dll /tmp/patch-work/bin/; \
+        elif [ -f "patcher/bin/Release/net9.0/publish/Celeste.Wasm.mm.dll" ]; then \
+            cp patcher/bin/Release/net9.0/publish/Celeste.Wasm.mm.dll /tmp/patch-work/bin/; \
+        else \
+            echo "Warning: Celeste.Wasm.mm.dll not found, skipping patching"; \
+            exit 0; \
+        fi; \
+        /tmp/patcher-tool/BuildPatcher \
+            /tmp/patch-work/libsdl/Celeste.exe \
+            /tmp/docker-assets/CustomCeleste.dll \
+            false || \
+        (echo "Note: Automatic patching failed, Celeste.exe will be patched at runtime"); \
+    else \
+        echo "Celeste.exe not found or CustomCeleste.dll already exists, skipping patching"; \
+    fi
+
+# Stage the game executables into a known location for the assembler
+RUN mkdir -p /tmp/game-output && \
+    if [ -f /tmp/docker-assets/CustomCeleste.dll ]; then \
+        cp /tmp/docker-assets/CustomCeleste.dll /tmp/game-output/; \
+    fi && \
+    if [ -f /tmp/docker-assets/Celeste.exe ]; then \
+        cp /tmp/docker-assets/Celeste.exe /tmp/game-output/; \
+    fi && \
+    ls -la /tmp/game-output/ || true
+
+# ---------------------------------------------------------------------------
+# Stage 2: Assemble the server package
+# ---------------------------------------------------------------------------
+FROM node:22-slim AS assembler
+
+WORKDIR /package
+
+# Copy the built frontend from stage 1
+COPY --from=dotnet-build /build/frontend/dist ./dist
+
+# Copy the server script
+COPY server/server.mjs ./server.mjs
+
+# Copy celeste-wasm.tar directly from build context
+COPY celeste-wasm.tar ./celeste-wasm.tar
+
+# Copy game executables from the dotnet-build stage (may be empty)
+COPY --from=dotnet-build /tmp/game-output/ /tmp/game-files/
+
+# Bundle patched game files into dist/ so they're available without tar extraction
+RUN if [ -f /tmp/game-files/CustomCeleste.dll ]; then \
+        cp /tmp/game-files/CustomCeleste.dll ./dist/CustomCeleste.dll && \
+        echo "Bundled patched CustomCeleste.dll into dist/"; \
+    elif [ -f /tmp/game-files/Celeste.exe ]; then \
+        cp /tmp/game-files/Celeste.exe ./dist/Celeste.exe && \
+        echo "Bundled Celeste.exe into dist/"; \
+    else \
+        echo "No game executables to bundle (they will be served from tar on first run)"; \
+    fi && \
+    rm -rf /tmp/game-files
+
+# ---------------------------------------------------------------------------
+# Stage 3: Final lightweight runtime image
+# ---------------------------------------------------------------------------
+FROM node:22-slim
+
+WORKDIR /app
+
+COPY --from=assembler /package ./
+
+EXPOSE 8080
+
+CMD ["node", "server.mjs", "--no-open", "--port", "8080", "--host", "0.0.0.0"]

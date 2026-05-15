@@ -64,5 +64,15 @@ serve: build
 publish: build
 	pnpm build
 
+# Docker-based server build (no local dotnet/emsdk needed)
+docker-server:
+	@bash scripts/docker-build-server.sh
 
-.PHONY: clean build serve publish
+docker-server-extract:
+	@bash scripts/docker-build-server.sh --extract
+
+docker-server-build:
+	@bash scripts/docker-build-server.sh --build-only
+
+
+.PHONY: clean build serve publish docker-server docker-server-extract docker-server-build
