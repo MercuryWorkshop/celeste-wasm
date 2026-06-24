@@ -13,7 +13,6 @@ import {
 	FSAPI_UNAVAILABLE,
 	PICKERS_UNAVAILABLE,
 	rootFolder,
-	TAR_TYPES,
 } from "./fs";
 import {
 	DownloadApp,
@@ -187,15 +186,23 @@ const Intro: Component<
 				</Link>
 				.
 			</p>
-			{PICKERS_UNAVAILABLE ? (
+			{PICKERS_UNAVAILABLE === true ? (
 				<div class="error">
 					Your browser does not support the{" "}
 					<Link href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">
 						File System Access API
 					</Link>
-					. You will be unable to extract a {NAME} archive to play or use the
-					upload/download features in the filesystem viewer. Please switch to a
-					chromium based browser.
+					. You will be unable to use the upload/download features in the filesystem viewer.
+					Please switch to a chromium based browser.
+				</div>
+			) : null}
+			{PICKERS_UNAVAILABLE === "security" ? (
+				<div class="error">
+					Your browser does not allow the{" "}
+					<Link href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">
+						File System Access API
+					</Link>
+					for security reasons on this page. You will be unable to use the upload/download features in the filesystem viewer.
 				</div>
 			) : null}
 			{FSAPI_UNAVAILABLE ? (
@@ -224,12 +231,10 @@ const Intro: Component<
 				on:click={() => next("extract")}
 				type="primary"
 				icon="left"
-				disabled={use(this.disabled, (x) => x || PICKERS_UNAVAILABLE)}
+				disabled={use(this.disabled)}
 			>
 				<Icon icon={iconUnarchive} />
-				{PICKERS_UNAVAILABLE
-					? `Extracting ${NAME} archive is unsupported`
-					: `Extract ${NAME} archive`}
+				Extract {NAME} archive
 			</Button>
 			{/*
 			<Button
@@ -275,6 +280,7 @@ const Extract: Component<
 		extracting: boolean;
 		status: string;
 		percent: number;
+		input: HTMLInputElement;
 	}
 > = function () {
 	this.css = `
@@ -282,16 +288,18 @@ const Extract: Component<
 		.center svg {
 			transform: translateY(15%);
 		}
+
+		.file-input { display: none }
 	`;
 
 	const opfs = async () => {
-		const files = await showOpenFilePicker({
-			excludeAcceptAllOption: true,
-			types: TAR_TYPES,
+		const files: FileList = await new Promise((res, rej) => {
+			this.input.value = "";
+			this.input.oncancel = rej;
+			this.input.onchange = () => res(this.input.files!);
+			this.input.click();
 		});
-		const fileHandle = files[0];
-
-		const file = await fileHandle.getFile();
+		const file = files[0];
 
 		let parsedSize = 0;
 		const fileSize = file.size;
@@ -316,7 +324,7 @@ const Extract: Component<
 
 		this.extracting = true;
 
-		if (fileHandle.name.endsWith(".gz"))
+		if (file.name.endsWith(".gz"))
 			progressStream = progressStream.pipeThrough(
 				new DecompressionStream("gzip")
 			);
@@ -339,6 +347,7 @@ const Extract: Component<
 				while in the root directory.
 			</p>
 			{$if(use(this.extracting), <Progress percent={use(this.percent)} />)}
+			<input type="file" class="file-input" accept=".tar,.tar.gz,.gz,application/x-tar,application/gzip" bind:this={use(this.input)} />
 			<Button
 				on:click={opfs}
 				type="primary"

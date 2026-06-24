@@ -25,8 +25,27 @@ export const FSAPI_UNAVAILABLE =
 	!(DataTransferItem.prototype as any).getAsEntry &&
 	!DataTransferItem.prototype.webkitGetAsEntry;
 
-export const PICKERS_UNAVAILABLE =
-	!window.showDirectoryPicker || !window.showOpenFilePicker;
+// Cross origin sub frames aren't allowed to show a file picker, even though the
+// picker functions exist on `window`. Calling them throws:
+//   SecurityError: Failed to execute 'showOpenFilePicker' on 'Window':
+//   Cross origin sub frames aren't allowed to show a file picker.
+// Detect it up front by probing access to the top frame's location, which throws
+// for cross origin frames but succeeds for the top frame and same origin frames.
+const IN_CROSS_ORIGIN_FRAME = (() => {
+	try {
+		void window.top!.location.href;
+		return false;
+	} catch {
+		return true;
+	}
+})();
+
+export const PICKERS_UNAVAILABLE: boolean | "security" =
+	!window.showDirectoryPicker || !window.showOpenFilePicker
+		? true
+		: IN_CROSS_ORIGIN_FRAME
+			? "security"
+			: false;
 
 export const rootFolder = await navigator.storage.getDirectory();
 
@@ -567,10 +586,10 @@ export const OpfsExplorer: Component<
 		this.uploading = false;
 	};
 
-	const uploadDisabled = use(this.uploading, (x) => x || PICKERS_UNAVAILABLE);
+	const uploadDisabled = use(this.uploading, (x) => x || !!PICKERS_UNAVAILABLE);
 	const downloadDisabled = use(
 		this.downloading,
-		(x) => x || PICKERS_UNAVAILABLE
+		(x) => x || !!PICKERS_UNAVAILABLE
 	);
 
 	return (
