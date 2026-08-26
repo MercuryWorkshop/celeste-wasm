@@ -1,3 +1,9 @@
 /*
 	Cross-Origin-Embedder-Policy: require-corp
 	Cross-Origin-Opener-Policy: same-origin
+
+/_framework/*
+	Cache-Control: public, max-age=31536000, immutable
+
+/assets/*
+	Cache-Control: public, max-age=31536000, immutable
