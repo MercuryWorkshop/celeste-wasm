@@ -17,10 +17,10 @@ A mostly-complete port of Celeste (2018) to WebAssembly, with full support for E
 ## I want to build this
 
 1. Ensure node and pnpm exist and `pnpm i`
-2. Install dotnet 9.0.4
-3. Install the mono-devel package on your distro
+2. Install dotnet 10.0
+3. Install the mono-devel package on your distro (Debian seems to work best for building)
 4. Run `sudo dotnet workload restore` in `loader/`
-5. Run `make serve` for a dev server and `make publish` for a release build
+5. Run `make serve` in the base directory for a dev server and `make publish` for a release build
 
 ## I want to figure out how this works
 
