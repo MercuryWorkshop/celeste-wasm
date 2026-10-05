@@ -1,5 +1,5 @@
 STATICS_RELEASE=5ca6e290-3dbe-49dd-b7f8-647e3af0a709
-DOTNETFLAGS=--nodereuse:false -v n
+DOTNETFLAGS=--nodereuse:false -v n -p:DisableParallelAot=true -p:WasmRunWasmOpt=false
 
 statics:
 	mkdir statics
@@ -15,6 +15,7 @@ statics:
 
 SteamKit2.WASM:
 	git clone https://github.com/MercuryWorkshop/SteamKit2.WASM --recursive
+	cd SteamKit2.WASM && git apply ../steamkit-wasm.patch
 
 FNA:
 	git clone https://github.com/FNA-XNA/FNA --recursive -b 25.11

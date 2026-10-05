@@ -68,15 +68,26 @@ public static partial class CelesteLoader
                 Console.WriteLine($"[{source}] {level}: {msg}");
             });
 
+            File.Delete("/bin/Celeste.exe");
+            File.Delete("/bin/Celeste.dll");
             File.CreateSymbolicLink("/bin/Celeste.exe", "/libsdl/CustomCeleste.dll");
             File.CreateSymbolicLink("/bin/Celeste.dll", "/libsdl/CustomCeleste.dll");
-            if (Directory.Exists("/libsdl/Celeste/Everest"))
+            if (Directory.Exists("/libsdl/Celeste/Everest") &&
+                File.Exists("/libsdl/Celeste/Everest/Celeste.Mod.mm.dll") &&
+                File.Exists("/libsdl/Celeste/Everest/MMHOOK_Celeste.dll"))
             {
                 File.CreateSymbolicLink("/bin/Celeste.Mod.mm.dll", "/libsdl/Celeste.Mod.mm.dll");
                 File.CreateSymbolicLink("/bin/MMHOOK_Celeste.dll", "/libsdl/MMHOOK_Celeste.dll");
 
                 File.Copy("/libsdl/Celeste/Everest/Celeste.Mod.mm.dll", "/libsdl/Celeste.Mod.mm.dll", true);
                 File.Copy("/libsdl/Celeste/Everest/MMHOOK_Celeste.dll", "/libsdl/MMHOOK_Celeste.dll", true);
+            }
+            else
+            {
+                File.Delete("/libsdl/Celeste.Mod.mm.dll");
+                File.Delete("/libsdl/MMHOOK_Celeste.dll");
+                File.Delete("/bin/Celeste.Mod.mm.dll");
+                File.Delete("/bin/MMHOOK_Celeste.dll");
             }
 
             celeste = Assembly.LoadFrom("/libsdl/CustomCeleste.dll");

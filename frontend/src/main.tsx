@@ -6,8 +6,10 @@ import { store } from "./store";
 import { OpfsExplorer } from "./fs";
 import { Achievements } from "./achievements";
 import { ModInstaller } from "./modinstaller";
+import { UpdateDialog } from "./updates";
 import { SteamCloud } from "./steam";
 import { Settings } from "./settings";
+import { PatchFlow } from "./patch";
 
 import iconPlayArrow from "@ktibow/iconset-material-symbols/play-arrow";
 import iconFullscreen from "@ktibow/iconset-material-symbols/fullscreen";
@@ -15,6 +17,16 @@ import iconFolderOpen from "@ktibow/iconset-material-symbols/folder-open";
 import iconTrophy from "@ktibow/iconset-material-symbols/trophy";
 import iconDownload from "@ktibow/iconset-material-symbols/download";
 import iconSettings from "@ktibow/iconset-material-symbols/settings";
+import iconArrowCircleDown from "@ktibow/iconset-material-symbols/arrow-circle-down";
+
+// Dreamland's $store logs an info line on every autosave; the settings
+// store mutates often, so this is pure console noise. Filter just
+// dreamland's own prefix.
+const _origInfo = console.info.bind(console);
+console.info = (...args: unknown[]) => {
+	if (typeof args[0] === "string" && args[0].startsWith("[dreamland.js]")) return;
+	_origInfo(...args);
+};
 
 export const NAME = "webleste";
 
@@ -68,9 +80,13 @@ const TopBar: Component<
 		steamOpen: boolean;
 		achievementsOpen: boolean;
 		modInstallerOpen: boolean;
+		updatesOpen: boolean;
 		settingsOpen: boolean;
 	},
-	{ allowPlay: boolean; fps: HTMLElement }
+	{
+		allowPlay: boolean;
+		fps: HTMLElement;
+	}
 > = function () {
 	this.css = `
 		background: var(--bg);
@@ -91,6 +107,11 @@ const TopBar: Component<
 			gap: 1rem;
 		}
 
+		.updatecount {
+			font-weight: 700;
+			color: var(--accent);
+		}
+
 		.expand { flex: 1; }
 
 		@media (max-width: 750px) {
@@ -103,9 +124,10 @@ const TopBar: Component<
 		}
 	`;
 
-	useChange([gameState.ready, gameState.playing], () => {
-		this.allowPlay = gameState.ready && !gameState.playing;
+	useChange([gameState.playing], () => {
+		this.allowPlay = !gameState.playing;
 	});
+	this.allowPlay = !gameState.playing;
 
 	return (
 		<div>
@@ -114,6 +136,21 @@ const TopBar: Component<
 			</div>
 			<div class="expand" />
 			<div class="group">
+				<Button
+					on:click={() => (this.updatesOpen = true)}
+					icon="left"
+					type="normal"
+					disabled={false}
+					title="Mod manager"
+				>
+					<Icon icon={iconArrowCircleDown} />
+					{$if(
+						use(gameState.updatesAvailable, (n) => n > 0),
+						<span class="updatecount">
+							{use(gameState.updatesAvailable, (n) => String(n))}
+						</span>
+					)}
+				</Button>
 				<Button
 					on:click={() => (this.modInstallerOpen = true)}
 					icon="left"
@@ -195,7 +232,7 @@ const TopBar: Component<
 				</Button>
 				<Button
 					on:click={() => {
-						play();
+						play().catch((err) => console.error("Play failed", err));
 					}}
 					icon="left"
 					type="primary"
@@ -217,6 +254,7 @@ export const Main: Component<
 		fsOpen: boolean;
 		achievementsOpen: boolean;
 		modInstallerOpen: boolean;
+		updatesOpen: boolean;
 		steamOpen: boolean;
 		settingsOpen: boolean;
 		logcontainer: HTMLDivElement;
@@ -273,6 +311,10 @@ export const Main: Component<
 	this.fsOpen = false;
 	this.achievementsOpen = false;
 
+	useChange([gameState.patchFlowOpen], () => {
+		if (gameState.patchFlowOpen) this.settingsOpen = false;
+	});
+
 	this.mount = () => {
 		useChange([store.logs], (x) => {
 			this.logcontainer.style.height = `${x}px`;
@@ -300,6 +342,9 @@ export const Main: Component<
 				<Dialog name="Mod Installer" bind:open={use(this.modInstallerOpen)}>
 					<ModInstaller open={use(this.modInstallerOpen)} />
 				</Dialog>
+				<Dialog name="Mod manager" bind:open={use(this.updatesOpen)}>
+					<UpdateDialog bind:open={use(this.updatesOpen)} />
+				</Dialog>
 				<Dialog name="Settings" bind:open={use(this.settingsOpen)}>
 					<Settings />
 				</Dialog>
@@ -318,6 +363,7 @@ export const Main: Component<
 				bind:achievementsOpen={use(this.achievementsOpen)}
 				bind:steamOpen={use(this.steamOpen)}
 				bind:modInstallerOpen={use(this.modInstallerOpen)}
+				bind:updatesOpen={use(this.updatesOpen)}
 				bind:settingsOpen={use(this.settingsOpen)}
 				bind:showLog={use(store.logs)}
 			/>
@@ -353,6 +399,7 @@ export const Main: Component<
 				</>
 			)}
 			{use(this.dialogs)}
+			{$if(use(gameState.patchFlowOpen), <PatchFlow />)}
 		</div>
 	);
 };

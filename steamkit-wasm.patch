@@ -1,0 +1,62 @@
+diff --git a/DepotDownloader/AccountSettingsStore.cs b/DepotDownloader/AccountSettingsStore.cs
+index eeca76d..e2cb627 100644
+--- a/DepotDownloader/AccountSettingsStore.cs
++++ b/DepotDownloader/AccountSettingsStore.cs
+@@ -57,9 +57,16 @@ namespace DepotDownloader
+                     using var fs = File.Open(filename, FileMode.Open, FileAccess.Read);
+                     Instance = Serializer.Deserialize<AccountSettingsStore>(fs);
+                 }
+-                catch (IOException ex)
++                catch (Exception ex)
+                 {
++                    // A corrupt store must never take down the runtime: older
++                    // builds saved with FileMode.OpenOrCreate (no truncation),
++                    // so a shrunk serialization leaves trailing garbage that
++                    // protobuf-net rejects with "Invalid wire-type". Drop the
++                    // corrupt file and continue logged-out; the user can log
++                    // in again and Save() will rewrite it cleanly.
+                     Console.WriteLine("Failed to load account settings: {0}", ex.Message);
++                    try { File.Delete(filename); } catch { }
+                     Instance = new AccountSettingsStore();
+                 }
+             }
+@@ -78,7 +85,10 @@ namespace DepotDownloader
+ 
+             try
+             {
+-                using var fs = File.Open(Instance.FileName, FileMode.OpenOrCreate, FileAccess.Write);
++                // FileMode.Create truncates: OpenOrCreate without truncation
++                // leaves trailing bytes when the new blob is shorter, which
++                // corrupts the next deserialize ("Invalid wire-type").
++                using var fs = File.Open(Instance.FileName, FileMode.Create, FileAccess.Write);
+                 Serializer.Serialize(fs, Instance);
+             }
+             catch (IOException ex)
+diff --git a/DepotDownloader/DepotConfigStore.cs b/DepotDownloader/DepotConfigStore.cs
+index 15e1539..8cc3ba9 100644
+--- a/DepotDownloader/DepotConfigStore.cs
++++ b/DepotDownloader/DepotConfigStore.cs
+@@ -36,9 +36,20 @@ namespace DepotDownloader
+ 
+             if (File.Exists(filename))
+             {
+-                using var fs = File.Open(filename, FileMode.Open);
+-                using var ds = new DeflateStream(fs, CompressionMode.Decompress);
+-                Instance = Serializer.Deserialize<DepotConfigStore>(ds);
++                try
++                {
++                    using var fs = File.Open(filename, FileMode.Open);
++                    using var ds = new DeflateStream(fs, CompressionMode.Decompress);
++                    Instance = Serializer.Deserialize<DepotConfigStore>(ds);
++                }
++                catch (Exception ex)
++                {
++                    // Same policy as AccountSettingsStore: a corrupt cache
++                    // must degrade to "no cached manifests", never throw.
++                    Console.WriteLine("Failed to load depot config: {0}", ex.Message);
++                    try { File.Delete(filename); } catch { }
++                    Instance = new DepotConfigStore();
++                }
+             }
+             else
+             {

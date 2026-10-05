@@ -54,6 +54,20 @@ const App: Component<
 	);
 };
 
+if ("serviceWorker" in navigator && !import.meta.env.DEV) {
+	const registerServiceWorker = () => {
+		navigator.serviceWorker.register("./service-worker.js").catch((err) => {
+			console.warn("service worker registration failed", err);
+		});
+	};
+
+	if (document.readyState === "complete") {
+		registerServiceWorker();
+	} else {
+		window.addEventListener("load", registerServiceWorker);
+	}
+}
+
 const root = document.getElementById("app")!;
 try {
 	root.replaceWith(<App />);

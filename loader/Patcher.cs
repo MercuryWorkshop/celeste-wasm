@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices.JavaScript;
 using System.Collections.Generic;
 using System.IO.Compression;
+using System.Linq;
+using YamlDotNet.RepresentationModel;
 using Mono.Cecil;
 using MonoMod;
 using MonoMod.RuntimeDetour.HookGen;
@@ -24,13 +26,13 @@ public partial class Patcher
             else if (File.Exists("/libsdl/Celeste.exe"))
             {
                 patcher = new("/libsdl/Celeste.exe");
-                patcher.installEverest = installEverest;
             }
             else
             {
                 throw new Exception("Celeste.dll or Celeste.exe not found!");
             }
 
+            patcher.installEverest = installEverest;
             patcher.patch();
             patcher.write("/libsdl/CustomCeleste.dll");
 
@@ -71,6 +73,123 @@ public partial class Patcher
             Console.Error.WriteLine(e);
             return false;
         }
+    }
+
+    [JSExport]
+    public static Task<bool> ConsumeRestartRequest()
+    {
+
+        try
+        {
+            if (AppDomain.CurrentDomain.GetData("EverestRestart") != null)
+            {
+                AppDomain.CurrentDomain.SetData("EverestRestart", null);
+                return Task.FromResult(true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Warning: failed to read restart request: {ex.Message}");
+        }
+        return Task.FromResult(false);
+    }
+
+    [JSExport]
+    public static Task<string> GetInstalledMods()
+    {
+
+        var mods = new List<string>();
+        try
+        {
+            string dir = "/libsdl/Celeste/Mods";
+            if (Directory.Exists(dir))
+            {
+                foreach (string zip in Directory.EnumerateFiles(dir, "*.zip"))
+                {
+                    string fileName = Path.GetFileName(zip);
+
+                    if (ModMetaCache.TryGetValue(fileName, out var cached))
+                    {
+                        mods.Add(cached);
+                        continue;
+                    }
+                    string name = "";
+                    string version = "";
+                    var deps = new List<string>();
+                    try
+                    {
+                        using (ZipArchive archive = ZipFile.OpenRead(zip))
+                        {
+                            var entry = archive.GetEntry("everest.yaml");
+                            if (entry != null)
+                            {
+                                using (var reader = new StreamReader(entry.Open()))
+                                {
+                                    var manifest = ModManifest.Parse(reader.ReadToEnd());
+                                    name = manifest.Name;
+                                    version = manifest.Version;
+                                    deps.AddRange(manifest.Dependencies.Select(dep =>
+                                        "{\"name\":" + JsonQuote(dep.Name)
+                                        + ",\"version\":" + JsonQuote(dep.Version)
+                                        + ",\"optional\":" + (dep.Optional ? "true" : "false") + "}"));
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine($"Warning: failed to read mod manifest in '{zip}': {ex.Message}");
+                    }
+                    if (name != "")
+                    {
+                        var json = "{\"file\":" + JsonQuote(fileName) + ",\"name\":" + JsonQuote(name) + ",\"version\":" + JsonQuote(version) + ",\"dependencies\":[" + string.Join(",", deps) + "]}";
+                        ModMetaCache[fileName] = json;
+                        mods.Add(json);
+                    }
+                }
+
+                var present = Directory.EnumerateFiles(dir, "*.zip")
+                    .Select(Path.GetFileName)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                foreach (var stale in ModMetaCache.Keys.Where(k => !present.Contains(k)).ToList())
+                    ModMetaCache.Remove(stale);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Warning: failed to list installed mods: {ex.Message}");
+        }
+        return Task.FromResult("[" + string.Join(",", mods) + "]");
+    }
+
+    private static readonly Dictionary<string, string> ModMetaCache =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    private static string JsonQuote(string value)
+    {
+        var sb = new System.Text.StringBuilder(value.Length + 2);
+        sb.Append('"');
+        foreach (char c in value)
+        {
+            switch (c)
+            {
+                case '"': sb.Append("\\\""); break;
+                case '\\': sb.Append("\\\\"); break;
+                case '\b': sb.Append("\\b"); break;
+                case '\f': sb.Append("\\f"); break;
+                case '\n': sb.Append("\\n"); break;
+                case '\r': sb.Append("\\r"); break;
+                case '\t': sb.Append("\\t"); break;
+                default:
+                    if (c < 0x20)
+                        sb.Append("\\u").Append(((int)c).ToString("x4"));
+                    else
+                        sb.Append(c);
+                    break;
+            }
+        }
+        sb.Append('"');
+        return sb.ToString();
     }
 
     public ModuleDefinition Module;
@@ -154,13 +273,7 @@ public partial class Patcher
                 }
             }
 
-            var mmhook = ModuleDefinition.ReadModule(mmhookPath);
-            RunMonoMod(mmhook, [everest], false, modder =>
-            {
-                modder.Log("Patching MMHOOK_Celeste.dll");
-            });
         }
-
 
         ModuleDefinition wasmMod = ModuleDefinition.ReadModule("/bin/Celeste.Wasm.mm.dll");
         if (!installEverest)

@@ -1,4 +1,5 @@
 import { Button, Icon } from "./ui/Button";
+import { SavesButtons } from "./saves";
 
 import tar, { Headers as TarHeaders, Pack } from "tar-stream";
 import {
@@ -48,6 +49,20 @@ export const PICKERS_UNAVAILABLE: boolean | "security" =
 			: false;
 
 export const rootFolder = await navigator.storage.getDirectory();
+
+export async function readAllEntries(
+	folder: FileSystemDirectoryEntry
+): Promise<FileSystemEntry[]> {
+	const entries: FileSystemEntry[] = [];
+	const reader = folder.createReader();
+	while (true) {
+		const batch = await new Promise<FileSystemEntry[]>((resolve, reject) =>
+			reader.readEntries(resolve, reject)
+		);
+		if (batch.length === 0) return entries;
+		entries.push(...batch);
+	}
+}
 
 export const TAR_TYPES = [
 	{
@@ -126,14 +141,27 @@ async function skipOobe() {
 }
 (self as any).skipOobe = skipOobe;
 
+export async function pipeToWritable(
+	stream: ReadableStream<Uint8Array>,
+	writable: FileSystemWritableFileStream
+) {
+	try {
+		await stream.pipeTo(writable);
+	} catch (err) {
+		try {
+			await writable.abort();
+		} catch {}
+		throw err;
+	}
+}
+
 export async function copyFile(
 	file: FileSystemFileHandle,
 	to: FileSystemDirectoryHandle
 ) {
 	const data = await file.getFile().then((r) => r.stream());
 	const handle = await to.getFileHandle(file.name, { create: true });
-	const writable = await handle.createWritable();
-	await data.pipeTo(writable);
+	await pipeToWritable(data, await handle.createWritable());
 }
 
 export async function copyFileForBadBrowsers(
@@ -144,8 +172,7 @@ export async function copyFileForBadBrowsers(
 		file.file(resolve, reject);
 	});
 	const handle = await to.getFileHandle(file.name, { create: true });
-	const writable = await handle.createWritable();
-	await data.stream().pipeTo(writable);
+	await pipeToWritable(data.stream(), await handle.createWritable());
 }
 
 export async function countFolder(
@@ -170,10 +197,7 @@ export async function countFolderForBadBrowsers(
 ): Promise<number> {
 	let count = 0;
 	async function countOne(folder: FileSystemDirectoryEntry) {
-		const reader = folder.createReader();
-		const entries = await new Promise<FileSystemEntry[]>((resolve, reject) => {
-			reader.readEntries(resolve, reject);
-		});
+		const entries = await readAllEntries(folder);
 
 		for (const entry of entries) {
 			if (entry.isFile) {
@@ -219,18 +243,12 @@ export async function copyFolderForBadBrowsers(
 		from: FileSystemDirectoryEntry,
 		to: FileSystemDirectoryHandle
 	) {
-		const reader = from.createReader();
-		const entries = await new Promise<FileSystemEntry[]>((resolve, reject) => {
-			reader.readEntries(resolve, reject);
-		});
+		const entries = await readAllEntries(from);
 
 		for (const entry of entries) {
 			if (entry.isFile) {
-				const file = entry as FileSystemFileEntry;
-				const fileHandle = await to.getFileHandle(file.name, { create: true });
-				const writable = await fileHandle.createWritable();
-				file.file((f) => f.stream().pipeTo(writable));
-				if (callback) callback(file.name);
+				await copyFileForBadBrowsers(entry as FileSystemFileEntry, to);
+				callback?.(entry.name);
 			} else {
 				const dir = entry as FileSystemDirectoryEntry;
 				const newTo = await to.getDirectoryHandle(dir.name, { create: true });
@@ -312,7 +330,7 @@ export function createTar(
 
 	async function pack(pathPrefix: string, folder: FileSystemDirectoryHandle) {
 		for await (const [name, entry] of folder) {
-			if (callback) callback(entry.kind, name);
+			callback?.(entry.kind, name);
 
 			if (entry.kind == "file") {
 				const file = await entry.getFile();
@@ -337,7 +355,12 @@ export function createTar(
 			}
 		}
 	}
-	pack("", folder).then(() => archive.finalize());
+
+	pack("", folder).then(
+		() => archive.finalize(),
+		(err) =>
+			archive.destroy(err instanceof Error ? err : new Error(String(err)))
+	);
 
 	return streamToWeb(archive);
 }
@@ -349,54 +372,98 @@ export async function extractTar(
 ) {
 	const tarInput = streamFromWeb(stream);
 	const archive = tar.extract();
+	let entryError: Error | undefined;
+	let settled = false;
 
-	archive.on("entry", async (header, stream, next) => {
-		const body: ReadableStream<Uint8Array> = streamToWeb(stream);
+	archive.on("entry", (header, entry, next) => {
+		void (async () => {
+			try {
+				const body: ReadableStream<Uint8Array> = streamToWeb(entry);
 
-		async function consume() {
-			const reader = body.getReader();
+				async function consume() {
+					const reader = body.getReader();
 
-			while (true) {
-				const { done, value } = await reader.read();
-				if (done || !value) break;
+					while (true) {
+						const { done, value } = await reader.read();
+						if (done || !value) break;
+					}
+				}
+
+				const path = header.name.split("/");
+				if (path[path.length - 1] === "") path.pop();
+				if (path[0] === folder.name) path.shift();
+				if (
+					path.some(
+						(name) =>
+							!name ||
+							name === "." ||
+							name === ".." ||
+							name.includes("\\") ||
+							name.includes("\0")
+					)
+				) {
+					throw new Error(`Archive contains an invalid path: ${header.name}`);
+				}
+				if (path.length === 0) {
+					await consume();
+					next();
+					return;
+				}
+
+				let handle = folder;
+				for (const name of path.splice(0, path.length - 1)) {
+					handle = await handle.getDirectoryHandle(name, { create: true });
+				}
+
+				if (header.type === "directory") {
+					await handle.getDirectoryHandle(path[0], { create: true });
+					await consume();
+
+					callback?.("directory", path[0]);
+				} else if (header.type === "file") {
+					const file = await handle.getFileHandle(path[0], { create: true });
+					await pipeToWritable(body, await file.createWritable());
+
+					callback?.("file", path[0]);
+				} else {
+					await consume();
+				}
+
+				next();
+			} catch (err) {
+				entryError = err instanceof Error ? err : new Error(String(err));
+
+				archive.destroy(entryError);
 			}
-		}
-
-		const path = header.name.split("/");
-		if (path[path.length - 1] === "") path.pop();
-		if (path[0] === folder.name) path.shift();
-		if (path.length === 0) {
-			await consume();
-			next();
-			return;
-		}
-
-		let handle = folder;
-		for (const name of path.splice(0, path.length - 1)) {
-			handle = await handle.getDirectoryHandle(name, { create: true });
-		}
-
-		if (header.type === "directory") {
-			await handle.getDirectoryHandle(path[0], { create: true });
-			await consume();
-
-			if (callback) callback("directory", path[0]);
-		} else if (header.type === "file") {
-			const file = await handle.getFileHandle(path[0], { create: true });
-			const writable = await file.createWritable();
-			await body.pipeTo(writable);
-
-			if (callback) callback("file", path[0]);
-		} else {
-			await consume();
-		}
-
-		next();
+		})().catch((err) => {
+			entryError = err instanceof Error ? err : new Error(String(err));
+			archive.destroy(entryError);
+		});
 	});
 
 	const promise = new Promise<void>((res, rej) => {
-		archive.on("finish", () => res());
-		archive.on("error", (err) => rej(err));
+		const resolveOnce = () => {
+			if (settled) return;
+			settled = true;
+			res();
+		};
+		const rejectOnce = (err: unknown) => {
+			if (settled) return;
+			settled = true;
+			rej(err);
+		};
+
+		archive.on("finish", () => {
+			if (entryError) rejectOnce(entryError);
+			else resolveOnce();
+		});
+		archive.on("error", rejectOnce);
+
+		tarInput.on("error", rejectOnce);
+		archive.on("close", () => {
+			if (!settled)
+				rejectOnce(entryError ?? new Error("Archive extraction stopped"));
+		});
 	});
 
 	tarInput.pipe(archive);
@@ -439,13 +506,21 @@ export const OpfsExplorer: Component<
 		display: flex;
 		flex-direction: column;
 		gap: 1em;
-		min-height: min(44rem, 90vh);
+		height: min(44rem, calc(100dvh - 14rem));
+		max-height: 100%;
+		min-height: 12rem;
 
 		.path {
 			display: flex;
 			align-items: center;
 			gap: 0.5rem;
 			margin: 0 0.5rem;
+			padding-block: 0.25rem;
+			flex: 0 0 auto;
+			position: sticky;
+			top: 0;
+			z-index: 3;
+			background: var(--bg-sub);
 		}
 		.path h3 {
 			font-family: var(--font-mono);
@@ -456,6 +531,21 @@ export const OpfsExplorer: Component<
 			display: flex;
 			flex-direction: column;
 			gap: 0.5em;
+			flex: 1 1 auto;
+			
+			overflow-y: auto;
+			min-height: 0;
+			scrollbar-width: thin;
+		}
+
+		.entries::-webkit-scrollbar {
+			width: 10px;
+		}
+		.entries::-webkit-scrollbar-track {
+			background: var(--surface3);
+		}
+		.entries::-webkit-scrollbar-thumb {
+			background: var(--surface6);
 		}
 
 		.entry {
@@ -475,6 +565,10 @@ export const OpfsExplorer: Component<
 			display: flex;
 			flex-direction: column;
 			gap: 0.5em;
+			flex: 0 1 auto;
+			min-height: 0;
+			max-height: 60%;
+			overflow-y: auto;
 		}
 		.editor .controls {
 			display: flex;
@@ -499,11 +593,27 @@ export const OpfsExplorer: Component<
 			display: flex;
 			flex-direction: row;
 			gap: 0.5em;
+			flex: 0 0 auto;
 
 		}
 
 		.archive > * {
 		  flex-grow: 1;
+		}
+
+		.footer {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5em;
+			flex: 0 0 auto;
+			position: sticky;
+			bottom: 0;
+			z-index: 3;
+			background: var(--bg-sub);
+			padding-block-start: 0.25rem;
+		}
+		.footer > * {
+			flex: 0 0 auto;
 		}
 	`;
 
@@ -536,54 +646,73 @@ export const OpfsExplorer: Component<
 	});
 
 	const uploadFile = async () => {
-		const files = await showOpenFilePicker({ multiple: true });
-		this.uploading = true;
-		for (const file of files) {
-			await copyFile(file, this.path);
+		try {
+			const files = await showOpenFilePicker({ multiple: true });
+			this.uploading = true;
+			for (const file of files) {
+				await copyFile(file, this.path);
+			}
+			this.path = this.path;
+		} catch (err) {
+			console.error("File upload failed", err);
+		} finally {
+			this.uploading = false;
 		}
-		this.path = this.path;
-		this.uploading = false;
 	};
 	const uploadFolder = async () => {
-		const folder = await showDirectoryPicker();
-		this.uploading = true;
-		await copyFolder(folder, this.path);
-		this.path = this.path;
-		this.uploading = false;
+		try {
+			const folder = await showDirectoryPicker();
+			this.uploading = true;
+			await copyFolder(folder, this.path);
+			this.path = this.path;
+		} catch (err) {
+			console.error("Folder upload failed", err);
+		} finally {
+			this.uploading = false;
+		}
 	};
 	const downloadArchive = async () => {
-		const dirName = this.components.at(-1) || "celeste-wasm";
-		const file = await showSaveFilePicker({
-			excludeAcceptAllOption: true,
-			suggestedName: dirName + ".tar",
-			types: TAR_TYPES,
-		});
+		let fileStream: FileSystemWritableFileStream | undefined;
+		try {
+			const dirName = this.components.at(-1) || "celeste-wasm";
+			const file = await showSaveFilePicker({
+				excludeAcceptAllOption: true,
+				suggestedName: dirName + ".tar",
+				types: TAR_TYPES,
+			});
 
-		this.downloading = true;
+			this.downloading = true;
+			let tar = createTar(this.path, (type, name) =>
+				console.log(`tarring ${type} ${name}`)
+			);
+			if (file.name.endsWith(".gz"))
+				tar = tar.pipeThrough(new CompressionStream("gzip"));
 
-		let tar = createTar(this.path, (type, name) =>
-			console.log(`tarring ${type} ${name}`)
-		);
-		if (file.name.endsWith(".gz"))
-			tar = tar.pipeThrough(new CompressionStream("gzip"));
-
-		const fileStream = await file.createWritable();
-		await tar.pipeTo(fileStream);
-
-		this.downloading = false;
+			fileStream = await file.createWritable();
+			await pipeToWritable(tar, fileStream);
+		} catch (err) {
+			console.error("Archive download failed", err);
+		} finally {
+			this.downloading = false;
+		}
 	};
 	const uploadArchive = async () => {
-		const files = await showOpenFilePicker({ multiple: true });
-		this.uploading = true;
-		for (const file of files) {
-			let tar = await file.getFile().then((r) => r.stream());
-			if (file.name.endsWith(".gz"))
-				tar = tar.pipeThrough(new DecompressionStream("gzip"));
-			await extractTar(tar, this.path, (type, name) =>
-				console.log(`untarring ${type} ${name}`)
-			);
+		try {
+			const files = await showOpenFilePicker({ multiple: true });
+			this.uploading = true;
+			for (const file of files) {
+				let tar = await file.getFile().then((r) => r.stream());
+				if (file.name.endsWith(".gz"))
+					tar = tar.pipeThrough(new DecompressionStream("gzip"));
+				await extractTar(tar, this.path, (type, name) =>
+					console.log(`untarring ${type} ${name}`)
+				);
+			}
+		} catch (err) {
+			console.error("Archive upload failed", err);
+		} finally {
+			this.uploading = false;
 		}
-		this.uploading = false;
 	};
 
 	const uploadDisabled = use(this.uploading, (x) => x || !!PICKERS_UNAVAILABLE);
@@ -756,24 +885,26 @@ export const OpfsExplorer: Component<
 					);
 				}
 			})}
-			<div style={{ flexGrow: 1 }} />
-			<div class="archive">
-				<Button
-					type="normal"
-					icon="full"
-					disabled={uploadDisabled}
-					on:click={uploadArchive}
-				>
-					<Icon icon={iconUnarchive} /> Upload Folder Archive
-				</Button>
-				<Button
-					type="normal"
-					icon="full"
-					disabled={downloadDisabled}
-					on:click={downloadArchive}
-				>
-					<Icon icon={iconArchive} /> Download Folder Archive
-				</Button>
+			<div class="footer">
+				<SavesButtons />
+				<div class="archive">
+					<Button
+						type="normal"
+						icon="full"
+						disabled={uploadDisabled}
+						on:click={uploadArchive}
+					>
+						<Icon icon={iconUnarchive} /> Upload Folder Archive
+					</Button>
+					<Button
+						type="normal"
+						icon="full"
+						disabled={downloadDisabled}
+						on:click={downloadArchive}
+					>
+						<Icon icon={iconArchive} /> Download Folder Archive
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

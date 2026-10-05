@@ -76,6 +76,21 @@ namespace Steamworks
         }
 
         [JSExport]
+        internal static async Task<bool> ShutdownSteam()
+        {
+            try
+            {
+                ContentDownloader.ShutdownSteam3();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Could not disconnect from Steam: " + ex.Message);
+                return false;
+            }
+        }
+
+        [JSExport]
         internal static async Task<bool> DownloadSteamCloud()
         {
             return await ContentDownloader.steam3.DownloadSteamCloud(504230, 1000, "/remote/");

@@ -1,5 +1,4 @@
 import { Logo, NAME } from "./main";
-import { Switch } from "./ui/Switch";
 import { Button, Icon, Link } from "./ui/Button";
 import {
 	copyFile,
@@ -9,6 +8,7 @@ import {
 	countFolder,
 	countFolderForBadBrowsers,
 	extractTar,
+	readAllEntries,
 	hasContent,
 	FSAPI_UNAVAILABLE,
 	PICKERS_UNAVAILABLE,
@@ -17,24 +17,66 @@ import {
 import {
 	DownloadApp,
 	gameState,
-	PatchCeleste,
 	pickDownloadsFolder,
+	clearPatchVersion,
+	PATCH_VERSION,
+	readPatchVersion,
 } from "./game/dotnet";
 import { SteamLogin, steamState } from "./steam";
+import { store } from "./store";
 import { LogView } from "./game";
+
+type PatchDecision = "skip" | "skip-outdated" | "patch";
+const decidePatchAfterExtract = (input: {
+	hasPatchedDll: boolean;
+	hasContentFiles: boolean;
+	patchMarker: string | null;
+	patchVersion: number;
+}): PatchDecision => {
+	if (!input.hasPatchedDll || !input.hasContentFiles) return "patch";
+	const marker = input.patchMarker?.trim() ?? "";
+	if (marker === String(input.patchVersion)) return "skip";
+	return "skip-outdated";
+};
 
 import iconFolderOpen from "@ktibow/iconset-material-symbols/folder-open-outline";
 import iconCloudUpload from "@ktibow/iconset-material-symbols/cloud-upload";
-//import iconDownload from "@ktibow/iconset-material-symbols/download";
+
 import iconEncrypted from "@ktibow/iconset-material-symbols/encrypted";
 import iconArchive from "@ktibow/iconset-material-symbols/archive";
 import iconUnarchive from "@ktibow/iconset-material-symbols/unarchive";
 import iconFolderZip from "@ktibow/iconset-material-symbols/folder-zip";
-import iconManufacturing from "@ktibow/iconset-material-symbols/manufacturing";
 import iconSettings from "@ktibow/iconset-material-symbols/settings";
 import { Settings } from "./settings";
+import { Patch } from "./patch";
 import { Dialog } from "./ui/Dialog";
 import { event } from "./analytics";
+
+const GAME_ASSEMBLIES = ["Celeste.exe", "Celeste.dll"];
+const GAME_ASSEMBLY_MISSING =
+	"Failed to find Celeste.exe in selected folder";
+const XNA_COPY_MESSAGE =
+	"This looks like an XNA copy of Celeste (FNA.dll was not found). An FNA version is required.";
+
+const findGameAssembly = async (
+	directory: FileSystemDirectoryHandle
+): Promise<FileSystemFileHandle | null> => {
+	for (const name of GAME_ASSEMBLIES) {
+		try {
+			return await directory.getFileHandle(name, { create: false });
+		} catch {}
+	}
+	return null;
+};
+
+const dirHasFna = async (folder: FileSystemDirectoryHandle) => {
+	try {
+		await folder.getFileHandle("FNA.dll", { create: false });
+		return true;
+	} catch {
+		return false;
+	}
+};
 
 const validateDirectory = async (directory: FileSystemDirectoryHandle) => {
 	let content;
@@ -61,16 +103,16 @@ const validateDirectory = async (directory: FileSystemDirectoryHandle) => {
 		}
 	}
 
-	try {
-		await directory.getFileHandle("Celeste.exe", { create: false });
-	} catch {
+	if (!(await findGameAssembly(directory))) {
 		try {
 			const orig = await directory.getDirectoryHandle("orig", {
 				create: false,
 			});
-			await orig.getFileHandle("Celeste.exe", { create: false });
+			if (!(await findGameAssembly(orig))) {
+				return GAME_ASSEMBLY_MISSING;
+			}
 		} catch {
-			return `Failed to find Celeste.exe in selected folder`;
+			return GAME_ASSEMBLY_MISSING;
 		}
 	}
 
@@ -80,50 +122,67 @@ const validateDirectory = async (directory: FileSystemDirectoryHandle) => {
 const validateDirectoryForBadBrowsers = async (
 	entry: FileSystemEntry | null
 ) => {
-	if (!entry || !entry.isDirectory) {
-		return "what?";
-	}
-	let directory = entry as FileSystemDirectoryEntry;
-	let reader = directory.createReader();
-	let entries: FileSystemEntry[] = [];
-	return new Promise<string>((resolve) => {
-		reader.readEntries((result: FileSystemEntry[]) => {
-			entries = result;
-			let content = entries.find((e) => e.name === "Content");
-			if (!content || !content.isDirectory) {
-				resolve("Failed to find Content directory in selected folder");
-				return;
+	if (!entry || !entry.isDirectory) return "what?";
+
+	try {
+		const directory = entry as FileSystemDirectoryEntry;
+		const entries = await readAllEntries(directory);
+		const content = entries.find((e) => e.name === "Content");
+		if (!content || !content.isDirectory) {
+			return "Failed to find Content directory in selected folder";
+		}
+
+		const contentEntries = await readAllEntries(
+			content as FileSystemDirectoryEntry
+		);
+		for (const child of [
+			"Dialog",
+			"Effects",
+			"FMOD",
+			"Graphics",
+			"Maps",
+			"Monocle",
+			"Overworld",
+			"Tutorials",
+		]) {
+			if (!contentEntries.some((e) => e.name === child && e.isDirectory)) {
+				return `Failed to find subdirectory Content/${child}`;
 			}
-			let contentDir = content as FileSystemDirectoryEntry;
-			let contentReader = contentDir.createReader();
-			contentReader.readEntries((contentEntries: FileSystemEntry[]) => {
-				for (const child of [
-					"Dialog",
-					"Effects",
-					"FMOD",
-					"Graphics",
-					"Maps",
-					"Monocle",
-					"Overworld",
-					"Tutorials",
-				]) {
-					if (!contentEntries.some((e) => e.name === child && e.isDirectory)) {
-						resolve(`Failed to find subdirectory Content/${child}`);
-						return;
-					}
-				}
-			});
-			resolve("");
-		});
-	});
+		}
+
+		const hasAssembly = (items: FileSystemEntry[]) =>
+			items.some((e) => e.isFile && GAME_ASSEMBLIES.includes(e.name));
+		if (hasAssembly(entries)) return "";
+
+		const orig = entries.find((e) => e.name === "orig" && e.isDirectory);
+		if (
+			!orig ||
+			!hasAssembly(await readAllEntries(orig as FileSystemDirectoryEntry))
+		) {
+			return GAME_ASSEMBLY_MISSING;
+		}
+		return "";
+	} catch (err) {
+		return err instanceof Error ? err.message : String(err);
+	}
 };
 
 const initialHasContent = await hasContent();
-let initialIsPatched = false;
-try {
-	await rootFolder.getFileHandle("CustomCeleste.dll", { create: false });
-	initialIsPatched = true;
-} catch {}
+
+const OUTDATED_WEBLESTE = `You're using an outdated version of Webleste which doesn't support new quality of life features. Click the "Patch now" button in the settings menu to update.`;
+
+if (initialHasContent) {
+	try {
+		await rootFolder.getFileHandle("CustomCeleste.dll", { create: false });
+		if (
+			(await readPatchVersion()) !== String(PATCH_VERSION) &&
+			!store.dismissedOutdatedAlert
+		) {
+			store.dismissedOutdatedAlert = true;
+			alert(OUTDATED_WEBLESTE);
+		}
+	} catch {}
+}
 
 const Intro: Component<
 	{
@@ -149,12 +208,9 @@ const Intro: Component<
 		this.disabled = true;
 		this["on:next"](type);
 	};
+
 	if (initialHasContent) {
-		if (initialIsPatched) {
-			queueMicrotask(() => next("done"));
-		} else {
-			next("patch");
-		}
+		queueMicrotask(() => next("done"));
 	}
 
 	return (
@@ -192,8 +248,8 @@ const Intro: Component<
 					<Link href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">
 						File System Access API
 					</Link>
-					. You will be unable to use the upload/download features in the filesystem viewer.
-					Please switch to a chromium based browser.
+					. You will be unable to use the upload/download features in the
+					filesystem viewer. Please switch to a chromium based browser.
 				</div>
 			) : null}
 			{PICKERS_UNAVAILABLE === "security" ? (
@@ -202,7 +258,8 @@ const Intro: Component<
 					<Link href="https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker">
 						File System Access API
 					</Link>
-					for security reasons on this page. You will be unable to use the upload/download features in the filesystem viewer.
+					for security reasons on this page. You will be unable to use the
+					upload/download features in the filesystem viewer.
 				</div>
 			) : null}
 			{FSAPI_UNAVAILABLE ? (
@@ -275,6 +332,8 @@ const Progress: Component<{ percent: number }, {}> = function () {
 const Extract: Component<
 	{
 		"on:done": () => void;
+
+		"on:skip-patch": () => void;
 	},
 	{
 		extracting: boolean;
@@ -293,49 +352,89 @@ const Extract: Component<
 	`;
 
 	const opfs = async () => {
-		const files: FileList = await new Promise((res, rej) => {
-			this.input.value = "";
-			this.input.oncancel = rej;
-			this.input.onchange = () => res(this.input.files!);
-			this.input.click();
-		});
-		const file = files[0];
+		try {
+			const files: FileList = await new Promise((res, rej) => {
+				this.input.value = "";
+				this.input.oncancel = () =>
+					rej(new DOMException("File selection cancelled"));
+				this.input.onchange = () => res(this.input.files!);
+				this.input.click();
+			});
+			const file = files[0];
+			try {
+				await rootFolder.removeEntry("CustomCeleste.dll");
+			} catch {}
+			await clearPatchVersion();
+			if (!file) {
+				this.status = "No archive selected";
+				return;
+			}
 
-		let parsedSize = 0;
-		const fileSize = file.size;
+			const fileSize = file.size;
 
-		const stream = file.stream();
-		const reader = stream.getReader();
-		const self = this;
-		let progressStream = new ReadableStream({
-			async pull(controller) {
-				const { value, done } = await reader.read();
+			const stream = file.stream();
+			const reader = stream.getReader();
+			let parsedSize = 0;
+			const self = this;
+			let progressStream = new ReadableStream({
+				async pull(controller) {
+					const { value, done } = await reader.read();
 
-				if (!value || done) {
-					controller.close();
-				} else {
-					controller.enqueue(value);
+					if (!value || done) {
+						controller.close();
+					} else {
+						controller.enqueue(value);
 
-					parsedSize += value.byteLength;
-					self.percent = (parsedSize / fileSize) * 100;
+						parsedSize += value.byteLength;
+						self.percent = (parsedSize / fileSize) * 100;
+					}
+				},
+			});
+
+			this.extracting = true;
+
+			if (file.name.endsWith(".gz"))
+				progressStream = progressStream.pipeThrough(
+					new DecompressionStream("gzip")
+				);
+			try {
+				await extractTar(progressStream, rootFolder, (type, name) =>
+					console.log(`untarred ${type} ${name}`)
+				);
+
+				let hasPatchedDll = false;
+				try {
+					await rootFolder.getFileHandle("CustomCeleste.dll", {
+						create: false,
+					});
+					hasPatchedDll = true;
+				} catch {}
+				const decision = decidePatchAfterExtract({
+					hasPatchedDll,
+					hasContentFiles: await hasContent(),
+					patchMarker: await readPatchVersion(),
+					patchVersion: PATCH_VERSION,
+				});
+				if (decision !== "patch") {
+					event("assets-provided", { option: "archive" });
+					if (decision === "skip-outdated") {
+						alert(OUTDATED_WEBLESTE);
+					}
+					this["on:skip-patch"]();
+					return;
 				}
-			},
-		});
 
-		this.extracting = true;
-
-		if (file.name.endsWith(".gz"))
-			progressStream = progressStream.pipeThrough(
-				new DecompressionStream("gzip")
-			);
-		await extractTar(progressStream, rootFolder, (type, name) =>
-			console.log(`untarred ${type} ${name}`)
-		);
-
-		this.extracting = false;
-
-		event("assets-provided", { option: "archive" });
-		this["on:done"]();
+				event("assets-provided", { option: "archive" });
+				this["on:done"]();
+			} catch (err) {
+				this.status = err instanceof Error ? err.message : String(err);
+			} finally {
+				this.extracting = false;
+			}
+		} catch (err) {
+			this.status = err instanceof Error ? err.message : String(err);
+			this.extracting = false;
+		}
 	};
 
 	return (
@@ -347,7 +446,12 @@ const Extract: Component<
 				while in the root directory.
 			</p>
 			{$if(use(this.extracting), <Progress percent={use(this.percent)} />)}
-			<input type="file" class="file-input" accept=".tar,.tar.gz,.gz,application/x-tar,application/gzip" bind:this={use(this.input)} />
+			<input
+				type="file"
+				class="file-input"
+				accept=".tar,.tar.gz,.gz,application/x-tar,application/gzip"
+				bind:this={use(this.input)}
+			/>
 			<Button
 				on:click={opfs}
 				type="primary"
@@ -374,45 +478,70 @@ const Copy: Component<
 	}
 > = function () {
 	const opfs = async () => {
-		const directory = await showDirectoryPicker();
-		const res = await validateDirectory(directory);
-		if (res) {
-			this.status = res;
-			return;
-		}
-
-		const contentFolder = await directory.getDirectoryHandle("Content", {
-			create: false,
-		});
-
-		const max = await countFolder(contentFolder);
-		let cnt = 0;
+		this.status = "";
 		this.copying = true;
-		const before = performance.now();
-		await copyFolder(contentFolder, rootFolder, (x) => {
-			cnt++;
-			this.percent = (cnt / max) * 100;
-			console.debug(`copied ${x}: ${((cnt / max) * 100).toFixed(2)}`);
-		});
-		const after = performance.now();
-		console.debug(`copy took ${(after - before).toFixed(2)}ms`);
-
-		let celesteExe;
 		try {
-			let orig = await directory.getDirectoryHandle("orig", { create: false });
-			celesteExe = await orig.getFileHandle("Celeste.exe", { create: false });
-			console.debug("found everest install");
-		} catch {
-			celesteExe = await directory.getFileHandle("Celeste.exe", {
+			await rootFolder.removeEntry("CustomCeleste.dll");
+		} catch {}
+		await clearPatchVersion();
+		try {
+			const directory = await showDirectoryPicker();
+			const res = await validateDirectory(directory);
+			if (res) {
+				this.status = res;
+				return;
+			}
+
+			let hasFna = await dirHasFna(directory);
+			if (!hasFna) {
+				try {
+					hasFna = await dirHasFna(
+						await directory.getDirectoryHandle("orig", { create: false })
+					);
+				} catch {}
+			}
+			if (!hasFna) {
+				this.status = XNA_COPY_MESSAGE;
+				return;
+			}
+
+			const contentFolder = await directory.getDirectoryHandle("Content", {
 				create: false,
 			});
-		}
-		await copyFile(celesteExe, rootFolder);
 
-		await new Promise((r) => setTimeout(r, 250));
-		await rootFolder.getFileHandle(".ContentExists", { create: true });
-		event("assets-provided", { option: "opfs" });
-		this["on:done"]();
+			const max = await countFolder(contentFolder);
+			let cnt = 0;
+			const before = performance.now();
+			await copyFolder(contentFolder, rootFolder, (x) => {
+				cnt++;
+				this.percent = (cnt / max) * 100;
+				console.debug(`copied ${x}: ${((cnt / max) * 100).toFixed(2)}`);
+			});
+			const after = performance.now();
+			console.debug(`copy took ${(after - before).toFixed(2)}ms`);
+
+			const orig = await directory
+				.getDirectoryHandle("orig", {
+					create: false,
+				})
+				.catch(() => null);
+			const gameAssembly =
+				(orig && (await findGameAssembly(orig))) ||
+				(await findGameAssembly(directory));
+			if (!gameAssembly) {
+				throw new Error(GAME_ASSEMBLY_MISSING);
+			}
+			if (orig) console.debug("found everest install");
+			await copyFile(gameAssembly, rootFolder);
+
+			await rootFolder.getFileHandle(".ContentExists", { create: true });
+			event("assets-provided", { option: "opfs" });
+			this["on:done"]();
+		} catch (err) {
+			this.status = err instanceof Error ? err.message : String(err);
+		} finally {
+			this.copying = false;
+		}
 	};
 
 	const opfsForBadBrowsers = async (transfer: DataTransferItem) => {
@@ -434,14 +563,21 @@ const Copy: Component<
 		}
 
 		const directory = handle as FileSystemDirectoryEntry;
-		const reader = directory.createReader();
-		reader.readEntries(async (entries: FileSystemEntry[]) => {
+		this.copying = true;
+		try {
+			try {
+				await rootFolder.removeEntry("CustomCeleste.dll");
+			} catch {}
+			await clearPatchVersion();
+			const entries = await readAllEntries(directory);
 			const contentFolder = entries.find(
-				(e) => e.name === "Content"
-			) as FileSystemDirectoryEntry;
+				(e) => e.name === "Content" && e.isDirectory
+			) as FileSystemDirectoryEntry | undefined;
+			if (!contentFolder) {
+				throw new Error("Failed to find Content directory in selected folder");
+			}
 			const max = await countFolderForBadBrowsers(contentFolder);
 			let cnt = 0;
-			this.copying = true;
 			const before = performance.now();
 			await copyFolderForBadBrowsers(contentFolder, rootFolder, (x) => {
 				cnt++;
@@ -451,32 +587,27 @@ const Copy: Component<
 			const after = performance.now();
 			console.debug(`copy took ${(after - before).toFixed(2)}ms`);
 
-			let celesteExe;
-			try {
-				let orig = entries.find(
-					(e) => e.name === "orig"
-				) as FileSystemDirectoryEntry;
-				let reader = orig.createReader();
-				let subEntries = await new Promise<FileSystemEntry[]>((r) =>
-					reader.readEntries(r)
-				);
-				celesteExe = subEntries.find(
-					(e) => e.name === "Celeste.exe"
-				) as FileSystemFileEntry;
-				console.debug("found everest install");
-			} catch {
-				celesteExe = entries.find(
-					(e) => e.name === "Celeste.exe"
-				) as FileSystemFileEntry;
+			const orig = entries.find((e) => e.name === "orig" && e.isDirectory) as
+				| FileSystemDirectoryEntry
+				| undefined;
+			const originalEntries = orig ? await readAllEntries(orig) : [];
+			const assembly = [...originalEntries, ...entries].find(
+				(e) =>
+					e.isFile && (e.name === "Celeste.exe" || e.name === "Celeste.dll")
+			) as FileSystemFileEntry | undefined;
+			if (!assembly) {
+				throw new Error("Failed to find Celeste.exe");
 			}
-
-			await copyFileForBadBrowsers(celesteExe!, rootFolder);
-			await new Promise((r) => setTimeout(r, 250));
+			await copyFileForBadBrowsers(assembly, rootFolder);
 			await rootFolder.getFileHandle(".ContentExists", { create: true });
 
 			event("assets-provided", { option: "opfs-bad" });
 			this["on:done"]();
-		});
+		} catch (err) {
+			this.status = err instanceof Error ? err.message : String(err);
+		} finally {
+			this.copying = false;
+		}
 	};
 
 	let ua = navigator.userAgent;
@@ -761,78 +892,6 @@ export const Download: Component<
 	);
 };
 
-export const Patch: Component<
-	{
-		"on:done": () => void;
-	},
-	{
-		patching: boolean;
-		everest: boolean;
-	}
-> = function () {
-	this.patching = false;
-	this.everest = false;
-	this.css = `
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-
-		.component-log {
-		  scrollbar-width: none;
-		}
-
-		.console {
-			display: flex;
-			font-size: initial;
-			height: 10em;
-		}
-	`;
-	const patch = async () => {
-		this.patching = true;
-		try {
-			await PatchCeleste(this.everest);
-			this.patching = false;
-			event("patched", { everest: this.everest });
-			this["on:done"]();
-		} catch {
-			console.debug("================================================");
-			console.error("[!!!] There was an error patching Celeste!");
-			console.log("Please try again or reload the page.");
-			console.debug("================================================");
-			this.patching = false;
-		}
-	};
-
-	return (
-		<div>
-			<p>
-				We're going to patch Celeste with MonoMod for neccesary WASM fixes. You
-				can also optionally install the Everest Mod Loader, but it will take
-				longer to install.
-			</p>
-			<Switch
-				title={"Install Everest Mod Loader?"}
-				bind:on={use(this.everest)}
-				bind:disabled={use(this.patching)}
-			/>
-
-			<Button
-				type="primary"
-				icon="left"
-				on:click={patch}
-				disabled={use(this.patching)}
-			>
-				<Icon icon={iconManufacturing} />
-				Patch Celeste
-			</Button>
-
-			<div class="console">
-				<LogView scrolling={true} />
-			</div>
-		</div>
-	);
-};
-
 export const Splash: Component<
 	{
 		"on:next": (animation: boolean) => void;
@@ -862,9 +921,11 @@ export const Splash: Component<
 		.splash {
 			object-fit: cover;
 			z-index: 101;
+			pointer-events: none;
 		}
 
 		.blur {
+			pointer-events: none;
 			backdrop-filter: blur(1rem);
 			background-color: color-mix(in srgb, var(--bg) 35%, transparent);
 			z-index: 102;
@@ -881,9 +942,11 @@ export const Splash: Component<
 			align-items: center;
 			justify-content: center;
 			z-index: 103;
+			pointer-events: none;
 		}
 
 		.container {
+			pointer-events: auto;
 			backdrop-filter: blur(0.5vw);
 			background-color: color-mix(in srgb, var(--bg) 80%, transparent);
       box-shadow: 0px 0px 20px color-mix(in srgb, var(--surface0) 40%, transparent);
@@ -956,7 +1019,16 @@ export const Splash: Component<
 						} else if (x === "copy") {
 							return <Copy on:done={() => (this.next = "patch")} />;
 						} else if (x === "extract") {
-							return <Extract on:done={() => this["on:next"](true)} />;
+							return (
+								<Extract
+									on:done={async () => {
+										this.next = "patch";
+									}}
+									on:skip-patch={async () => {
+										this["on:next"](false);
+									}}
+								/>
+							);
 						} else if (x === "download") {
 							return <Download on:done={() => (this.next = "patch")} />;
 						} else if (x === "patch") {

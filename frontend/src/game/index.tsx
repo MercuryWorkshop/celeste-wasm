@@ -38,6 +38,12 @@ export const LogView: Component<{ scrolling: boolean }> = function () {
 		setInterval(() => {
 			if (frag.children.length > 0) {
 				logroot.appendChild(frag);
+				// A single load emits hundreds of log lines (MonoMod relink spam,
+				// WebGL warnings, jiterpreter stats); appending them all keeps DOM
+				// work on the same main thread as the game. Drop old nodes.
+				while (logroot.children.length > 500) {
+					logroot.firstChild?.remove();
+				}
 				logroot.scrollTop = logroot.scrollHeight;
 			}
 		}, 250);
@@ -115,10 +121,20 @@ export const GameView: Component<
 			pointer-events: auto;
 		}
 
+		.gameoverlay.notrunning.stopped {
+			pointer-events: none;
+			visibility: hidden;
+		}
+
 		canvas:fullscreen {
 			border: none;
 			border-radius: 0;
 			background: black;
+			width: min(100vw, calc(100vh * 16 / 9)) !important;
+			height: min(100vh, calc(100vw * 9 / 16)) !important;
+			left: max(0px, calc((100vw - min(100vw, calc(100vh * 16 / 9))) / 2)) !important;
+			top: max(0px, calc((100vh - min(100vh, calc(100vw * 9 / 16))) / 2)) !important;
+			object-fit: fill;
 		}
 
 		#fps {
@@ -139,7 +155,9 @@ export const GameView: Component<
 	);
 
 	this.start = async () => {
-		await preInit();
+		preInit().catch((err) =>
+			console.error("Runtime initialization failed", err)
+		);
 	};
 
 	return (

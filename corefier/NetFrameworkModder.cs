@@ -73,6 +73,18 @@ namespace NETCoreifier
             base.MapDependencies();
         }
 
+        public override void MapDependency(ModuleDefinition main, string name, string fullName = null, AssemblyNameReference depRef = null)
+        {
+            try
+            {
+                base.MapDependency(main, name, fullName, depRef);
+            }
+            catch (BadImageFormatException ex)
+            {
+                Log($"[MapDependency] Skipping invalid dependency {main.Name} -> {name}: {ex.Message}");
+            }
+        }
+
         public override void AutoPatch()
         {
             // Parse our own patching rules

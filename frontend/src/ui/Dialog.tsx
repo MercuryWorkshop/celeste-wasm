@@ -15,12 +15,13 @@ export const Dialog: Component<
 		border: 1.25px solid var(--surface3);
 		border-radius: 1.5rem;
 
-		width: min(40rem, 100%);
-		min-height: min(50rem, 100%);
-		max-height: min(50rem, 100%);
+		width: min(40rem, calc(100% - 2rem));
+		max-height: min(50rem, calc(100% - 2rem));
 
 		position: fixed;
 		inset: 0;
+		
+		margin: auto;
 		opacity: 0;
 
 		scale: .9;
@@ -83,6 +84,14 @@ export const Dialog: Component<
 			} else {
 				root.close();
 			}
+		});
+
+		let downOnBackdrop = false;
+		root.addEventListener("mousedown", (e) => {
+			downOnBackdrop = e.target === root;
+		});
+		root.addEventListener("click", (e) => {
+			if (e.target === root && downOnBackdrop) this.open = false;
 		});
 	};
 	return (

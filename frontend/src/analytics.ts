@@ -6,7 +6,7 @@ function processEvent(type: any, payload: any) {
 	if (!store.analytics && payload?.name !== "analytics-toggle") {
 		return;
 	}
-	debug("sending", type, payload)
+	debug("sending", type, payload);
 	return payload;
 }
 (globalThis as any).processEvent = processEvent;
@@ -18,5 +18,7 @@ export function event(name: string, args?: any) {
 	try {
 		if (!umami) return;
 		umami.track(name, args);
-	} catch(err) { debug("failed", err) }
+	} catch (err) {
+		debug("failed", err);
+	}
 }

@@ -23,12 +23,17 @@ async function evict() {
 }
 
 async function instantiate() {
-	if (!(await cache.match(EPOXY_PATH))) {
-		await cache.add(EPOXY_PATH);
+	try {
+		if (!(await cache.match(EPOXY_PATH))) await cache.add(EPOXY_PATH);
+		await epoxyInit({ module_or_path: await cache.match(EPOXY_PATH) });
+		initted = true;
+	} catch (err) {
+		initted = false;
+		try {
+			await evict();
+		} catch {}
+		throw err;
 	}
-	const module = await cache.match(EPOXY_PATH);
-	await epoxyInit({ module_or_path: module });
-	initted = true;
 }
 
 async function tryInit() {

@@ -1,7 +1,14 @@
 import { Switch } from "./ui/Switch";
-import { store } from "./store";
+import { Button } from "./ui/Button";
 import { TextField } from "./ui/TextField";
 import { analyticsEnabled, event } from "./analytics";
+import { store } from "./store";
+import { gameState, setSteamConnectionDisabled } from "./game/dotnet";
+import { formatEverestDisplayVersion } from "./game/everest";
+import { EverestVersionPicker } from "./everestPicker";
+import { Icon } from "./ui/Button";
+
+import iconSend from "@ktibow/iconset-material-symbols/send";
 
 export const Settings: Component<
 	{},
@@ -55,21 +62,44 @@ export const Settings: Component<
 					store.logs = (e.target as HTMLInputElement).checked ? 1 : -1;
 				}}
 			/>
+			<Switch
+				title="Connect to Steam"
+				bind:on={use(store.steamConnectionDisabled, (disabled) => !disabled)}
+				disabled={false}
+				on:change={(e: Event) => {
+					void setSteamConnectionDisabled(
+						!(e.target as HTMLInputElement).checked
+					);
+				}}
+			/>
 			<WispServer />
+			<EverestVersion />
 			<div>
 				<div style="margin-inline: 0.2rem; user-select: none;">
 					Accent Color
 				</div>
 				<AccentPicker />
 			</div>
-			{/* @ts-expect-error fragment */}
-			{analyticsEnabled ? (<>
+			{analyticsEnabled ? (
 				<div>
-					This instance of Webleste has analytics for figuring out how many people are affected by r58playz's random regressions.
-					We send an event on page load, when you finish providing assets (with what option you chose), when you finish patching (with whether you chose to install Everest), when you click the play button, and when you turn this off (but not after).
+					<div>
+						This instance of Webleste has analytics for figuring out how many
+						people are affected by r58playz's random regressions. We send an
+						event on page load, when you finish providing assets (with what
+						option you chose), when you finish patching (with whether you chose
+						to install Everest), when you click the play button, and when you
+						turn this off (but not after).
+					</div>
+					<Switch
+						title="Enable Analytics"
+						bind:on={use(store.analytics)}
+						disabled={false}
+						on:change={() =>
+							event("analytics-toggle", { enabled: store.analytics })
+						}
+					/>
 				</div>
-				<Switch title="Enable Analytics" bind:on={use(store.analytics)} disabled={false} on:change={() => event("analytics-toggle", { enabled: store.analytics })} />
-			</>) : null}
+			) : null}
 		</div>
 	);
 };
@@ -94,6 +124,81 @@ export const WispServer: Component<{}> = function () {
 				bind:value={use(store.wispServer)}
 				placeholder={"wss://" + import.meta.env.VITE_WISP_URL}
 			/>
+		</div>
+	);
+};
+
+export const EverestVersion: Component<{}, {}> = function () {
+	this.css = `
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem;
+		margin-inline: 0.25rem;
+		min-width: 0;
+
+		.vercol {
+			display: flex;
+			flex-direction: column;
+			line-height: 1.2;
+			flex: 0 1 auto;
+			min-width: 0;
+		}
+
+		.vercol > span:first-child {
+			white-space: nowrap;
+		}
+
+		.installed {
+			font-size: 0.75rem;
+			opacity: 0.7;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 12rem;
+		}
+
+		.row > .component-btn {
+			flex: 0 0 auto;
+			margin-inline-start: auto;
+		}
+		.everest-send {
+			width: auto;
+			aspect-ratio: 1;
+			padding: 0.5rem;
+		}
+		.everest-send svg {
+			width: 1.25rem;
+			height: 1.25rem;
+		}
+	`;
+
+	return (
+		<div class="row">
+			<div class="vercol">
+				<span>Everest Version:</span>
+				{$if(
+					use(store.installedEverestVersion, (x) => !!String(x ?? "").trim()),
+					<span class="installed">
+						{use(
+							store.installedEverestVersion,
+							(installed) =>
+								`Installed: ${formatEverestDisplayVersion(installed)}`
+						)}
+					</span>
+				)}
+			</div>
+			<EverestVersionPicker disabled={false} />
+			<Button
+				on:click={() => (gameState.patchFlowOpen = true)}
+				type="primary"
+				icon="full"
+				class="everest-send"
+				disabled={false}
+				title={"Repatch Everest"}
+			>
+				<Icon icon={iconSend} />
+			</Button>
 		</div>
 	);
 };
