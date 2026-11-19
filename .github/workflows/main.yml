@@ -89,9 +89,14 @@ jobs:
           artifacts: webleste-loader.tar.zst
 
   deployr58:
-    name: Deploy to celeste.r58playz.dev
+    name: Deploy to ${{ matrix.project }}
     runs-on: ubuntu-latest
     needs: build
+    strategy:
+      matrix:
+        project:
+          - celeste-wasm-threads
+          - celeste-wasm-dip
     permissions:
       contents: read
       deployments: write
@@ -103,10 +108,18 @@ jobs:
           name: webleste-loader
           path: dist/
 
+      - name: Use Document Isolation Policy
+        if: matrix.project == 'celeste-wasm-dip'
+        run: |
+          sed -i \
+            -e 's/Cross-Origin-Embedder-Policy: require-corp/Document-Isolation-Policy: isolate-and-require-corp/' \
+            -e '/Cross-Origin-Opener-Policy:/d' \
+            dist/_headers
+
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          command: pages deploy dist --project-name=celeste-wasm-threads
+          command: pages deploy dist --project-name=${{ matrix.project }}
