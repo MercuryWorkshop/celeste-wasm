@@ -200,9 +200,17 @@ export const loadedLibcurlPromise = new Promise((r) => (libcurlresolver = r));
 export async function preInit() {
 	if (gameState.ready) return;
 
-	let url = "../_framework/dotnet.js";
+	// dotnet.js is fingerprinted, so find its hashed name at build time
+	const dotnetJs = Object.keys(
+		import.meta.glob("/public/_framework/dotnet.*.js")
+	)
+		.find((x) => /\/dotnet\.[a-z0-9]+\.js$/.test(x))
+		?.slice("/public".length);
+	if (!dotnetJs) throw new Error("no fingerprinted dotnet.js in _framework");
+
+	let url = ".." + dotnetJs;
 	if (import.meta.env.DEV) {
-		url = "/_framework/dotnet.js";
+		url = dotnetJs;
 	}
 
 	wasm = await eval(`import("${url}")`);

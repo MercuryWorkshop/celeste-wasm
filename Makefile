@@ -1,5 +1,6 @@
 STATICS_RELEASE=5ca6e290-3dbe-49dd-b7f8-647e3af0a709
 DOTNETFLAGS=--nodereuse:false -v n
+FRAMEWORK_STAGING=loader/bin/_framework.staging
 
 statics:
 	mkdir statics
@@ -36,18 +37,21 @@ deps: statics FNA MonoMod NLua SteamKit2.WASM
 
 build: deps
 	pnpm i
-	rm -r frontend/public/_framework loader/bin/Release/net10.0/publish/wwwroot/_framework statics/{dotnet,emsdk} || true
+	rm -r $(FRAMEWORK_STAGING) loader/bin/Release/net10.0/publish/wwwroot/_framework statics/{dotnet,emsdk} || true
 	unzip -q -o statics/dotnet.zip -d statics/dotnet
 	unzip -q -o statics/emsdk.zip -d statics/
 	dotnet publish loader -c Release $(DOTNETFLAGS)
-	cp -r loader/bin/Release/net10.0/publish/wwwroot/_framework frontend/public/
+	cp -r loader/bin/Release/net10.0/publish/wwwroot/_framework $(FRAMEWORK_STAGING)
 	# emscripten sucks
-	sed -i 's/var offscreenCanvases \?= \?{};/var offscreenCanvases={};if(globalThis.window\&\&!window.TRANSFERRED_CANVAS){transferredCanvasNames=[".canvas"];window.TRANSFERRED_CANVAS=true;}/' frontend/public/_framework/dotnet.native.*.js
+	sed -i 's/var offscreenCanvases \?= \?{};/var offscreenCanvases={};if(globalThis.window\&\&!window.TRANSFERRED_CANVAS){transferredCanvasNames=[".canvas"];window.TRANSFERRED_CANVAS=true;}/' $(FRAMEWORK_STAGING)/dotnet.native.*.js
 	# dotnet messed up
-	sed -i 's/this.appendULeb(32768)/this.appendULeb(65535)/' frontend/public/_framework/dotnet.runtime.*.js
+	sed -i 's/this.appendULeb(32768)/this.appendULeb(65535)/' $(FRAMEWORK_STAGING)/dotnet.runtime.*.js
 	# fmod messed up
-	sed -i 's/return runEmAsmFunction(code, sigPtr, argbuf);/return runMainThreadEmAsm(code, sigPtr, argbuf, 1);/' frontend/public/_framework/dotnet.native.*.js
-	cd frontend/public/_framework && split -b20M -d -a1 dotnet.native.*.wasm dotnet.native.*.wasm && rm dotnet.native.*.wasm
+	sed -i 's/return runEmAsmFunction(code, sigPtr, argbuf);/return runMainThreadEmAsm(code, sigPtr, argbuf, 1);/' $(FRAMEWORK_STAGING)/dotnet.native.*.js
+	cd $(FRAMEWORK_STAGING) && split -b20M -d -a1 dotnet.native.*.wasm dotnet.native.*.wasm && rm dotnet.native.*.wasm
+	# swap in only once complete, so vite dev reloads into a working framework
+	rm -r frontend/public/_framework || true
+	mv $(FRAMEWORK_STAGING) frontend/public/_framework
 
 serve: build
 	pnpm dev
